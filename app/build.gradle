@@ -1,0 +1,104 @@
+// Manifest version information!
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+
+apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
+
+def gitTimestamp() {
+    def p = 'git log -n 1 --format=%at'.execute([], rootDir)
+    p.waitFor()
+    if (p.exitValue() != 0) {
+        throw new RuntimeException(p.errorStream.text)
+    }
+
+    return p.text.trim()
+}
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+//    signingConfigs {
+//        copychrist {
+//            storeFile rootProject.file('copychrist.keystore')
+//            storePassword 'android'
+//            keyAlias 'android'
+//            keyPassword 'android'
+//        }
+//    }
+
+    defaultConfig {
+        applicationId "com.copychrist.app.prayer"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
+        //signingConfig signingConfigs.u2020
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+//            buildConfigField "String", "OBJECT_SERVER_IP", "192.168.1.64"
+        }
+
+        release {
+            minifyEnabled false
+//            buildConfigField "String", "OBJECT_SERVER_IP", "(live-host)"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        flavorDimensions 'environment'
+
+        internal {
+            dimension 'environment'
+            applicationIdSuffix 'internal'
+        }
+        production {
+            dimension 'environment'
+        }
+    }
+}
+
+//realm {
+//    syncEnabled = true
+//}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile deps.support.annotations
+    compile deps.support.v4
+    compile deps.support.appCompat
+    compile deps.support.design
+    compile deps.support.recyclerView
+
+    compile deps.picasso
+    compile deps.retrofit.core
+    compile deps.retrofit.mock
+
+    compile deps.dagger.dagger
+    compile deps.dagger.compiler
+
+    compile deps.butterKnife.runtime
+
+    compile deps.timber
+
+    internalCompile deps.leakCanary.real
+    productionCompile deps.leakCanary.noOp
+
+    testCompile deps.junit
+
+    androidTestCompile(deps.espresso.core, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+}
