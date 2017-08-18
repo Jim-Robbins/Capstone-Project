@@ -12,9 +12,8 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 public class PrayerRequest extends RealmObject {
-    @PrimaryKey @Required
+    @PrimaryKey
     private int id;
-    @Required
     private String title;
     private String description;
     private RealmList<BibleVerse> verses;
@@ -22,7 +21,6 @@ public class PrayerRequest extends RealmObject {
     private String prayedForOn;
     private Date answered;
     private Date created = new Date();
-    @Required
     private Contact contact;
 
     public String getTitle() {

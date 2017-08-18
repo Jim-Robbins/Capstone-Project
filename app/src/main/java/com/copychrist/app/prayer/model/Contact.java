@@ -2,17 +2,13 @@ package com.copychrist.app.prayer.model;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Required;
 
 public class Contact extends RealmObject {
-    @Required
     private int id;
-    @Required
     private String firstName;
     private String lastName;
     private String pictureUrl;
     private RealmList<PrayerRequest> requests;
-    @Required
     private ContactGroup group;
 
     public String getFirstName() {
@@ -53,5 +49,13 @@ public class Contact extends RealmObject {
 
     public void setGroup(ContactGroup group) {
         this.group = group;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

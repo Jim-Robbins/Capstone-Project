@@ -1,31 +1,49 @@
 package com.copychrist.app.prayer.ui.contact;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.copychrist.app.prayer.R;
+import com.copychrist.app.prayer.adapter.ContactsListAdapter;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.ui.BaseActivity;
 
 import javax.inject.Inject;
-
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.RealmResults;
 
-public class ContactsActivity extends BaseActivity implements ContactsView {
+public class ContactsActivity extends BaseActivity
+        implements ContactsView, ContactsListAdapter.OnContactClickListener {
+
+    @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
     @Inject ContactsPresenter contactsPresenter;
+
+    private ContactsListAdapter contactsListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         ButterKnife.bind(this);
+
+        initList();
     }
 
     @Override
     protected Object getModule() {
         return new ContactsModule();
+    }
+
+    private void initList() {
+        contactsListAdapter = new ContactsListAdapter();
+        contactsListAdapter.setContactClickListener(this);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -47,19 +65,18 @@ public class ContactsActivity extends BaseActivity implements ContactsView {
 
     @Override
     public void showContacts(RealmResults<Contact> contacts) {
-//        TODO: Setup adapter
+        contactsListAdapter.setContacts(contacts);
     }
 
-//  TODO: Hook up these methods
-//    @Override
-//    public void onContactClick(final int id) {
-//        contactsPresenter.onContactClick(id);
-//    }
-//
-//    @OnClick(R.id.fab)
-//    public void onAddNewContactClick() {
-//        contactsPresenter.onAddNewContactClick();
-//    }
+    @Override
+    public void onContactClick(int id) {
+        contactsPresenter.onContactClick(id);
+    }
+
+    @OnClick(R.id.fab)
+    public void onAddNewContactClick() {
+        contactsPresenter.onAddNewContactClick();
+    }
 
     @Override
     public void showContactDetailView(int id) {
@@ -68,7 +85,12 @@ public class ContactsActivity extends BaseActivity implements ContactsView {
 
     @Override
     public void showAddNewContactView() {
-//        TODO:startActivity(new Intent(this, AddContactActivity.class));
+        AddContactDialog addContactDialog = new AddContactDialog(this, "Family", contactsPresenter);
+        addContactDialog.show();
+    }
+
+    @Override
+    public void showAddContactError() {
 
     }
 }

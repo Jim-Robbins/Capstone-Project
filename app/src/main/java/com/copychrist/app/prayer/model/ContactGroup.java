@@ -6,7 +6,7 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 public class ContactGroup extends RealmObject {
-    @Required @PrimaryKey
+    @PrimaryKey
     private String name;
     private int order;
     private String desc;

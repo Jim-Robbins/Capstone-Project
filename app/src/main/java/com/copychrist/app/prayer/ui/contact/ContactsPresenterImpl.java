@@ -6,7 +6,7 @@ import com.copychrist.app.prayer.repository.RealmService;
  * Created by jim on 8/14/17.
  */
 
-public class ContactsPresenterImpl implements ContactsPresenter {
+public class ContactsPresenterImpl implements ContactsPresenter, RealmService.OnTransactionCallback {
     private final RealmService realmService;
     private ContactsView myListView = new ContactsView.EmptyMyListView();
 
@@ -48,5 +48,20 @@ public class ContactsPresenterImpl implements ContactsPresenter {
     @Override
     public void onAddNewContactClick() {
         myListView.showAddNewContactView();
+    }
+
+    @Override
+    public void onAddClick(String firstName, String lastName, String groupName, String pictureUrl) {
+        realmService.addContact(firstName, lastName, pictureUrl, groupName, this);
+    }
+
+    @Override
+    public void onRealmSuccess() {
+
+    }
+
+    @Override
+    public void onRealmError(Throwable e) {
+
     }
 }

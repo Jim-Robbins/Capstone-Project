@@ -1,16 +1,11 @@
 package com.copychrist.app.prayer.model;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Required;
 
 public class BibleVerse extends RealmObject {
-    @Required
     private String book;
-    @Required
     private int chapter;
-    @Required
     private String verse;
-    @Required
     private String text;
     private String version;
     private String apiUrl;
