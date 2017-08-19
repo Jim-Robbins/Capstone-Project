@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.contact.ContactsActivity"
+            android:name=".ui.contactgroups.ContactsActivity"
             android:label="@string/activity_name_contacts"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -23,8 +23,15 @@
         <activity
             android:name=".ui.home.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar">
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.contact.ContactDetailActivity"
+            android:label="@string/title_activity_contact_detail"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".ui.contactgroups.ContactsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.contactgroups.ContactsActivity" />
         </activity>
     </application>
 

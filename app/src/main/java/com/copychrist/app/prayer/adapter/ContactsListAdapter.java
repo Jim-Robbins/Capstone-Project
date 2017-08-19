@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
@@ -53,7 +53,7 @@ public class ContactsListAdapter
 
     @Override
     public int getItemCount() {
-        return contacts.size();
+        return contacts != null ? contacts.size() : 0;
     }
 
     @Override
@@ -73,9 +73,9 @@ public class ContactsListAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.layout_item_container) LinearLayout layoutItem;
-        @Bind(R.id.text_first_name) TextView textFirstName;
-        @Bind(R.id.text_last_name) TextView textLastName;
+        @BindView(R.id.layout_item_container) LinearLayout layoutItem;
+        @BindView(R.id.text_first_name) TextView textFirstName;
+        @BindView(R.id.text_last_name) TextView textLastName;
 
         public ViewHolder(final View itemView) {
             super(itemView);

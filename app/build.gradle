@@ -40,6 +40,7 @@ android {
 
         //signingConfig signingConfigs.u2020
 
+        vectorDrawables.useSupportLibrary = true;
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -81,7 +82,7 @@ dependencies {
     compile deps.support.appCompat
     compile deps.support.design
     compile deps.support.recyclerView
-
+    compile deps.support.constraintLayout
     compile deps.picasso
     compile deps.retrofit.core
     compile deps.retrofit.mock
@@ -90,6 +91,7 @@ dependencies {
     compile deps.dagger.compiler
 
     compile deps.butterKnife.runtime
+    annotationProcessor deps.butterKnife.compiler
 
     compile deps.timber
 
@@ -101,4 +103,5 @@ dependencies {
     androidTestCompile(deps.espresso.core, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 }

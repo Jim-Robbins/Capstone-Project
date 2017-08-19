@@ -1,4 +1,4 @@
-package com.copychrist.app.prayer.ui.contact;
+package com.copychrist.app.prayer.ui.contactgroups;
 
 import com.copychrist.app.prayer.ApplicationModule;
 import com.copychrist.app.prayer.repository.RealmService;

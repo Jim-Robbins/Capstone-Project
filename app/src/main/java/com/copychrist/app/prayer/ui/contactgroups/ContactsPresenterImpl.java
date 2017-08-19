@@ -1,4 +1,4 @@
-package com.copychrist.app.prayer.ui.contact;
+package com.copychrist.app.prayer.ui.contactgroups;
 
 import com.copychrist.app.prayer.repository.RealmService;
 
@@ -24,8 +24,7 @@ public class ContactsPresenterImpl implements ContactsPresenter, RealmService.On
 
     private void showContacts() {
         if(!contactsShown) {
-//            TODO: create realm query to get contacts for group
-//            myListView.showContacts(realmService.getContactsForGroup);
+            myListView.showContacts(realmService.getAllContacts());
             contactsShown = true;
         }
     }

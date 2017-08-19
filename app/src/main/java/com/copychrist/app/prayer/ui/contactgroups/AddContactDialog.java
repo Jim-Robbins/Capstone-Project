@@ -1,4 +1,4 @@
-package com.copychrist.app.prayer.ui.contact;
+package com.copychrist.app.prayer.ui.contactgroups;
 
 import android.app.Dialog;
 import android.content.Context;

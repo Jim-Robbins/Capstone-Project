@@ -29,6 +29,7 @@ buildscript {
                     'appCompat': "com.android.support:appcompat-v7:${versions.supportLibrary}",
                     'design': "com.android.support:design:${versions.supportLibrary}",
                     'recyclerView': "com.android.support:recyclerview-v7:${versions.supportLibrary}",
+                    'constraintLayout': "com.android.support.constraint:constraint-layout:1.0.2",
             ],
             'picasso': "com.squareup.picasso:picasso:${versions.picasso}",
             'retrofit': [
@@ -57,6 +58,9 @@ buildscript {
 
     repositories {
         jcenter()
+        maven {
+            url 'https://maven.google.com'
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${versions.gradle}"
@@ -69,6 +73,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url 'https://maven.google.com'
+        }
     }
 }
 

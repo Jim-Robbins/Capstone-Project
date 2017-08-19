@@ -1,4 +1,4 @@
-package com.copychrist.app.prayer.ui.contact;
+package com.copychrist.app.prayer.ui.contactgroups;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,9 +8,10 @@ import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.ContactsListAdapter;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.ui.BaseActivity;
+import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
 
 import javax.inject.Inject;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.RealmResults;
@@ -18,7 +19,7 @@ import io.realm.RealmResults;
 public class ContactsActivity extends BaseActivity
         implements ContactsView, ContactsListAdapter.OnContactClickListener {
 
-    @Bind(R.id.recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
     @Inject ContactsPresenter contactsPresenter;
 
@@ -43,7 +44,7 @@ public class ContactsActivity extends BaseActivity
         contactsListAdapter.setContactClickListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(contactsListAdapter);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ContactsActivity extends BaseActivity
 
     @Override
     public void showContactDetailView(int id) {
-//        TODO:startActivity(ContactDetailActivity.getStartIntent(this, id));
+        startActivity(ContactDetailActivity.getStartIntent(this, id));
     }
 
     @Override
