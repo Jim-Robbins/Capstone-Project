@@ -26,12 +26,19 @@ public class ContactPresenterImpl implements ContactPresenter {
         myListView = view;
         myContact = realmService.getContact(contactId);
         myListView.showContactDetail(myContact);
-        showPrayerRequests();
+        showActivePrayerRequests();
     }
 
-    private void showPrayerRequests() {
+    private void showActivePrayerRequests() {
         if(!requestsShown) {
-            myListView.showPrayerRequests(myContact.getRequests());
+            myListView.showPrayerRequests(realmService.getActiveRequestsByContact(myContact));
+            requestsShown = true;
+        }
+    }
+
+    private void showArchievedPrayerRequests() {
+        if(!requestsShown) {
+            myListView.showPrayerRequests(realmService.getArchivedRequestsByContact(myContact));
             requestsShown = true;
         }
     }
@@ -53,7 +60,7 @@ public class ContactPresenterImpl implements ContactPresenter {
 
     @Override
     public void onAddNewRequestClick() {
-        myListView.showAddNewPrayerRequestView();
+        myListView.showAddNewPrayerRequestView(contactId);
     }
 
     @Override

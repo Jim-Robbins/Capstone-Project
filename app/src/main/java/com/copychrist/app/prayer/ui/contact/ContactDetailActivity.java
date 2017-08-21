@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,6 +15,7 @@ import com.copychrist.app.prayer.adapter.PrayerRequestsListAdapter;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
+import com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity;
 
 import javax.inject.Inject;
 
@@ -24,7 +23,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import timber.log.Timber;
+
+import static android.R.attr.id;
 
 public class ContactDetailActivity extends BaseActivity
         implements ContactView, PrayerRequestsListAdapter.OnPrayerRequestClickListener {
@@ -58,7 +60,13 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     protected Object getModule() {
-        return new ContactModule(getIntent().getExtras().getInt(EXTRA_CONTACT_ID));
+        int contactId;
+        if (getIntent().hasExtra(EXTRA_CONTACT_ID)) {
+            contactId = getIntent().getExtras().getInt(EXTRA_CONTACT_ID);
+        } else {
+            contactId = 1;
+        }
+        return new ContactModule(contactId);
     }
 
     private void initToolbar() {
@@ -109,7 +117,7 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showPrayerRequests(RealmList<PrayerRequest> requests) {
+    public void showPrayerRequests(RealmResults<PrayerRequest> requests) {
         prayerRequestsListAdapter.setPrayerRequests(requests);
     }
 
@@ -129,8 +137,8 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showAddNewPrayerRequestView() {
-//        TODO: setup add request view
+    public void showAddNewPrayerRequestView(int contactId) {
+        startActivity(AddPrayerRequestDetailActivity.getStartIntent(this, contactId));
     }
 
     @Override

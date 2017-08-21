@@ -9,6 +9,7 @@ public class BibleVerse extends RealmObject {
     private String text;
     private String version;
     private String apiUrl;
+    private String passage;
 
     public String getBook() {
         return book;
@@ -58,7 +59,11 @@ public class BibleVerse extends RealmObject {
         this.apiUrl = apiUrl;
     }
 
-    public String getReference() {
-        return book + " " + chapter + ":" + verse;
+    public String getPassage() {
+        return passage;
+    }
+
+    public void setPassage(String passage) {
+        this.passage = book + " " + chapter + ":" + verse;
     }
 }

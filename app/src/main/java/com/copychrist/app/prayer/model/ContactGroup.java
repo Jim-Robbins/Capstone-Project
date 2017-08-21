@@ -7,6 +7,8 @@ import io.realm.annotations.Required;
 
 public class ContactGroup extends RealmObject {
     @PrimaryKey
+    private int id;
+    @Required
     private String name;
     private int order;
     private String desc;
@@ -42,5 +44,13 @@ public class ContactGroup extends RealmObject {
 
     public void setContacts(RealmList<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

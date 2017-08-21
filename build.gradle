@@ -10,6 +10,7 @@ buildscript {
         'targetSdk': 25,
 
         'supportLibrary': '26+',
+        'gson': '2.6.2',
         'picasso': '2.5.2',
         'retrofit': '2.3.0',
         'dagger': '1.2.5',
@@ -32,9 +33,11 @@ buildscript {
                     'constraintLayout': "com.android.support.constraint:constraint-layout:1.0.2",
             ],
             'picasso': "com.squareup.picasso:picasso:${versions.picasso}",
+            'gson': "com.google.code.gson:gson:${versions.gson}",
             'retrofit': [
                     'core': "com.squareup.retrofit2:retrofit:${versions.retrofit}",
                     'mock': "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}",
+                    'gson': "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
             ],
             'butterKnife': [
                     'runtime': "com.jakewharton:butterknife:${versions.butterKnife}",

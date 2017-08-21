@@ -57,6 +57,10 @@ android {
         }
     }
 
+    buildTypes.each {
+        it.buildConfigField 'String', 'BIBLES_ORG_API_KEY', BiblesOrgApiKey
+    }
+
     productFlavors {
         flavorDimensions 'environment'
 
@@ -83,9 +87,12 @@ dependencies {
     compile deps.support.design
     compile deps.support.recyclerView
     compile deps.support.constraintLayout
+
+    compile deps.gson
     compile deps.picasso
+
     compile deps.retrofit.core
-    compile deps.retrofit.mock
+    compile deps.retrofit.gson
 
     compile deps.dagger.dagger
     compile deps.dagger.compiler
@@ -94,6 +101,8 @@ dependencies {
     annotationProcessor deps.butterKnife.compiler
 
     compile deps.timber
+
+    compile 'io.realm:android-adapters:2.0.0'
 
     internalCompile deps.leakCanary.real
     productionCompile deps.leakCanary.noOp

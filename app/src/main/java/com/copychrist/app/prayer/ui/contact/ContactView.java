@@ -12,16 +12,16 @@ import io.realm.RealmResults;
 
 public interface ContactView {
 
-    void showPrayerRequests(RealmList<PrayerRequest> requests);
+    void showPrayerRequests(RealmResults<PrayerRequest> requests);
     void showPrayerRequestDetailView(int id);
-    void showAddNewPrayerRequestView();
+    void showAddNewPrayerRequestView(int contactId);
     void finish();
     void showContactDetail(Contact contact);
     void showContactDetailEditView(int contactId);
 
     class EmptyMyListView implements ContactView {
         @Override
-        public void showPrayerRequests(RealmList<PrayerRequest> requests) {
+        public void showPrayerRequests(RealmResults<PrayerRequest> requests) {
 
         }
 
@@ -31,7 +31,7 @@ public interface ContactView {
         }
 
         @Override
-        public void showAddNewPrayerRequestView() {
+        public void showAddNewPrayerRequestView(int contactId) {
 
         }
 

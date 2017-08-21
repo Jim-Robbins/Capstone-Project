@@ -8,12 +8,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
+import com.copychrist.app.prayer.model.BibleVerse;
 import com.copychrist.app.prayer.model.PrayerRequest;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * Created by jim on 8/17/17.
@@ -23,7 +25,7 @@ public class PrayerRequestsListAdapter
         extends RecyclerView.Adapter<PrayerRequestsListAdapter.ViewHolder>
         implements RealmChangeListener {
 
-    private RealmList<PrayerRequest> prayerRequests;
+    private RealmResults<PrayerRequest> prayerRequests;
     private OnPrayerRequestClickListener prayerRequestClickListener;
 
     public PrayerRequestsListAdapter() {}
@@ -40,9 +42,13 @@ public class PrayerRequestsListAdapter
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final PrayerRequest prayerRequest = prayerRequests.get(position);
 
+        // Todo: Check if end date is < today
         holder.textRequestTitle.setText(prayerRequest.getTitle());
         holder.textRequestDesc.setText(prayerRequest.getDescription());
-        holder.textVerse.setText(prayerRequest.getVerses().get(1).getReference());
+        RealmList<BibleVerse> verses = prayerRequest.getVerses();
+        if (verses.size() > 0) {
+            holder.textVerse.setText(prayerRequest.getVerses().get(0).getPassage());
+        }
         holder.layoutItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,7 +73,7 @@ public class PrayerRequestsListAdapter
         prayerRequestClickListener = onPrayerRequestClickListener;
     }
 
-    public void setPrayerRequests(final RealmList<PrayerRequest> prayerRequests) {
+    public void setPrayerRequests(final RealmResults<PrayerRequest> prayerRequests) {
         this.prayerRequests = prayerRequests;
         this.prayerRequests.addChangeListener(this);
         notifyDataSetChanged();
