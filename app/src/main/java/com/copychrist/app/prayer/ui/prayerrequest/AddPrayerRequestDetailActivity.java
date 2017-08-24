@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
@@ -15,6 +14,10 @@ import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.ui.BaseActivity;
+import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
+import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
+
+import java.text.SimpleDateFormat;
 
 import javax.inject.Inject;
 
@@ -28,11 +31,9 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     @BindView(R.id.add_layout_container) LinearLayout layoutContainer;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
-    @BindView(R.id.edit_contact) EditText editContact;
     @BindView(R.id.edit_request_title) EditText editRequestTitle;
     @BindView(R.id.edit_request_desc) EditText editRequestDesc;
     @BindView(R.id.edit_passage) EditText editPassage;
-    @BindView(R.id.switch_end_date) SwitchCompat switchEndDate;
     @BindView(R.id.edit_end_date) EditText editEndDate;
     @BindView(R.id.spinner_prayer_lists) Spinner spinnerPrayerLists;
 
@@ -66,7 +67,7 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
             @Override
             public void onClick(View v) {
                 Timber.d("cek", "home selected");
-                onSupportNavigateUp();
+                onNavUp();
             }
         });
     }
@@ -100,13 +101,9 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     @Override
     public void showAddPrayerRequestDetails(Contact contact, PrayerListsListAdapter prayerListsListAdapter) {
         spinnerPrayerLists.setAdapter(prayerListsListAdapter);
-        // If wa already have a contact, hide the contact entry view
-        if(contact != null) {
-            editContact.setVisibility(View.GONE);
-        } else {
-            editContact.setVisibility(View.VISIBLE);
-            editContact.setText(contact.getFirstName() + " " + contact.getLastName());
-        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format));
+        editEndDate.setFocusable(false);
+        editEndDate.setOnClickListener(new DatePickerOnClickListener(dateFormat));
     }
 
     @Override
@@ -124,5 +121,15 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
                 null
                 //spinnerPrayerLists.getSelectedItem().toString()
         );
+    }
+
+    @OnClick(R.id.action_cancel)
+    public void onCancelClick() {
+        onNavUp();
+    }
+
+    private void onNavUp() {
+        startActivity(ContactDetailActivity.getStartIntent(this, contactId));
+        finish();
     }
 }

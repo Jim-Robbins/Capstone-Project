@@ -15,7 +15,9 @@ import com.copychrist.app.prayer.adapter.PrayerRequestsListAdapter;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
+import com.copychrist.app.prayer.ui.contactgroups.AddContactDialog;
 import com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity;
+import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
 
 import javax.inject.Inject;
 
@@ -41,6 +43,7 @@ public class ContactDetailActivity extends BaseActivity
     @Inject ContactPresenter contactPresenter;
 
     public static String EXTRA_CONTACT_ID = "extra_contact_id";
+    private Contact contact;
 
     public static Intent getStartIntent(final Context context, final int contactId) {
         Intent intent = new Intent(context, ContactDetailActivity.class);
@@ -60,12 +63,7 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     protected Object getModule() {
-        int contactId;
-        if (getIntent().hasExtra(EXTRA_CONTACT_ID)) {
-            contactId = getIntent().getExtras().getInt(EXTRA_CONTACT_ID);
-        } else {
-            contactId = 1;
-        }
+        int contactId = getIntent().getExtras().getInt(EXTRA_CONTACT_ID);
         return new ContactModule(contactId);
     }
 
@@ -112,6 +110,7 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     public void showContactDetail(final Contact contact) {
+        this.contact = contact;
         txtFirstName.setText(contact.getFirstName());
         txtLastName.setText(contact.getLastName());
     }
@@ -133,7 +132,7 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     public void showPrayerRequestDetailView(int requestId) {
-//        TODO: startActivity(RequestDetailActivity.getStartIntent(this, requestId));
+        startActivity(EditPrayerRequestDetailActivity.getStartIntent(this, requestId));
     }
 
     @Override
@@ -143,7 +142,8 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     public void showContactDetailEditView(int contactId) {
-
+        EditContactDialog editContactDialog = new EditContactDialog(this, contact, contactPresenter);
+        editContactDialog.show();
     }
 
 }

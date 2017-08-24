@@ -14,17 +14,6 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/edit_contact"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Requested By"/>
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
             android:id="@+id/edit_request_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,24 +47,26 @@
             android:hint="Passage"/>
     </android.support.design.widget.TextInputLayout>
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/switch_end_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="false"/>
+
         <EditText
             android:id="@+id/edit_end_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            android:hint="MM/DD/YYYY (end date)"/>
-    </LinearLayout>
+            android:hint="End Date"/>
+    </android.support.design.widget.TextInputLayout>
 
     <Spinner
         android:id="@+id/spinner_prayer_lists"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:autofillHints="Add to Prayer List"/>
 </LinearLayout>

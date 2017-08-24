@@ -10,4 +10,12 @@
     <string name="text_cancel">Cancel</string>
     <string name="text_save">Save</string>
     <string name="add_new_prayer_request_error">Cannot add new request</string>
+    <string name="edit_new_prayer_request_error">Cannot edit the request</string>
+
+
+    <string name="date_format">MMM dd, yyyy</string>
+    <string name="dialog_edit_contact_title">Edit Contact</string>
+    <string name="text_schedule">Schedule</string>
+    <string name="text_archive">Archive</string>
+    <string name="text_delete">Delete</string>
 </resources>

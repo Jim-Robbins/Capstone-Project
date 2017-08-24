@@ -23,6 +23,6 @@ public class AddPrayerRequestModule {
 
     @Provides
     AddPrayerRequestPresenter provideAddPrayerRequestPresenter(final RealmService realmService) {
-        return new AddAddPrayerRequestPresenterImpl(realmService, contactId);
+        return new AddPrayerRequestPresenterImpl(realmService, contactId);
     }
 }

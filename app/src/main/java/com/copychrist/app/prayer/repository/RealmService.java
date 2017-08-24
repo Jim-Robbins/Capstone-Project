@@ -410,6 +410,10 @@ public class RealmService {
         return getAllPrayerRequestsByRealm(realm);
     }
 
+    public PrayerRequest getPrayerRequest(int prayerRequestId) {
+        return getPrayerRequestByRealm(prayerRequestId, realm);
+    }
+
     private RealmResults<PrayerRequest> getAllPrayerRequestsByRealm(Realm realm) {
         return realm.where(PrayerRequest.class).findAll();
     }
@@ -469,14 +473,13 @@ public class RealmService {
         });
     }
 
-    public void editPrayerRequestAsync(final int prayerRequestId, final String title,
+    public PrayerRequest editPrayerRequest(final int prayerRequestId, final String title,
                                       final String desc, final String verse, final String endDate,
-                                      final String prayerListName,
-                                      final OnTransactionCallback onTransactionCallback) {
+                                      final String prayerListName) {
 
-        final PrayerRequest prayerRequest = getPrayerRequestByRealm(prayerRequestId, realm);
+        final PrayerRequest prayerRequest = getPrayerRequest(prayerRequestId);
 
-        realm.executeTransactionAsync(new Realm.Transaction() {
+        realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 prayerRequest.setTitle(title);
@@ -497,24 +500,10 @@ public class RealmService {
                         prayerlist.getRequests().add(prayerRequest);
                     }
                 }
-
-            }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                if (onTransactionCallback != null) {
-                    onTransactionCallback.onRealmSuccess();
-                }
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                if (onTransactionCallback != null) {
-                    Timber.e(error);
-                    onTransactionCallback.onRealmError(error);
-                }
             }
         });
+
+        return prayerRequest;
     }
 
     /* ========= BibleVerse Queries ================ */

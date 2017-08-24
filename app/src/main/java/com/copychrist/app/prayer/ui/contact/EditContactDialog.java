@@ -30,6 +30,7 @@ public class AddContactDialog {
         dialog = new Dialog(context);
         dialog.setTitle(R.string.dialog_add_contact_title);
         dialog.setContentView(R.layout.dialog_add_contact);
+        dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         
         txtFirstName = (EditText) dialog.findViewById(R.id.txtFirstName);
