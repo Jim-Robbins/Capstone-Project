@@ -58,19 +58,19 @@ public class EditPrayerRequestPresenterImpl
     @Override
     public void onScheduleReminderClick() {
         Timber.d(TAG, "onScheduleReminderClick");
-        //Todo: setup dialog to schedule a notifiation reminder
+        //Todo: setup dialog to schedule a notification reminder
     }
 
     @Override
     public void onArchiveRequest() {
         Timber.d(TAG, "onArchiveRequest");
-       //Todo: setup  realmService.archiveRequest(requestId);
+        realmService.archivePrayerRequest(requestId);
     }
 
     @Override
     public void onDeleteRequest() {
         Timber.d(TAG, "onDeleteRequest");
-        //Todo: setup realmService.deleteRequest(requestId);
+        realmService.deletePrayerRequest(requestId);
     }
 
     @Override

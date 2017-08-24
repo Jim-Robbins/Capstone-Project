@@ -86,6 +86,7 @@ dependencies {
     compile deps.support.appCompat
     compile deps.support.design
     compile deps.support.recyclerView
+    compile deps.support.cardView
     compile deps.support.constraintLayout
 
     compile deps.gson

@@ -48,6 +48,7 @@
             app:tabMode="fixed">
 
             <android.support.design.widget.TabItem
+                android:id="@+id/tab_active_requests"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tab_requests"/>
@@ -55,6 +56,7 @@
 
 
             <android.support.design.widget.TabItem
+                android:id="@+id/tab_archived_requests"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tab_archive" />

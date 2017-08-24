@@ -62,7 +62,6 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // TODO: Figure out how to pass the contactId back to the parent on back
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

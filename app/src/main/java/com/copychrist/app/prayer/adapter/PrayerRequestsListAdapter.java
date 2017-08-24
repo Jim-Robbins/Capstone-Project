@@ -1,5 +1,6 @@
 package com.copychrist.app.prayer.adapter;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,7 +82,7 @@ public class PrayerRequestsListAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.layout_item_container) LinearLayout layoutItem;
+        @BindView(R.id.layout_item_container) CardView layoutItem;
         @BindView(R.id.text_request_title) TextView textRequestTitle;
         @BindView(R.id.text_request_desc) TextView textRequestDesc;
         @BindView(R.id.text_verse) TextView textVerse;

@@ -1,5 +1,7 @@
 package com.copychrist.app.prayer.ui.contact;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.repository.RealmService;
 
@@ -15,6 +17,7 @@ public class ContactPresenterImpl implements ContactPresenter {
     private Contact myContact;
 
     private boolean requestsShown = false;
+    private boolean archivesShown = false;
 
     public ContactPresenterImpl(final RealmService realmService, final int contactId) {
         this.realmService = realmService;
@@ -33,13 +36,15 @@ public class ContactPresenterImpl implements ContactPresenter {
         if(!requestsShown) {
             myListView.showPrayerRequests(realmService.getActiveRequestsByContact(myContact));
             requestsShown = true;
+            archivesShown = false;
         }
     }
 
-    private void showArchievedPrayerRequests() {
-        if(!requestsShown) {
+    private void showArchivedPrayerRequests() {
+        if(!archivesShown) {
             myListView.showPrayerRequests(realmService.getArchivedRequestsByContact(myContact));
-            requestsShown = true;
+            archivesShown = true;
+            requestsShown = false;
         }
     }
 
@@ -66,5 +71,15 @@ public class ContactPresenterImpl implements ContactPresenter {
     @Override
     public void onContactEditClick(int contactId) {
         myListView.showContactDetailEditView(contactId);
+    }
+
+    @Override
+    public void onActiveRequestsClick() {
+        showActivePrayerRequests();
+    }
+
+    @Override
+    public void onArchiveClick() {
+        showArchivedPrayerRequests();
     }
 }

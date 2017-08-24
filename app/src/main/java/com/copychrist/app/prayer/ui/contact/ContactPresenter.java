@@ -9,5 +9,8 @@ import com.copychrist.app.prayer.ui.BasePresenter;
 public interface ContactPresenter extends BasePresenter<ContactView> {
     void onPrayerRequestClick(int requestId);
     void onAddNewRequestClick();
+    void onActiveRequestsClick();
+    void onArchiveClick();
     void onContactEditClick(int contactId);
+    //void onEditClick(int contactId, String firstName, String lastName);
 }

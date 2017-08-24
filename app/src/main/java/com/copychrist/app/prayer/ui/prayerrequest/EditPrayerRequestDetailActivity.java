@@ -92,9 +92,11 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
                 return true;
             case R.id.action_archive:
                 editPrayerRequestPresenter.onArchiveRequest();
+                onNavUp();
                 return true;
             case R.id.action_delete:
                 editPrayerRequestPresenter.onDeleteRequest();
+                onNavUp();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

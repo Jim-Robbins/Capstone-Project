@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -39,6 +41,8 @@ public class ContactDetailActivity extends BaseActivity
     @BindView(R.id.appBarLayout) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
+    @BindView(R.id.tabLayout) TabLayout tabLayout;
+
     PrayerRequestsListAdapter prayerRequestsListAdapter;
     @Inject ContactPresenter contactPresenter;
 
@@ -67,17 +71,46 @@ public class ContactDetailActivity extends BaseActivity
         return new ContactModule(contactId);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onSupportNavigateUp();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void initToolbar() {
         this.setSupportActionBar(toolbar);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Timber.d("cek", "home selected");
-                onSupportNavigateUp();
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 1:
+                        contactPresenter.onArchiveClick();
+                        break;
+                    case 0:
+                    default:
+                        contactPresenter.onActiveRequestsClick();
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
     }
@@ -117,6 +150,7 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     public void showPrayerRequests(RealmResults<PrayerRequest> requests) {
+        recyclerView.removeAllViews();
         prayerRequestsListAdapter.setPrayerRequests(requests);
     }
 
@@ -138,6 +172,7 @@ public class ContactDetailActivity extends BaseActivity
     @Override
     public void showAddNewPrayerRequestView(int contactId) {
         startActivity(AddPrayerRequestDetailActivity.getStartIntent(this, contactId));
+        tabLayout.getTabAt(0).select();
     }
 
     @Override

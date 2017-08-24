@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.repository;
 
 import android.text.TextUtils;
 
+import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.BibleVerse;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
@@ -10,6 +11,7 @@ import com.copychrist.app.prayer.model.PrayerRequest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -422,10 +424,9 @@ public class RealmService {
         return realm.where(PrayerRequest.class).equalTo("id", prayerRequestId).findFirst();
     }
 
-    // Todo: hook up verse
     public void addPrayerRequestAsync(final int contactId, final String title,
-                                           final String desc, final String verse, final String endDate,
-                                           final String prayerListName,
+                                           final String desc, final String verse,
+                                           final String endDate, final String prayerListName,
                                            final OnTransactionCallback onTransactionCallback) {
 
         final int nextId = getNextId(getAllPrayerRequests());
@@ -443,7 +444,7 @@ public class RealmService {
                 contact.getRequests().add(prayerRequest);
 
                 if(!TextUtils.isEmpty(verse)) {
-                    BibleVerse bibleVerse = createOrGetBibleVerse(verse, realm);
+                    BibleVerse bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", realm);
                     prayerRequest.getVerses().add(bibleVerse);
                 }
 
@@ -487,7 +488,7 @@ public class RealmService {
                 prayerRequest.setEndDate(stringToDate(endDate));
 
                 if(!TextUtils.isEmpty(verse)) {
-                    BibleVerse bibleVerse = createOrGetBibleVerse(verse, realm);
+                    BibleVerse bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", realm);
                     if (!prayerRequest.getVerses().contains(bibleVerse)) {
                         prayerRequest.getVerses().add(bibleVerse);
                     }
@@ -506,43 +507,80 @@ public class RealmService {
         return prayerRequest;
     }
 
+    public void prayedForPrayerRequest (int prayerRequestId, final String dateStrToAdd) {
+        final PrayerRequest prayerRequest = getPrayerRequest(prayerRequestId);
+
+        if(prayerRequest != null) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+
+                    prayerRequest.getPrayedForOn().add(dateStrToAdd);
+                }
+            });
+        }
+    }
+
+    public void archivePrayerRequest (int prayerRequestId) {
+        final PrayerRequest prayerRequest = getPrayerRequest(prayerRequestId);
+        if(prayerRequest != null) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Calendar now = Calendar.getInstance();
+                    prayerRequest.setAnswered(now.getTime());
+                }
+            });
+        }
+    }
+
+    public void deletePrayerRequest (int prayerRequestId) {
+        final PrayerRequest prayerRequest = getPrayerRequest(prayerRequestId);
+        if(prayerRequest != null) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    prayerRequest.deleteFromRealm();
+                }
+            });
+        }
+    }
+
     /* ========= BibleVerse Queries ================ */
 
-    public BibleVerse getBibleVerse(String verse) {
-        return getBibleVerseByRealm(verse, realm);
+    public BibleVerse getBibleVerse(String verse, String version) {
+        return getBibleVerseByRealm(verse, version, realm);
     }
 
-    public BibleVerse getBibleVerseByRealm(String verse, Realm realm) {
+    public BibleVerse getBibleVerseByRealm(String verse, String version, Realm realm) {
         return realm.where(BibleVerse.class)
                 .equalTo("passage", verse)
+                .equalTo("version", version)
                 .findFirst();
-//        BibleVerse tempVerseObject = parseVerseIntoObject(verse);
-//
-//        return realm.where(BibleVerse.class)
-//                .equalTo("book", tempVerseObject.getBook())
-//                .equalTo("chapter", tempVerseObject.getChapter())
-//                .equalTo("verse", tempVerseObject.getVerse())
-//                .findFirst();
     }
 
-    public void addBibleVerse(final String verse) {
+    public void addBibleVerse(final String verse, final String verseText,
+                              final String apiUrl, final String version) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                BibleVerse bibleVerse = createOrGetBibleVerse(verse, realm);
+                BibleVerse bibleVerse = createOrGetBibleVerse(verse, verseText, apiUrl, version, realm);
             }
         });
     }
 
-    private BibleVerse createOrGetBibleVerse(final String verse, final Realm realm) {
-        BibleVerse bibleVerse = getBibleVerseByRealm(verse, realm);
+    private BibleVerse createOrGetBibleVerse(String verse, String verseText,
+                                             String apiUrl, String version,
+                                             Realm realm) {
+        BibleVerse bibleVerse = getBibleVerseByRealm(verse, version, realm);
         if(bibleVerse == null) {
-            bibleVerse = addBibleVerseByRealm(verse, realm);
+            bibleVerse = addBibleVerseByRealm(verse, verseText, apiUrl, version, realm);
         }
         return bibleVerse;
     }
 
-    private BibleVerse addBibleVerseByRealm (final String verse, final Realm realm) {
+    private BibleVerse addBibleVerseByRealm (String verse, String verseText, String apiUrl,
+                                             String version, Realm realm) {
         if(!verse.contains(" ")) {
             return null;
         }
@@ -558,9 +596,45 @@ public class RealmService {
         }
 
         bibleVerse.setPassage(verse);
+        bibleVerse.setText(verseText);
+        bibleVerse.setApiUrl(apiUrl);
+        bibleVerse.setVersion(version);
 
         return bibleVerse;
     }
+
+    private BibleVerse editBibleVerseByRealm (String verse, String version, final String verseText,
+                                              final String apiUrl, Realm realm) {
+        if(!verse.contains(" ")) {
+            return null;
+        }
+
+        final BibleVerse bibleVerse = getBibleVerseByRealm(verse, version, realm);
+        if(bibleVerse != null) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    bibleVerse.setText(verseText);
+                    bibleVerse.setApiUrl(apiUrl);
+                }
+            });
+        }
+
+        return bibleVerse;
+    }
+
+    private void deleteBibleVerse (String verse, String version) {
+        final BibleVerse bibleVerse = getBibleVerseByRealm(verse, version, realm);
+        if(bibleVerse != null) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                   bibleVerse.deleteFromRealm();
+                }
+            });
+        }
+    }
+
 
     /* ========= OnTransactionCallback ================ */
 
