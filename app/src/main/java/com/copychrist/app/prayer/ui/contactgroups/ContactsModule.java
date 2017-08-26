@@ -13,8 +13,14 @@ import dagger.Provides;
 @Module(injects = ContactsActivity.class, addsTo = ApplicationModule.class)
 public class ContactsModule {
 
+    private final int contactGroupId;
+
+    public ContactsModule(final int contactGroupId) {
+        this.contactGroupId = contactGroupId;
+    }
+
     @Provides
     ContactsPresenter provideMyListPresenter(final RealmService realmService) {
-        return new ContactsPresenterImpl(realmService);
+        return new ContactsPresenterImpl(realmService, contactGroupId);
     }
 }

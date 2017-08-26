@@ -8,16 +8,16 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerRequestsListAdapter;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
-import com.copychrist.app.prayer.ui.contactgroups.AddContactDialog;
 import com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity;
 import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
 
@@ -26,11 +26,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.RealmList;
 import io.realm.RealmResults;
-import timber.log.Timber;
-
-import static android.R.attr.id;
 
 public class ContactDetailActivity extends BaseActivity
         implements ContactView, PrayerRequestsListAdapter.OnPrayerRequestClickListener {
@@ -72,11 +68,23 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_contact_groups_navigation_items, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case android.R.id.home:
                 onSupportNavigateUp();
+                return true;
+            case R.id.action_edit_contact:
+                contactPresenter.onContactEditClick(contact.getId());
+                return true;
+            case R.id.action_delete_contact:
+                //Todo: contactPresenter.onContactDeleteClick(contact.getId());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -177,8 +185,12 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     public void showContactDetailEditView(int contactId) {
-        EditContactDialog editContactDialog = new EditContactDialog(this, contact, contactPresenter);
-        editContactDialog.show();
+        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.neEditInstance(contact, contactPresenter);
+        addEditContactDialogFragment.show(getSupportFragmentManager(), "EditContactDialogFragment");
     }
 
+    @Override
+    public void showRealmResultMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 }

@@ -12,5 +12,5 @@ public interface ContactPresenter extends BasePresenter<ContactView> {
     void onActiveRequestsClick();
     void onArchiveClick();
     void onContactEditClick(int contactId);
-    //void onEditClick(int contactId, String firstName, String lastName);
+    void onEditClick(int contactId, String firstName, String lastName, String pictureUrl);
 }

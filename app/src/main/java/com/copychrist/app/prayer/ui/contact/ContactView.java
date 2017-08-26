@@ -15,9 +15,9 @@ public interface ContactView {
     void showPrayerRequests(RealmResults<PrayerRequest> requests);
     void showPrayerRequestDetailView(int id);
     void showAddNewPrayerRequestView(int contactId);
-    void finish();
     void showContactDetail(Contact contact);
     void showContactDetailEditView(int contactId);
+    void showRealmResultMessage(String message);
 
     class EmptyMyListView implements ContactView {
         @Override
@@ -36,17 +36,17 @@ public interface ContactView {
         }
 
         @Override
-        public void finish() {
-
-        }
-
-        @Override
         public void showContactDetail(Contact contact) {
 
         }
 
         @Override
         public void showContactDetailEditView(int contactId) {
+
+        }
+
+        @Override
+        public void showRealmResultMessage(String message) {
 
         }
     }

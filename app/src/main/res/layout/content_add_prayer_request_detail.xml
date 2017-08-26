@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/add_layout_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/add_layout_container"
     android:layout_marginTop="?attr/actionBarSize"
     android:orientation="vertical"
     tools:context="com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity"
@@ -17,7 +17,7 @@
             android:id="@+id/edit_request_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Title"/>
+            android:hint="Title" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -28,45 +28,72 @@
             android:id="@+id/edit_request_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lines="5"
-            android:maxLength="300"
             android:gravity="top|start"
             android:hint="Request Details"
-            android:scrollbars="vertical"
-            />
+            android:lines="5"
+            android:maxLength="300"
+            android:scrollbars="vertical" />
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/edit_passage"
-            android:layout_width="match_parent"
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Passage"/>
-    </android.support.design.widget.TextInputLayout>
+            android:layout_weight="6">
+
+            <EditText
+                android:id="@+id/edit_passage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Passage" />
+        </android.support.design.widget.TextInputLayout>
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:tint="@color/colorAccent"
+            android:src="@drawable/ic_bookmark_24dp" />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 
-    <android.support.design.widget.TextInputLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/edit_end_date"
-            android:layout_width="match_parent"
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="End Date"/>
-    </android.support.design.widget.TextInputLayout>
+            android:layout_weight="6">
+
+            <EditText
+                android:id="@+id/edit_end_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="End Date" />
+        </android.support.design.widget.TextInputLayout>
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:tint="@color/colorAccent"
+            android:src="@drawable/ic_event_24dp" />
+    </LinearLayout>
 
     <Spinner
         android:id="@+id/spinner_prayer_lists"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:autofillHints="Add to Prayer List"/>
+        android:autofillHints="Add to Prayer List" />
 </LinearLayout>

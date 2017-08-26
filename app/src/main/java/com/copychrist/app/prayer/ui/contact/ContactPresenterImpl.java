@@ -9,7 +9,7 @@ import com.copychrist.app.prayer.repository.RealmService;
  * Created by jim on 8/19/17.
  */
 
-public class ContactPresenterImpl implements ContactPresenter {
+public class ContactPresenterImpl implements ContactPresenter, RealmService.OnTransactionCallback {
 
     private final RealmService realmService;
     private final int contactId;
@@ -74,6 +74,11 @@ public class ContactPresenterImpl implements ContactPresenter {
     }
 
     @Override
+    public void onEditClick(int contactId, String firstName, String lastName, String pictureUrl) {
+        realmService.editContact(contactId, firstName, lastName, pictureUrl, myContact.getGroup().getName(), this);
+    }
+
+    @Override
     public void onActiveRequestsClick() {
         showActivePrayerRequests();
     }
@@ -81,5 +86,15 @@ public class ContactPresenterImpl implements ContactPresenter {
     @Override
     public void onArchiveClick() {
         showArchivedPrayerRequests();
+    }
+
+    @Override
+    public void onRealmSuccess() {
+        myListView.showRealmResultMessage("Contact Added");
+    }
+
+    @Override
+    public void onRealmError(Throwable e) {
+        myListView.showRealmResultMessage("Failed to add contact");
     }
 }

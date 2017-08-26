@@ -7,7 +7,14 @@ import com.copychrist.app.prayer.ui.BasePresenter;
  */
 
 public interface ContactsPresenter extends BasePresenter<ContactsView> {
-    void onContactClick(int id);
+    void onContactGroupClicked(int contactGroupId);
+    void onAddNewContactGroupClick();
+    void onEditContactGroupClick();
+    void onSaveContactGroupClick(int contactGroupId, String groupName, String groupDesc, int sortOrder);
+    void onDeleteContactGroupClick();
+    void onDeleteContactGroupConfirmed();
     void onAddNewContactClick();
-    void onAddClick(String firstName, String lastName, String groupName, String pictureUrl);
+    void onSaveContactClick(String firstName, String lastName, String groupName, String pictureUrl);
+    void onContactClick(int contactId);
+    void onPrayerRequestClick(int prayerRequestId);
 }

@@ -2,21 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_schedule"
+        android:id="@+id/action_add_group"
         android:enabled="true"
-        android:icon="@drawable/ic_schedule_24dp"
-        android:title="@string/btn_schedule"
+        android:icon="@drawable/ic_group_add_white_24dp"
+        android:title="@string/menu_contact_group_add"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_archive"
+        android:id="@+id/action_edit_group"
         android:enabled="true"
-        android:icon="@drawable/ic_archive_24dp"
-        android:title="@string/btn_archive"
+        android:icon="@drawable/ic_create_24dp"
+        android:title="@string/menu_contact_group_edit"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_delete"
+        android:id="@+id/action_delete_group"
         android:enabled="true"
         android:icon="@drawable/ic_delete_24dp"
-        android:title="@string/btn_delete"
+        android:title="@string/menu_contact_group_delete"
         app:showAsAction="ifRoom" />
 </menu>
