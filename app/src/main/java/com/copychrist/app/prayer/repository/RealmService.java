@@ -147,12 +147,13 @@ public class RealmService {
                                 final OnTransactionCallback onTransactionCallback,
                                 Realm realm) {
 
-        final Contact contact = getContactByRealm(contactId, realm);
 
-        if(contact != null) {
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
+
+
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                final Contact contact = getContactByRealm(contactId, realm);
                     contact.setFirstName(firstName);
                     contact.setLastName(lastName);
                     contact.setPictureUrl(pictureUrl);
@@ -184,11 +185,6 @@ public class RealmService {
                     }
                 }
             });
-        } else {
-            Timber.e("Contact does not exist");
-            Throwable error = new Throwable();
-            onTransactionCallback.onRealmError(error);
-        }
     }
 
     /**

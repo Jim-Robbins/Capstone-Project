@@ -16,8 +16,11 @@ import android.widget.Toast;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerRequestsListAdapter;
 import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.ContactGroup;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
+import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
+import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
 import com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity;
 import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
 
@@ -29,7 +32,8 @@ import butterknife.OnClick;
 import io.realm.RealmResults;
 
 public class ContactDetailActivity extends BaseActivity
-        implements ContactView, PrayerRequestsListAdapter.OnPrayerRequestClickListener {
+        implements ContactView, PrayerRequestsListAdapter.OnPrayerRequestClickListener,
+        DeleteDialogFragment.DeleteActionDialogListener {
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.text_contact_first_name) TextView txtFirstName;
@@ -69,7 +73,7 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.edit_contact_groups_navigation_items, menu);
+        getMenuInflater().inflate(R.menu.edit_contact_navigation_items, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -84,7 +88,7 @@ public class ContactDetailActivity extends BaseActivity
                 contactPresenter.onContactEditClick(contact.getId());
                 return true;
             case R.id.action_delete_contact:
-                //Todo: contactPresenter.onContactDeleteClick(contact.getId());
+                contactPresenter.onContactDeleteClick(contact.getId());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -187,6 +191,21 @@ public class ContactDetailActivity extends BaseActivity
     public void showContactDetailEditView(int contactId) {
         AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.neEditInstance(contact, contactPresenter);
         addEditContactDialogFragment.show(getSupportFragmentManager(), "EditContactDialogFragment");
+    }
+
+    @Override
+    public void showDeleteContactDialog(Contact myContact) {
+            DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
+                    getString(R.string.dialog_delete_contact_title),
+                    myContact.getId(),
+                    myContact.getFirstName() + " " + myContact.getLastName()
+            );
+            deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
+    }
+
+    @Override
+    public void onConfirmedDeleteDialog(int contactId) {
+        contactPresenter.onDeleteConfirm(contactId);
     }
 
     @Override

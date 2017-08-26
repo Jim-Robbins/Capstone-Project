@@ -79,6 +79,17 @@ public class ContactPresenterImpl implements ContactPresenter, RealmService.OnTr
     }
 
     @Override
+    public void onContactDeleteClick(int id) {
+        myListView.showDeleteContactDialog(myContact);
+    }
+
+    @Override
+    public void onDeleteConfirm(int id) {
+        realmService.deleteContact(id);
+        myListView.finish();
+    }
+
+    @Override
     public void onActiveRequestsClick() {
         showActivePrayerRequests();
     }

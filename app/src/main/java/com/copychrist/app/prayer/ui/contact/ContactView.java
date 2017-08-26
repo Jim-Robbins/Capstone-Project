@@ -18,6 +18,8 @@ public interface ContactView {
     void showContactDetail(Contact contact);
     void showContactDetailEditView(int contactId);
     void showRealmResultMessage(String message);
+    void showDeleteContactDialog(Contact myContact);
+    void finish();
 
     class EmptyMyListView implements ContactView {
         @Override
@@ -47,6 +49,16 @@ public interface ContactView {
 
         @Override
         public void showRealmResultMessage(String message) {
+
+        }
+
+        @Override
+        public void showDeleteContactDialog(Contact myContact) {
+
+        }
+
+        @Override
+        public void finish() {
 
         }
     }

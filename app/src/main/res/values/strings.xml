@@ -41,4 +41,5 @@
     <string name="dialog_contact_last_name_hint">Last Name</string>
     <string name="dialog_contact_group_name_hint">Group Name *</string>
     <string name="dialog_contact_group_desc_hint">Group Desc</string>
+    <string name="dialog_delete_contact_title">Delete Contact</string>
 </resources>
