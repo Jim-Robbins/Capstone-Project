@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
  */
 
 public class DatabaseContract {
-    public static final String CONTENT_AUTHORITY = "com.copychrist.app.prayer.PrayerListContract";
+    public static final String CONTENT_AUTHORITY = "com.copychrist.app.prayer.PrayerListEntry";
     private static final String CONTENT_SCHEME = "content://";
     public static final Uri BASE_CONTENT_URI = Uri.parse(CONTENT_SCHEME + CONTENT_AUTHORITY);
 
@@ -23,22 +23,22 @@ public class DatabaseContract {
     public static final String PATH_PRAYER_LIST = "prayer_list";
     public static final String PATH_PRAYER_REQUEST = "prayer_request";
 
-    public static abstract class BibleVerseContract implements BaseColumns {
+    public static abstract class BibleVerseEntry implements BaseColumns {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_BIBLE_VERSE).build();
 
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + PATH_BIBLE_VERSE;
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + PATH_BIBLE_VERSE;
 
-        public static final String TABLE_NAME = "BibleVerseContract";
+        public static final String TABLE_NAME = "BibleVerse";
 
         public static final String COLUMN_BOOK      = "book";
         public static final String COLUMN_CHAPTER   = "chapter";
         public static final String COLUMN_VERSE     = "verse";
         public static final String COLUMN_TEXT      = "text";
         public static final String COLUMN_VERSION   = "version";
-        public static final String COLUMN_API_URL   = "apiUrl";
-        public static final String COLUMN_CREATED = "created";
+        public static final String COLUMN_API_URL   = "api_url";
+        public static final String COLUMN_CREATED   = "create_date";
 
         public static Uri buildWithPassageUri(String passage) {
             return CONTENT_URI.buildUpon().appendPath(passage).build();
@@ -58,7 +58,7 @@ public class DatabaseContract {
         public static String DROP_TABLE_QUERY = getDropTableQuery(TABLE_NAME);
     }
 
-    public static final class ContactContract implements BaseColumns {
+    public static final class ContactEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_CONTACT).build();
@@ -66,14 +66,14 @@ public class DatabaseContract {
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + PATH_CONTACT;
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + PATH_CONTACT;
 
-        public static final String TABLE_NAME = "ContactContract";
+        public static final String TABLE_NAME = "Contact";
 
-        public static final String COLUMN_FIRST_NAME = "first_name";
-        public static final String COLUMN_LAST_NAME = "last_name";
-        public static final String COLUMN_PICTURE_URL = "pictureUrl";
-        public static final String COLUMN_REQUESTS = "requests";
-        public static final String COLUMN_GROUP = "group";
-        public static final String COLUMN_CREATED = "created";
+        public static final String COLUMN_FIRST_NAME    = "first_name";
+        public static final String COLUMN_LAST_NAME     = "last_name";
+        public static final String COLUMN_PICTURE_URL   = "picture_url";
+        public static final String COLUMN_REQUESTS      = "requests";
+        public static final String COLUMN_GROUP         = "group_id";
+        public static final String COLUMN_CREATED       = "create_date";
 
         public static Uri buildWithIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -86,13 +86,13 @@ public class DatabaseContract {
                 COLUMN_PICTURE_URL + " TEXT, " +
                 COLUMN_REQUESTS + " TEXT, " +
                 COLUMN_GROUP + " INTEGER, " +
-                COLUMN_CREATED  + " NUMERIC DEFAULT CURRENT_TIMESTAMP " +
+                COLUMN_CREATED  + " INTEGER DEFAULT CURRENT_TIMESTAMP " +
                 " );";
 
         public static String DROP_TABLE_QUERY = getDropTableQuery(TABLE_NAME);
     }
 
-    public static final class ContactGroupContract implements BaseColumns {
+    public static final class ContactGroupEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_CONTACT_GROUP).build();
@@ -100,13 +100,13 @@ public class DatabaseContract {
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + PATH_CONTACT_GROUP;
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + PATH_CONTACT_GROUP;
 
-        public static final String TABLE_NAME = "ContactGroupContract";
+        public static final String TABLE_NAME = "ContactGroup";
 
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_DESC = "description";
-        public static final String COLUMN_SORT_ORDER = "order";
-        public static final String COLUMN_CONTACTS = "contacts";
-        public static final String COLUMN_CREATED = "created";
+        public static final String COLUMN_NAME       = "name";
+        public static final String COLUMN_DESC       = "description";
+        public static final String COLUMN_SORT_ORDER = "sort_order";
+        public static final String COLUMN_CONTACTS   = "contacts";
+        public static final String COLUMN_CREATED    = "create_date";
 
         public static Uri buildWithIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -116,7 +116,7 @@ public class DatabaseContract {
                 _ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_NAME + " TEXT NOT NULL, " +
                 COLUMN_DESC + " TEXT, " +
-                COLUMN_SORT_ORDER + " INTEGER NOT NULL, " +
+                COLUMN_SORT_ORDER + " INTEGER, " +
                 COLUMN_CONTACTS + " TEXT, " +
                 COLUMN_CREATED  + " NUMERIC DEFAULT CURRENT_TIMESTAMP " +
                 " );";
@@ -124,7 +124,7 @@ public class DatabaseContract {
         public static String DROP_TABLE_QUERY = getDropTableQuery(TABLE_NAME);
     }
 
-    public static final class PrayerListContract implements BaseColumns {
+    public static final class PrayerListEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_PRAYER_LIST).build();
@@ -132,12 +132,12 @@ public class DatabaseContract {
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + PATH_PRAYER_LIST;
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + PATH_PRAYER_LIST;
 
-        public static final String TABLE_NAME = "PrayerListContract";
+        public static final String TABLE_NAME = "PrayerList";
 
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_SORT_ORDER = "order";
-        public static final String COLUMN_REQUESTS = "requests";
-        public static final String COLUMN_CREATED = "created";
+        public static final String COLUMN_NAME       = "name";
+        public static final String COLUMN_SORT_ORDER = "sort_order";
+        public static final String COLUMN_REQUESTS   = "requests";
+        public static final String COLUMN_CREATED    = "create_date";
 
         public static Uri buildWithIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -154,7 +154,7 @@ public class DatabaseContract {
         public static String DROP_TABLE_QUERY = getDropTableQuery(TABLE_NAME);
     }
 
-    public static final class PrayerRequestContract implements BaseColumns {
+    public static final class PrayerRequestEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_PRAYER_REQUEST).build();
@@ -162,15 +162,15 @@ public class DatabaseContract {
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + PATH_PRAYER_REQUEST;
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + PATH_PRAYER_REQUEST;
 
-        public static final String TABLE_NAME = "PrayerRequestContract";
+        public static final String TABLE_NAME = "PrayerRequest";
 
-        public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_DESC = "description";
-        public static final String COLUMN_VERSES = "verses";
-        public static final String COLUMN_END_DATE = "end_date";
-        public static final String COLUMN_ANSWERED = "answered";
-        public static final String COLUMN_CREATED = "created";
-        public static final String COLUMN_CONTACT = "contact";
+        public static final String COLUMN_TITLE     = "title";
+        public static final String COLUMN_DESC      = "description";
+        public static final String COLUMN_VERSES    = "verses";
+        public static final String COLUMN_END_DATE  = "end_date";
+        public static final String COLUMN_ANSWERED  = "answered_date";
+        public static final String COLUMN_CREATED   = "create_date";
+        public static final String COLUMN_CONTACT   = "contact_id";
         public static final String COLUMN_PRAYED_FOR = "prayed_for_on";
 
         public static Uri buildWithIdUri(long id) {

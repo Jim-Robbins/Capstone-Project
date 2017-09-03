@@ -52,15 +52,15 @@ public class AppContentProvider extends ContentProvider {
     public String getType(@NonNull Uri uri) {
         switch (uriMatcher.match(uri)) {
             case BIBLE_VERSE:
-                return DatabaseContract.BibleVerseContract.CONTENT_ITEM_TYPE;
+                return DatabaseContract.BibleVerseEntry.CONTENT_ITEM_TYPE;
             case CONTACT:
-                return DatabaseContract.ContactContract.CONTENT_ITEM_TYPE;
+                return DatabaseContract.ContactEntry.CONTENT_ITEM_TYPE;
             case CONTACT_GROUP:
-                return DatabaseContract.ContactGroupContract.CONTENT_ITEM_TYPE;
+                return DatabaseContract.ContactGroupEntry.CONTENT_ITEM_TYPE;
             case PRAYER_LIST:
-                return DatabaseContract.PrayerListContract.CONTENT_ITEM_TYPE;
+                return DatabaseContract.PrayerListEntry.CONTENT_ITEM_TYPE;
             case PRAYER_REQUEST:
-                return DatabaseContract.PrayerRequestContract.CONTENT_ITEM_TYPE;
+                return DatabaseContract.PrayerRequestEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -108,44 +108,44 @@ public class AppContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case BIBLE_VERSE:
-                insertId = db.insert(DatabaseContract.BibleVerseContract.TABLE_NAME, null, contentValues);
+                insertId = db.insert(DatabaseContract.BibleVerseEntry.TABLE_NAME, null, contentValues);
                 if(insertId > 0) {
-                    String passage = contentValues.getAsString(DatabaseContract.BibleVerseContract.COLUMN_BOOK) + " " +
-                            contentValues.getAsString(DatabaseContract.BibleVerseContract.COLUMN_CHAPTER) + ":" +
-                            contentValues.getAsString(DatabaseContract.BibleVerseContract.COLUMN_VERSE);
-                    returnUri = DatabaseContract.BibleVerseContract.buildWithPassageUri(passage);
+                    String passage = contentValues.getAsString(DatabaseContract.BibleVerseEntry.COLUMN_BOOK) + " " +
+                            contentValues.getAsString(DatabaseContract.BibleVerseEntry.COLUMN_CHAPTER) + ":" +
+                            contentValues.getAsString(DatabaseContract.BibleVerseEntry.COLUMN_VERSE);
+                    returnUri = DatabaseContract.BibleVerseEntry.buildWithPassageUri(passage);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;
             case CONTACT:
-                insertId = db.insert(DatabaseContract.ContactContract.TABLE_NAME, null, contentValues);
+                insertId = db.insert(DatabaseContract.ContactEntry.TABLE_NAME, null, contentValues);
                 if(insertId > 0) {
-                    returnUri = DatabaseContract.ContactContract.buildWithIdUri(insertId);
+                    returnUri = DatabaseContract.ContactEntry.buildWithIdUri(insertId);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;
             case CONTACT_GROUP:
-                insertId = db.insert(DatabaseContract.ContactGroupContract.TABLE_NAME, null, contentValues);
+                insertId = db.insert(DatabaseContract.ContactGroupEntry.TABLE_NAME, null, contentValues);
                 if(insertId > 0) {
-                    returnUri = DatabaseContract.ContactGroupContract.buildWithIdUri(insertId);
+                    returnUri = DatabaseContract.ContactGroupEntry.buildWithIdUri(insertId);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;
             case PRAYER_LIST:
-                insertId = db.insert(DatabaseContract.PrayerListContract.TABLE_NAME, null, contentValues);
+                insertId = db.insert(DatabaseContract.PrayerListEntry.TABLE_NAME, null, contentValues);
                 if(insertId > 0) {
-                    returnUri = DatabaseContract.PrayerListContract.buildWithIdUri(insertId);
+                    returnUri = DatabaseContract.PrayerListEntry.buildWithIdUri(insertId);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;
             case PRAYER_REQUEST:
-                insertId = db.insert(DatabaseContract.PrayerRequestContract.TABLE_NAME, null, contentValues);
+                insertId = db.insert(DatabaseContract.PrayerRequestEntry.TABLE_NAME, null, contentValues);
                 if(insertId > 0) {
-                    returnUri = DatabaseContract.PrayerRequestContract.buildWithIdUri(insertId);
+                    returnUri = DatabaseContract.PrayerRequestEntry.buildWithIdUri(insertId);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
@@ -162,7 +162,7 @@ public class AppContentProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
 //            case BIBLE_VERSE:
 //                try {
-//                    returnId = db.replaceOrThrow(DatabaseContract.BibleVerseContract.TABLE_NAME, null, values);
+//                    returnId = db.replaceOrThrow(DatabaseContract.BibleVerseEntry.TABLE_NAME, null, values);
 //                } catch (SQLiteConstraintException e) {
 //                    throw e;
 //                }
@@ -181,19 +181,19 @@ public class AppContentProvider extends ContentProvider {
         String tableName;
         switch (uriMatcher.match(uri)) {
             case BIBLE_VERSE:
-                tableName =  DatabaseContract.BibleVerseContract.TABLE_NAME;
+                tableName =  DatabaseContract.BibleVerseEntry.TABLE_NAME;
                 break;
             case CONTACT:
-                tableName =  DatabaseContract.ContactContract.TABLE_NAME;
+                tableName =  DatabaseContract.ContactEntry.TABLE_NAME;
                 break;
             case CONTACT_GROUP:
-                tableName =  DatabaseContract.ContactGroupContract.TABLE_NAME;
+                tableName =  DatabaseContract.ContactGroupEntry.TABLE_NAME;
                 break;
             case PRAYER_LIST:
-                tableName =  DatabaseContract.PrayerListContract.TABLE_NAME;
+                tableName =  DatabaseContract.PrayerListEntry.TABLE_NAME;
                 break;
             case PRAYER_REQUEST:
-                tableName =  DatabaseContract.PrayerRequestContract.TABLE_NAME;
+                tableName =  DatabaseContract.PrayerRequestEntry.TABLE_NAME;
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -217,19 +217,19 @@ public class AppContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case BIBLE_VERSE:
-                tableName =  DatabaseContract.BibleVerseContract.TABLE_NAME;
+                tableName =  DatabaseContract.BibleVerseEntry.TABLE_NAME;
                 break;
             case CONTACT:
-                tableName =  DatabaseContract.ContactContract.TABLE_NAME;
+                tableName =  DatabaseContract.ContactEntry.TABLE_NAME;
                 break;
             case CONTACT_GROUP:
-                tableName =  DatabaseContract.ContactGroupContract.TABLE_NAME;
+                tableName =  DatabaseContract.ContactGroupEntry.TABLE_NAME;
                 break;
             case PRAYER_LIST:
-                tableName =  DatabaseContract.PrayerListContract.TABLE_NAME;
+                tableName =  DatabaseContract.PrayerListEntry.TABLE_NAME;
                 break;
             case PRAYER_REQUEST:
-                tableName =  DatabaseContract.PrayerRequestContract.TABLE_NAME;
+                tableName =  DatabaseContract.PrayerRequestEntry.TABLE_NAME;
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

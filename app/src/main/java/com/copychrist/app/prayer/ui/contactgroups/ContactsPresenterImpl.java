@@ -114,7 +114,7 @@ public class ContactsPresenterImpl implements ContactsPresenter {
 //
 //    @Override
 //    public void onDBSuccess() {
-//        myListView.showRealmResultMessage("ContactContract Added");
+//        myListView.showRealmResultMessage("ContactEntry Added");
 //    }
 
 //    @Override

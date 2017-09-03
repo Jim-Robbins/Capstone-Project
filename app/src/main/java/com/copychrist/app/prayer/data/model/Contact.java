@@ -110,7 +110,7 @@ public class Contact  {
 
     @Override
     public String toString() {
-        return "ContactContract {"+
+        return "ContactEntry {"+
                 "id='" + id + '\'' +
                 ", groupId='" + groupId + '\'' +
                 ", firstName='" + firstName + '\'' +

@@ -16,22 +16,22 @@ public class RealmService {
 //        realm.close();
 //    }
 //
-//    /* ========= Public ContactContract Queries ================ */
+//    /* ========= Public ContactEntry Queries ================ */
 //
 //    /**
 //     * Query for entire list of contacts
 //     * @return
 //     */
-//    public RealmResults<ContactContract> getAllContacts() {
+//    public RealmResults<ContactEntry> getAllContacts() {
 //        return getAllContactsByRealm(realm);
 //    }
 //
 //    /**
 //     * Look up contact by id
 //     * @param contactId
-//     * @return ContactContract RealmObject
+//     * @return ContactEntry RealmObject
 //     */
-//    public ContactContract getContact(final int contactId) {
+//    public ContactEntry getContact(final int contactId) {
 //        return getContactByRealm(contactId, realm);
 //    }
 //
@@ -39,24 +39,24 @@ public class RealmService {
 //     * Query on first and last name to see if the contact exists
 //     * @param firstName
 //     * @param lastName
-//     * @return RealmResults/<ContactContract/>
+//     * @return RealmResults/<ContactEntry/>
 //     */
-//    public RealmResults<ContactContract> getContactByName(final String firstName, final String lastName) {
+//    public RealmResults<ContactEntry> getContactByName(final String firstName, final String lastName) {
 //        return getContactByNameByRealm(firstName, lastName, realm);
 //    }
 //
-//    private RealmResults<ContactContract> getAllContactsByRealm(Realm realm) {
-//        return realm.where(ContactContract.class).findAll();
+//    private RealmResults<ContactEntry> getAllContactsByRealm(Realm realm) {
+//        return realm.where(ContactEntry.class).findAll();
 //    }
 //
-//    private ContactContract getContactByRealm(final int contactId, Realm realm) {
-//        return realm.where(ContactContract.class).equalTo("id", contactId).findFirst();
+//    private ContactEntry getContactByRealm(final int contactId, Realm realm) {
+//        return realm.where(ContactEntry.class).equalTo("id", contactId).findFirst();
 //    }
 //
-//    private RealmResults<ContactContract> getContactByNameByRealm(final String firstName,
+//    private RealmResults<ContactEntry> getContactByNameByRealm(final String firstName,
 //                                                         final String lastName,
 //                                                         Realm realm) {
-//        return realm.where(ContactContract.class)
+//        return realm.where(ContactEntry.class)
 //                .equalTo("firstName", firstName)
 //                .equalTo("lastName", lastName)
 //                .findAll();
@@ -79,7 +79,7 @@ public class RealmService {
 //        realm.executeTransactionAsync(new Realm.Transaction() {
 //            @Override
 //            public void execute(Realm realm) {
-//                ContactContract contact = realm.createObject(ContactContract.class, nextId);
+//                ContactEntry contact = realm.createObject(ContactEntry.class, nextId);
 //                contact.setFirstName(firstName);
 //                contact.setLastName(lastName);
 //                contact.setPictureUrl(pictureUrl);
@@ -104,7 +104,7 @@ public class RealmService {
 //    }
 //
 //    /**
-//     * Edit and existing ContactContract RealmObject
+//     * Edit and existing ContactEntry RealmObject
 //     * @param contactId
 //     * @param firstName
 //     * @param lastName
@@ -130,12 +130,12 @@ public class RealmService {
 //        realm.executeTransactionAsync(new Realm.Transaction() {
 //            @Override
 //            public void execute(Realm realm) {
-//                final ContactContract contact = getContactByRealm(contactId, realm);
+//                final ContactEntry contact = getContactByRealm(contactId, realm);
 //                    contact.setFirstName(firstName);
 //                    contact.setLastName(lastName);
 //                    contact.setPictureUrl(pictureUrl);
 //                    if (group != null) {
-//                        ContactGroupContract contactGroup = contact.getGroup();
+//                        ContactGroupEntry contactGroup = contact.getGroup();
 //                        if(contactGroup != null && contactGroup.getName() != group) {
 //                            contactGroup.getContacts().remove(contact);
 //                            if(!TextUtils.isEmpty(group)) {
@@ -169,7 +169,7 @@ public class RealmService {
 //     * @param contactId
 //     */
 //    public void deleteContact(final int contactId) {
-//        final ContactContract contact = getContact(contactId);
+//        final ContactEntry contact = getContact(contactId);
 //        if(contact != null) {
 //            realm.executeTransaction(new Realm.Transaction() {
 //                @Override
@@ -184,33 +184,33 @@ public class RealmService {
 //    /* ========= Contacts Group Queries ================ */
 //
 //    /**
-//     * Return all ContactContract Groups
-//     * @return RealmResults<ContactGroupContract>
+//     * Return all ContactEntry Groups
+//     * @return RealmResults<ContactGroupEntry>
 //     */
-//    public RealmResults<ContactGroupContract> getAllContactGroups() {
+//    public RealmResults<ContactGroupEntry> getAllContactGroups() {
 //        return getAllContactGroupsByRealm(realm);
 //    }
 //
 //    /**
-//     * Look up ContactContract Group by groupName
+//     * Look up ContactEntry Group by groupName
 //     * @param groupName
-//     * @return ContactGroupContract
+//     * @return ContactGroupEntry
 //     */
-//    public ContactGroupContract getContactGroupByName(final String groupName) {
+//    public ContactGroupEntry getContactGroupByName(final String groupName) {
 //        return getContactGroupByNameByRealm(groupName, realm);
 //    }
 //
 //    /**
-//     * Look up ContactContract Group by id
+//     * Look up ContactEntry Group by id
 //     * @param groupId
-//     * @return ContactGroupContract
+//     * @return ContactGroupEntry
 //     */
-//    public ContactGroupContract getContactGroup(final int groupId) {
+//    public ContactGroupEntry getContactGroup(final int groupId) {
 //        return getContactGroupByRealm(groupId, realm);
 //    }
 //
 //    /**
-//     * Add a new ContactContract Group object
+//     * Add a new ContactEntry Group object
 //     * @param groupName
 //     * @param groupDesc
 //     */
@@ -232,7 +232,7 @@ public class RealmService {
 //     */
 //    public void editContactGroup(final int groupId, final String groupName,
 //                                 final String groupDesc, final int sortOrder) {
-//        final ContactGroupContract contactGroup = getContactGroup(groupId);
+//        final ContactGroupEntry contactGroup = getContactGroup(groupId);
 //        realm.executeTransaction(new Realm.Transaction() {
 //            @Override
 //            public void execute(Realm realm) {
@@ -256,13 +256,13 @@ public class RealmService {
 //     * @param groupId
 //     */
 //    public void deleteContactGroup(final int groupId) {
-//        final ContactGroupContract contactGroup = getContactGroup(groupId);
+//        final ContactGroupEntry contactGroup = getContactGroup(groupId);
 //        if(contactGroup != null) {
 //            realm.executeTransaction(new Realm.Transaction() {
 //                @Override
 //                public void execute(Realm realm) {
-////                    RealmList<ContactContract> contacts = contactGroup.getContacts();
-////                    for (ContactContract contact : contacts) {
+////                    RealmList<ContactEntry> contacts = contactGroup.getContacts();
+////                    for (ContactEntry contact : contacts) {
 ////                        editContactByRealm(contact.getId(), contact.getFirstName(),
 ////                                contact.getLastName(), contact.getPictureUrl(),
 ////                                null, null, realm);
@@ -275,20 +275,20 @@ public class RealmService {
 //
 //    // ToDo: Add ability to resort contact groups
 //
-//    private RealmResults<ContactGroupContract> getAllContactGroupsByRealm(Realm realm) {
-//        return realm.where(ContactGroupContract.class).findAll();
+//    private RealmResults<ContactGroupEntry> getAllContactGroupsByRealm(Realm realm) {
+//        return realm.where(ContactGroupEntry.class).findAll();
 //    }
 //
-//    private ContactGroupContract getContactGroupByNameByRealm(final String groupName, final Realm realm) {
-//        return realm.where(ContactGroupContract.class).equalTo("name", groupName).findFirst();
+//    private ContactGroupEntry getContactGroupByNameByRealm(final String groupName, final Realm realm) {
+//        return realm.where(ContactGroupEntry.class).equalTo("name", groupName).findFirst();
 //    }
 //
-//    private ContactGroupContract getContactGroupByRealm(final int groupId, final Realm realm) {
-//        return realm.where(ContactGroupContract.class).equalTo("id", groupId).findFirst();
+//    private ContactGroupEntry getContactGroupByRealm(final int groupId, final Realm realm) {
+//        return realm.where(ContactGroupEntry.class).equalTo("id", groupId).findFirst();
 //    }
 //
-//    private ContactGroupContract createOrGetContactGroup(final String groupName, final ContactContract contact, final Realm realm) {
-//        ContactGroupContract contactGroup = getContactGroupByNameByRealm(groupName, realm);
+//    private ContactGroupEntry createOrGetContactGroup(final String groupName, final ContactEntry contact, final Realm realm) {
+//        ContactGroupEntry contactGroup = getContactGroupByNameByRealm(groupName, realm);
 //        if(contactGroup == null) {
 //            contactGroup = addContactGroupByRealm(groupName, "", realm);
 //        }
@@ -296,10 +296,10 @@ public class RealmService {
 //        return contactGroup;
 //    }
 //
-//    private ContactGroupContract addContactGroupByRealm (final String groupName, final String groupDesc, final Realm realm) {
+//    private ContactGroupEntry addContactGroupByRealm (final String groupName, final String groupDesc, final Realm realm) {
 //        int nextId = getNextId(getAllContactGroupsByRealm(realm), "id");
 //
-//        ContactGroupContract contactGroup = realm.createObject(ContactGroupContract.class, nextId);
+//        ContactGroupEntry contactGroup = realm.createObject(ContactGroupEntry.class, nextId);
 //        contactGroup.setName(groupName);
 //        contactGroup.setOrder(nextId);
 //        contactGroup.setDesc(groupDesc);
@@ -309,15 +309,15 @@ public class RealmService {
 //
 //    /* ========= Prayer List Queries ================ */
 //
-//    public RealmResults<PrayerListContract> getAllPrayerLists() {
+//    public RealmResults<PrayerListEntry> getAllPrayerLists() {
 //        return getAllPrayerListsByRealm(realm);
 //    }
 //
-//    public PrayerListContract getPrayerListByName(String listName) {
+//    public PrayerListEntry getPrayerListByName(String listName) {
 //        return getPrayerListByNameByRealm(listName, realm);
 //    }
 //
-//    public PrayerListContract getPrayerList(int listId) {
+//    public PrayerListEntry getPrayerList(int listId) {
 //        return getPrayerListByRealm(listId, realm);
 //    }
 //
@@ -339,20 +339,20 @@ public class RealmService {
 //        });
 //    }
 //
-//    private RealmResults<PrayerListContract> getAllPrayerListsByRealm(Realm realm) {
-//        return realm.where(PrayerListContract.class).findAll();
+//    private RealmResults<PrayerListEntry> getAllPrayerListsByRealm(Realm realm) {
+//        return realm.where(PrayerListEntry.class).findAll();
 //    }
 //
-//    private PrayerListContract addPrayerListByRealm(String listName, Realm realm) {
+//    private PrayerListEntry addPrayerListByRealm(String listName, Realm realm) {
 //        int nextId = getNextId(getAllPrayerListsByRealm(realm), "id");
-//        PrayerListContract prayerList = realm.createObject(PrayerListContract.class, nextId);
+//        PrayerListEntry prayerList = realm.createObject(PrayerListEntry.class, nextId);
 //        prayerList.setName(listName);
 //        prayerList.setOrder(nextId);
 //        return prayerList;
 //    }
 //
-//    private PrayerListContract editPrayerListByRealm(int listId, String listName, Realm realm) {
-//        PrayerListContract prayerList = getPrayerListByRealm(listId, realm);
+//    private PrayerListEntry editPrayerListByRealm(int listId, String listName, Realm realm) {
+//        PrayerListEntry prayerList = getPrayerListByRealm(listId, realm);
 //        if(prayerList != null) {
 //            if(!TextUtils.isEmpty(listName)) {
 //                prayerList.setName(listName);
@@ -363,38 +363,38 @@ public class RealmService {
 //
 //    //Todo : allow sorting of lists
 //
-//    private PrayerListContract getPrayerListByNameByRealm(String listName, Realm realm) {
-//        return realm.where(PrayerListContract.class).equalTo("name", listName).findFirst();
+//    private PrayerListEntry getPrayerListByNameByRealm(String listName, Realm realm) {
+//        return realm.where(PrayerListEntry.class).equalTo("name", listName).findFirst();
 //    }
 //
-//    private PrayerListContract getPrayerListByRealm(int listId, Realm realm) {
-//        return realm.where(PrayerListContract.class).equalTo("id", listId).findFirst();
+//    private PrayerListEntry getPrayerListByRealm(int listId, Realm realm) {
+//        return realm.where(PrayerListEntry.class).equalTo("id", listId).findFirst();
 //    }
 //
 //    /* ========= Prayer Request Queries ================ */
 //
-//    public RealmResults<PrayerRequestContract> getActiveRequestsByContact(ContactContract contact) {
+//    public RealmResults<PrayerRequestEntry> getActiveRequestsByContact(ContactEntry contact) {
 //        return contact.getRequests().where().isNull("answered").findAll();
 //    }
 //
-//    public RealmResults<PrayerRequestContract> getArchivedRequestsByContact(ContactContract contact) {
+//    public RealmResults<PrayerRequestEntry> getArchivedRequestsByContact(ContactEntry contact) {
 //        return contact.getRequests().where().isNotNull("answered").findAll();
 //    }
 //
-//    public RealmResults<PrayerRequestContract> getAllPrayerRequests() {
+//    public RealmResults<PrayerRequestEntry> getAllPrayerRequests() {
 //        return getAllPrayerRequestsByRealm(realm);
 //    }
 //
-//    public PrayerRequestContract getPrayerRequest(int prayerRequestId) {
+//    public PrayerRequestEntry getPrayerRequest(int prayerRequestId) {
 //        return getPrayerRequestByRealm(prayerRequestId, realm);
 //    }
 //
-//    private RealmResults<PrayerRequestContract> getAllPrayerRequestsByRealm(Realm realm) {
-//        return realm.where(PrayerRequestContract.class).findAll();
+//    private RealmResults<PrayerRequestEntry> getAllPrayerRequestsByRealm(Realm realm) {
+//        return realm.where(PrayerRequestEntry.class).findAll();
 //    }
 //
-//    private PrayerRequestContract getPrayerRequestByRealm(int prayerRequestId, Realm realm) {
-//        return realm.where(PrayerRequestContract.class).equalTo("id", prayerRequestId).findFirst();
+//    private PrayerRequestEntry getPrayerRequestByRealm(int prayerRequestId, Realm realm) {
+//        return realm.where(PrayerRequestEntry.class).equalTo("id", prayerRequestId).findFirst();
 //    }
 //
 //    public void addPrayerRequestAsync(final int contactId, final String title,
@@ -406,24 +406,24 @@ public class RealmService {
 //        realm.executeTransactionAsync(new Realm.Transaction() {
 //            @Override
 //            public void execute(Realm realm) {
-//                PrayerRequestContract prayerRequest = realm.createObject(PrayerRequestContract.class, nextId);
+//                PrayerRequestEntry prayerRequest = realm.createObject(PrayerRequestEntry.class, nextId);
 //                prayerRequest.setTitle(title);
 //                prayerRequest.setDescription(desc);
 //                prayerRequest.setEndDate(stringToDate(endDate));
 //
 //                //Add contact to request and request to contact
-//                ContactContract contact = getContactByRealm(contactId, realm);
+//                ContactEntry contact = getContactByRealm(contactId, realm);
 //                prayerRequest.setContact(contact);
 //                contact.getRequests().add(prayerRequest);
 //
 //                if(!TextUtils.isEmpty(verse)) {
-//                    BibleVerseContract bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", realm);
+//                    BibleVerseEntry bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", realm);
 //                    prayerRequest.getVerses().add(bibleVerse);
 //                }
 //
 //                //Add prayer list to request and request to prayer list
 //                if(!TextUtils.isEmpty(prayerListName)) {
-//                    PrayerListContract prayerlist = getPrayerListByNameByRealm(prayerListName, realm);
+//                    PrayerListEntry prayerlist = getPrayerListByNameByRealm(prayerListName, realm);
 //                    if (prayerlist != null) {
 //                        prayerlist.getRequests().add(prayerRequest);
 //                    }
@@ -447,11 +447,11 @@ public class RealmService {
 //        });
 //    }
 //
-//    public PrayerRequestContract editPrayerRequest(final int prayerRequestId, final String title,
+//    public PrayerRequestEntry editPrayerRequest(final int prayerRequestId, final String title,
 //                                      final String desc, final String verse, final String endDate,
 //                                      final String prayerListName) {
 //
-//        final PrayerRequestContract prayerRequest = getPrayerRequest(prayerRequestId);
+//        final PrayerRequestEntry prayerRequest = getPrayerRequest(prayerRequestId);
 //
 //        realm.executeTransaction(new Realm.Transaction() {
 //            @Override
@@ -461,7 +461,7 @@ public class RealmService {
 //                prayerRequest.setEndDate(stringToDate(endDate));
 //
 //                if(!TextUtils.isEmpty(verse)) {
-//                    BibleVerseContract bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", realm);
+//                    BibleVerseEntry bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", realm);
 //                    if (!prayerRequest.getVerses().contains(bibleVerse)) {
 //                        prayerRequest.getVerses().add(bibleVerse);
 //                    }
@@ -469,7 +469,7 @@ public class RealmService {
 //
 //                //Add prayer list to request and request to prayer list
 //                if(!TextUtils.isEmpty(prayerListName)) {
-//                    PrayerListContract prayerlist = getPrayerListByNameByRealm(prayerListName, realm);
+//                    PrayerListEntry prayerlist = getPrayerListByNameByRealm(prayerListName, realm);
 //                    if (prayerlist != null && !prayerlist.getRequests().contains(prayerRequest)) {
 //                        prayerlist.getRequests().add(prayerRequest);
 //                    }
@@ -481,7 +481,7 @@ public class RealmService {
 //    }
 //
 //    public void prayedForPrayerRequest (int prayerRequestId, final String dateStrToAdd) {
-//        final PrayerRequestContract prayerRequest = getPrayerRequest(prayerRequestId);
+//        final PrayerRequestEntry prayerRequest = getPrayerRequest(prayerRequestId);
 //
 //        if(prayerRequest != null) {
 //            realm.executeTransaction(new Realm.Transaction() {
@@ -495,7 +495,7 @@ public class RealmService {
 //    }
 //
 //    public void archivePrayerRequest (int prayerRequestId) {
-//        final PrayerRequestContract prayerRequest = getPrayerRequest(prayerRequestId);
+//        final PrayerRequestEntry prayerRequest = getPrayerRequest(prayerRequestId);
 //        if(prayerRequest != null) {
 //            realm.executeTransaction(new Realm.Transaction() {
 //                @Override
@@ -508,7 +508,7 @@ public class RealmService {
 //    }
 //
 //    public void deletePrayerRequest (int prayerRequestId) {
-//        final PrayerRequestContract prayerRequest = getPrayerRequest(prayerRequestId);
+//        final PrayerRequestEntry prayerRequest = getPrayerRequest(prayerRequestId);
 //        if(prayerRequest != null) {
 //            realm.executeTransaction(new Realm.Transaction() {
 //                @Override
@@ -519,14 +519,14 @@ public class RealmService {
 //        }
 //    }
 //
-//    /* ========= BibleVerseContract Queries ================ */
+//    /* ========= BibleVerseEntry Queries ================ */
 //
-//    public BibleVerseContract getBibleVerse(String verse, String version) {
+//    public BibleVerseEntry getBibleVerse(String verse, String version) {
 //        return getBibleVerseByRealm(verse, version, realm);
 //    }
 //
-//    public BibleVerseContract getBibleVerseByRealm(String verse, String version, Realm realm) {
-//        return realm.where(BibleVerseContract.class)
+//    public BibleVerseEntry getBibleVerseByRealm(String verse, String version, Realm realm) {
+//        return realm.where(BibleVerseEntry.class)
 //                .equalTo("passage", verse)
 //                .equalTo("version", version)
 //                .findFirst();
@@ -537,29 +537,29 @@ public class RealmService {
 //        realm.executeTransaction(new Realm.Transaction() {
 //            @Override
 //            public void execute(Realm realm) {
-//                BibleVerseContract bibleVerse = createOrGetBibleVerse(verse, verseText, apiUrl, version, realm);
+//                BibleVerseEntry bibleVerse = createOrGetBibleVerse(verse, verseText, apiUrl, version, realm);
 //            }
 //        });
 //    }
 //
-//    private BibleVerseContract createOrGetBibleVerse(String verse, String verseText,
+//    private BibleVerseEntry createOrGetBibleVerse(String verse, String verseText,
 //                                             String apiUrl, String version,
 //                                             Realm realm) {
-//        BibleVerseContract bibleVerse = getBibleVerseByRealm(verse, version, realm);
+//        BibleVerseEntry bibleVerse = getBibleVerseByRealm(verse, version, realm);
 //        if(bibleVerse == null) {
 //            bibleVerse = addBibleVerseByRealm(verse, verseText, apiUrl, version, realm);
 //        }
 //        return bibleVerse;
 //    }
 //
-//    private BibleVerseContract addBibleVerseByRealm (String verse, String verseText, String apiUrl,
+//    private BibleVerseEntry addBibleVerseByRealm (String verse, String verseText, String apiUrl,
 //                                             String version, Realm realm) {
 //        if(!verse.contains(" ")) {
 //            return null;
 //        }
 //        String[] reference = verse.split(" ");
 //
-//        BibleVerseContract bibleVerse = realm.createObject(BibleVerseContract.class);
+//        BibleVerseEntry bibleVerse = realm.createObject(BibleVerseEntry.class);
 //        bibleVerse.setBook(reference[0]);
 //
 //        if(reference[1].contains(":")) {
@@ -576,13 +576,13 @@ public class RealmService {
 //        return bibleVerse;
 //    }
 //
-//    private BibleVerseContract editBibleVerseByRealm (String verse, String version, final String verseText,
+//    private BibleVerseEntry editBibleVerseByRealm (String verse, String version, final String verseText,
 //                                              final String apiUrl, Realm realm) {
 //        if(!verse.contains(" ")) {
 //            return null;
 //        }
 //
-//        final BibleVerseContract bibleVerse = getBibleVerseByRealm(verse, version, realm);
+//        final BibleVerseEntry bibleVerse = getBibleVerseByRealm(verse, version, realm);
 //        if(bibleVerse != null) {
 //            realm.executeTransaction(new Realm.Transaction() {
 //                @Override
@@ -597,7 +597,7 @@ public class RealmService {
 //    }
 //
 //    private void deleteBibleVerse (String verse, String version) {
-//        final BibleVerseContract bibleVerse = getBibleVerseByRealm(verse, version, realm);
+//        final BibleVerseEntry bibleVerse = getBibleVerseByRealm(verse, version, realm);
 //        if(bibleVerse != null) {
 //            realm.executeTransaction(new Realm.Transaction() {
 //                @Override

@@ -107,7 +107,7 @@ public class ContactPresenterImpl implements ContactPresenter, AppDataSource.Get
 
 //    @Override
 //    public void onDataSuccess() {
-//        myListView.showRealmResultMessage("ContactContract Added");
+//        myListView.showRealmResultMessage("ContactEntry Added");
 //    }
 //
 //    @Override

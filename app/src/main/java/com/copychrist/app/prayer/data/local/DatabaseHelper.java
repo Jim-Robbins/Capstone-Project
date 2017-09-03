@@ -1,7 +1,6 @@
 package com.copychrist.app.prayer.data.local;
 
 import android.content.Context;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -24,15 +23,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        try {
-            db.execSQL(DatabaseContract.BibleVerseContract.CREATE_TABLE_QUERY);
-            db.execSQL(DatabaseContract.ContactContract.CREATE_TABLE_QUERY);
-            db.execSQL(DatabaseContract.ContactGroupContract.CREATE_TABLE_QUERY);
-            db.execSQL(DatabaseContract.PrayerListContract.CREATE_TABLE_QUERY);
-            db.execSQL(DatabaseContract.PrayerRequestContract.CREATE_TABLE_QUERY);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+            db.execSQL(DatabaseContract.BibleVerseEntry.CREATE_TABLE_QUERY);
+            db.execSQL(DatabaseContract.ContactEntry.CREATE_TABLE_QUERY);
+            db.execSQL(DatabaseContract.ContactGroupEntry.CREATE_TABLE_QUERY);
+            db.execSQL(DatabaseContract.PrayerListEntry.CREATE_TABLE_QUERY);
+            db.execSQL(DatabaseContract.PrayerRequestEntry.CREATE_TABLE_QUERY);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -48,11 +47,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Not required as at version 1
-        db.execSQL(DatabaseContract.BibleVerseContract.DROP_TABLE_QUERY);
-        db.execSQL(DatabaseContract.ContactContract.DROP_TABLE_QUERY);
-        db.execSQL(DatabaseContract.ContactGroupContract.DROP_TABLE_QUERY);
-        db.execSQL(DatabaseContract.PrayerListContract.DROP_TABLE_QUERY);
-        db.execSQL(DatabaseContract.PrayerRequestContract.DROP_TABLE_QUERY);
+        db.execSQL(DatabaseContract.BibleVerseEntry.DROP_TABLE_QUERY);
+        db.execSQL(DatabaseContract.ContactEntry.DROP_TABLE_QUERY);
+        db.execSQL(DatabaseContract.ContactGroupEntry.DROP_TABLE_QUERY);
+        db.execSQL(DatabaseContract.PrayerListEntry.DROP_TABLE_QUERY);
+        db.execSQL(DatabaseContract.PrayerRequestEntry.DROP_TABLE_QUERY);
 
         onCreate(db);
     }
