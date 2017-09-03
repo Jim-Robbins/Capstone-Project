@@ -12,7 +12,7 @@ import android.widget.Spinner;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
-import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.data.model.Contact;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
 import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
@@ -40,9 +40,9 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     @Inject AddPrayerRequestPresenter addPrayerRequestPresenter;
 
     public static String EXTRA_CONTACT_ID = "extra_contact_id";
-    private int contactId = 0;
+    private long contactId = 0;
 
-    public static Intent getStartIntent(final Context context, final int contactId) {
+    public static Intent getStartIntent(final Context context, final long contactId) {
         Intent intent = new Intent(context, AddPrayerRequestDetailActivity.class);
         intent.putExtra(EXTRA_CONTACT_ID, contactId);
         return intent;
@@ -52,6 +52,8 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_prayer_request_detail);
+
+
         ButterKnife.bind(this);
 
         initToolbar();
@@ -74,7 +76,7 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     @Override
     protected Object getModule() {
         if (getIntent().hasExtra(EXTRA_CONTACT_ID)) {
-            contactId = getIntent().getExtras().getInt(EXTRA_CONTACT_ID);
+            contactId = getIntent().getExtras().getLong(EXTRA_CONTACT_ID);
         }
         return new AddPrayerRequestModule(contactId);
     }
@@ -90,12 +92,6 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
         super.onStop();
         addPrayerRequestPresenter.clearView();
     }
-
-    @Override
-    protected void closeRealm() {
-        addPrayerRequestPresenter.closeRealm();
-    }
-
 
     @Override
     public void showAddPrayerRequestDetails(Contact contact, PrayerListsListAdapter prayerListsListAdapter) {

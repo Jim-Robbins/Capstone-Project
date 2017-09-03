@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.data.model.Contact;
 import com.copychrist.app.prayer.ui.contactgroups.ContactsPresenter;
 
 /**
@@ -20,7 +20,7 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
     private Contact contact;
     private ContactsPresenter contactsPresenter;
     private ContactPresenter contactPresenter;
-    private int contactId = -1;
+    private long contactId = -1;
     private String groupName = "";
 
     private EditText txtFirstName, txtLastName;
@@ -57,8 +57,9 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
             alertDialogBuilder.setTitle(R.string.dialog_edit_contact_title);
             txtFirstName.setText(contact.getFirstName());
             txtLastName.setText(contact.getLastName());
-            contactId = contact.getId();
-            groupName = contact.getGroup().getName();
+            //Todo: get contact id and groupid
+            //contactId = contact.getId();
+            //groupName = contact.getGroup().getName();
         } else {
             alertDialogBuilder.setTitle(R.string.dialog_add_contact_title);
         }

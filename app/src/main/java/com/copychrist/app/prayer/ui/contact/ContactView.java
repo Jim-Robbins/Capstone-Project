@@ -1,10 +1,8 @@
 package com.copychrist.app.prayer.ui.contact;
 
-import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.model.PrayerRequest;
+import android.database.Cursor;
 
-import io.realm.RealmList;
-import io.realm.RealmResults;
+import com.copychrist.app.prayer.data.model.Contact;
 
 /**
  * Created by jim on 8/19/17.
@@ -12,28 +10,28 @@ import io.realm.RealmResults;
 
 public interface ContactView {
 
-    void showPrayerRequests(RealmResults<PrayerRequest> requests);
-    void showPrayerRequestDetailView(int id);
-    void showAddNewPrayerRequestView(int contactId);
+    void showPrayerRequests(Cursor requests);
+    void showPrayerRequestDetailView(long id);
+    void showAddNewPrayerRequestView(long contactId);
     void showContactDetail(Contact contact);
-    void showContactDetailEditView(int contactId);
-    void showRealmResultMessage(String message);
+    void showContactDetailEditView(long contactId);
+    void showDBResultMessage(String message);
     void showDeleteContactDialog(Contact myContact);
     void finish();
 
     class EmptyMyListView implements ContactView {
         @Override
-        public void showPrayerRequests(RealmResults<PrayerRequest> requests) {
+        public void showPrayerRequests(Cursor requests) {
 
         }
 
         @Override
-        public void showPrayerRequestDetailView(int id) {
+        public void showPrayerRequestDetailView(long id) {
 
         }
 
         @Override
-        public void showAddNewPrayerRequestView(int contactId) {
+        public void showAddNewPrayerRequestView(long contactId) {
 
         }
 
@@ -43,12 +41,12 @@ public interface ContactView {
         }
 
         @Override
-        public void showContactDetailEditView(int contactId) {
+        public void showContactDetailEditView(long contactId) {
 
         }
 
         @Override
-        public void showRealmResultMessage(String message) {
+        public void showDBResultMessage(String message) {
 
         }
 

@@ -1,7 +1,7 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.ApplicationModule;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.data.AppDataSource;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,14 +15,14 @@ import dagger.Provides;
 )
 public class EditPrayerRequestModule {
 
-    private final int requestId;
+    private final long requestId;
 
-    public EditPrayerRequestModule(final int requestId) {
+    public EditPrayerRequestModule(final long requestId) {
         this.requestId = requestId;
     }
 
     @Provides
-    EditPrayerRequestPresenter provideEditPrayerRequestPresenter(final RealmService realmService) {
-        return new EditPrayerRequestPresenterImpl(realmService, requestId);
+    EditPrayerRequestPresenter provideEditPrayerRequestPresenter() {
+        return new EditPrayerRequestPresenterImpl(requestId);
     }
 }

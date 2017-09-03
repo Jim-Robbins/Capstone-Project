@@ -16,12 +16,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         PrayingWithDedicationApplication.injectModules(this, getModule());
     }
 
-    @Override
-    protected void onDestroy() {
-        closeRealm();
-        super.onDestroy();
-    }
 
     protected abstract Object getModule();
-    protected abstract void closeRealm();
 }

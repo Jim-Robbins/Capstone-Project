@@ -1,10 +1,10 @@
 package com.copychrist.app.prayer;
 
+import com.copychrist.app.prayer.data.AppDataSource;
 import com.copychrist.app.prayer.repository.RealmService;
 
 import dagger.Module;
 import dagger.Provides;
-import io.realm.Realm;
 
 /**
  * Created by jim on 8/14/17.
@@ -15,13 +15,4 @@ import io.realm.Realm;
 public class ApplicationModule {
     public ApplicationModule() {}
 
-    @Provides
-    Realm provideRealm() {
-        return Realm.getDefaultInstance();
-    }
-
-    @Provides
-    RealmService provideRealmService(final Realm realm) {
-        return new RealmService(realm);
-    }
 }

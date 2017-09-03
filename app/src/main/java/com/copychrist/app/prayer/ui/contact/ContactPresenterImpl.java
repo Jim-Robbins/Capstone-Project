@@ -1,40 +1,51 @@
 package com.copychrist.app.prayer.ui.contact;
 
-import android.support.v7.widget.RecyclerView;
+import android.content.Context;
 
-import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.data.AppDataSource;
+import com.copychrist.app.prayer.data.model.Contact;
 
 /**
  * Created by jim on 8/19/17.
  */
 
-public class ContactPresenterImpl implements ContactPresenter, RealmService.OnTransactionCallback {
+public class ContactPresenterImpl implements ContactPresenter, AppDataSource.GetContactCallback {
+    //RealmService.OnTransactionCallback {
 
-    private final RealmService realmService;
-    private final int contactId;
+//    private final AppDataSource appDataSource;
+    private final long contactId;
     private ContactView myListView = new ContactView.EmptyMyListView();
     private Contact myContact;
 
     private boolean requestsShown = false;
     private boolean archivesShown = false;
 
-    public ContactPresenterImpl(final RealmService realmService, final int contactId) {
-        this.realmService = realmService;
+    public ContactPresenterImpl(final long contactId) {
+//        this.appDataSource = appDataSource;
         this.contactId = contactId;
     }
 
     @Override
     public void setView(ContactView view) {
         myListView = view;
-        myContact = realmService.getContact(contactId);
+//        appDataSource.getContact(contactId, this);
         myListView.showContactDetail(myContact);
         showActivePrayerRequests();
     }
 
+    @Override
+    public void onContactLoaded(Contact contact) {
+
+    }
+
+    @Override
+    public void onContactDataNotAvailable() {
+
+    }
+
     private void showActivePrayerRequests() {
         if(!requestsShown) {
-            myListView.showPrayerRequests(realmService.getActiveRequestsByContact(myContact));
+//            myListView.showPrayerRequests(appDataSource.getActiveRequestsByContact(myContact));
             requestsShown = true;
             archivesShown = false;
         }
@@ -42,7 +53,7 @@ public class ContactPresenterImpl implements ContactPresenter, RealmService.OnTr
 
     private void showArchivedPrayerRequests() {
         if(!archivesShown) {
-            myListView.showPrayerRequests(realmService.getArchivedRequestsByContact(myContact));
+//            myListView.showPrayerRequests(appDataSource.getArchivedRequestsByContact(myContact));
             archivesShown = true;
             requestsShown = false;
         }
@@ -54,12 +65,7 @@ public class ContactPresenterImpl implements ContactPresenter, RealmService.OnTr
     }
 
     @Override
-    public void closeRealm() {
-        realmService.closeRealm();
-    }
-
-    @Override
-    public void onPrayerRequestClick(int requestId) {
+    public void onPrayerRequestClick(long requestId) {
         myListView.showPrayerRequestDetailView(requestId);
     }
 
@@ -69,23 +75,23 @@ public class ContactPresenterImpl implements ContactPresenter, RealmService.OnTr
     }
 
     @Override
-    public void onContactEditClick(int contactId) {
+    public void onContactEditClick(long contactId) {
         myListView.showContactDetailEditView(contactId);
     }
 
     @Override
-    public void onEditClick(int contactId, String firstName, String lastName, String pictureUrl) {
-        realmService.editContact(contactId, firstName, lastName, pictureUrl, myContact.getGroup().getName(), this);
+    public void onEditClick(long contactId, String firstName, String lastName, String pictureUrl) {
+//        appDataSource.editContact(contactId, firstName, lastName, pictureUrl, myContact.getGroup().getName(), this);
     }
 
     @Override
-    public void onContactDeleteClick(int id) {
+    public void onContactDeleteClick(long id) {
         myListView.showDeleteContactDialog(myContact);
     }
 
     @Override
-    public void onDeleteConfirm(int id) {
-        realmService.deleteContact(id);
+    public void onDeleteConfirm(long id) {
+//        appDataSource.deleteContact(id);
         myListView.finish();
     }
 
@@ -99,13 +105,13 @@ public class ContactPresenterImpl implements ContactPresenter, RealmService.OnTr
         showArchivedPrayerRequests();
     }
 
-    @Override
-    public void onRealmSuccess() {
-        myListView.showRealmResultMessage("Contact Added");
-    }
-
-    @Override
-    public void onRealmError(Throwable e) {
-        myListView.showRealmResultMessage("Failed to add contact");
-    }
+//    @Override
+//    public void onDataSuccess() {
+//        myListView.showRealmResultMessage("ContactContract Added");
+//    }
+//
+//    @Override
+//    public void onDataError(Throwable e) {
+//        myListView.showRealmResultMessage("Failed to add contact");
+//    }
 }

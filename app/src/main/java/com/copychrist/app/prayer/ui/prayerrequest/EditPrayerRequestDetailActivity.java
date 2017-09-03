@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.ui.prayerrequest;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,8 +18,7 @@ import android.widget.TextView;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.BibleVerseRecyclerViewAdapter;
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
-import com.copychrist.app.prayer.model.BibleVerse;
-import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.data.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
 import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
@@ -30,8 +30,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.RealmList;
-import timber.log.Timber;
 
 public class EditPrayerRequestDetailActivity extends BaseActivity
         implements EditPrayerRequestView, BibleVerseRecyclerViewAdapter.OnBibleVerseClickListener {
@@ -56,10 +54,10 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
 
     public static String EXTRA_REQUEST_ID = "extra_request_id";
     private BibleVerseRecyclerViewAdapter bibleVerseAdapter;
-    private int requestId = 0;
-    private int contactId = 0;
+    private long requestId = 0;
+    private long contactId = 0;
 
-    public static Intent getStartIntent(final Context context, final int requestId) {
+    public static Intent getStartIntent(final Context context, final long requestId) {
         Intent intent = new Intent(context, EditPrayerRequestDetailActivity.class);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         return intent;
@@ -111,8 +109,8 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showBibleVerses(RealmList<BibleVerse> bibleVerses) {
-        bibleVerseAdapter = new BibleVerseRecyclerViewAdapter(bibleVerses);
+    public void showBibleVerses(Cursor bibleVerses) {
+        bibleVerseAdapter = new BibleVerseRecyclerViewAdapter(this);
         bibleVerseAdapter.setBibleVerseClickListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -140,23 +138,18 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
     }
 
     @Override
-    protected void closeRealm() {
-        editPrayerRequestPresenter.closeRealm();
-    }
-
-
-    @Override
     public void showEditPrayerRequestDetails(PrayerRequest prayerRequest, PrayerListsListAdapter prayerListsListAdapter) {
         spinnerPrayerLists.setAdapter(prayerListsListAdapter);
         // If wa already have a contact, hide the contact entry view
         if(prayerRequest != null) {
-            contactId = prayerRequest.getContact().getId();
-            txtFirstName.setText(prayerRequest.getContact().getFirstName());
-            txtLastName.setText(prayerRequest.getContact().getLastName());
+            //Todo: Reenable these
+//            contactId = prayerRequest.getContact().getId();
+//            txtFirstName.setText(prayerRequest.getContact().getFirstName());
+//           txtLastName.setText(prayerRequest.getContact().getLastName());
             editRequestTitle.setText(prayerRequest.getTitle());
             editRequestDesc.setText(prayerRequest.getDescription());
             if(prayerRequest.getVerses().size() > 0) {
-                editPassage.setText(prayerRequest.getVerses().first().getPassage());
+//                editPassage.setText(prayerRequest.getVerses().first().getPassage());
             }
             SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format));
             if(prayerRequest.getEndDate() != null)
@@ -182,7 +175,6 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
                 null
                 //spinnerPrayerLists.getSelectedItem().toString()
         );
-        closeRealm();
         onNavUp();
     }
 

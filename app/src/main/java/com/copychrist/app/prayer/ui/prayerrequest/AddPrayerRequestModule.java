@@ -1,7 +1,7 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.ApplicationModule;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.data.AppDataSource;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,14 +15,14 @@ import dagger.Provides;
 )
 public class AddPrayerRequestModule {
 
-    private final int contactId;
+    private final long contactId;
 
-    public AddPrayerRequestModule(final int contactId) {
+    public AddPrayerRequestModule(final long contactId) {
         this.contactId = contactId;
     }
 
     @Provides
-    AddPrayerRequestPresenter provideAddPrayerRequestPresenter(final RealmService realmService) {
-        return new AddPrayerRequestPresenterImpl(realmService, contactId);
+    AddPrayerRequestPresenter provideAddPrayerRequestPresenter() {
+        return new AddPrayerRequestPresenterImpl(contactId);
     }
 }

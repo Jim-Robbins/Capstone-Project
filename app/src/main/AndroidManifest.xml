@@ -14,16 +14,17 @@
             android:name=".ui.contactgroups.ContactsActivity"
             android:label="@string/title_activity_contacts"
             android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".ui.home.MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.home.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".ui.contact.ContactDetailActivity"
             android:label="@string/title_activity_contact_detail"
@@ -51,6 +52,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.contact.ContactDetailActivity" />
         </activity>
+        <provider
+            android:authorities="com.copychrist.app.prayer.PrayerList"
+            android:name="com.copychrist.app.prayer.data.local.AppContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

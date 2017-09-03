@@ -5,12 +5,10 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.copychrist.app.prayer.util.ReleaseTree;
+import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
 
 import dagger.ObjectGraph;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.log.RealmLog;
 import timber.log.Timber;
 
 public class PrayingWithDedicationApplication extends Application {
@@ -22,8 +20,9 @@ public class PrayingWithDedicationApplication extends Application {
         super.onCreate();
 
         instance = this;
+        Stetho.initializeWithDefaults(this);
+
         initMemoryLeakCheck();
-        initDatabase();
         initLogger();
         initApplicationGraph();
     }
@@ -35,18 +34,9 @@ public class PrayingWithDedicationApplication extends Application {
         LeakCanary.install(this);
     }
 
-    private void initDatabase() {
-        Realm.init(this);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.setDefaultConfiguration(realmConfiguration);
-    }
-
     private void initLogger() {
         if (BuildConfig.DEBUG) {
             // Enable full log output when debugging
-            RealmLog.setLevel(Log.VERBOSE);
             Timber.plant(new Timber.DebugTree() {
                 // Add the line number to the tag.
 

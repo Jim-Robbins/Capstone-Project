@@ -1,5 +1,7 @@
 package com.copychrist.app.prayer.adapter;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,40 +10,35 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.BibleVerse;
+import com.copychrist.app.prayer.data.model.BibleVerse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.RealmList;
-import io.realm.RealmRecyclerViewAdapter;
 
 /**
  * Created by jim on 8/20/17.
  */
 
-public class BibleVerseRecyclerViewAdapter extends RealmRecyclerViewAdapter<BibleVerse, BibleVerseRecyclerViewAdapter.VerseViewHolder> {
+public class BibleVerseRecyclerViewAdapter extends CursorRecyclerViewAdapter<BibleVerseRecyclerViewAdapter.VerseViewHolder> {
 
     private OnBibleVerseClickListener onBibleVerseClickListener;
 
-    public BibleVerseRecyclerViewAdapter(RealmList<BibleVerse> bibleVerses) {
-        super(bibleVerses, true);
+    public BibleVerseRecyclerViewAdapter(Context context){
+        super(context);
     }
 
     @Override
     public VerseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new VerseViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.item_bible_passage,
-                        parent,
-                        false
-                )
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_bible_passage, parent, false)
         );
     }
 
     @Override
-    public void onBindViewHolder(VerseViewHolder holder, int position) {
+    public void onBindViewHolder(VerseViewHolder holder, Cursor cursor) {
         // get the verse
-        final BibleVerse bibleVerse = getItem(position);
+        final BibleVerse bibleVerse = BibleVerse.getBibleVerseFromCursor(cursor);
         if(bibleVerse != null) {
             holder.bind(bibleVerse);
         }

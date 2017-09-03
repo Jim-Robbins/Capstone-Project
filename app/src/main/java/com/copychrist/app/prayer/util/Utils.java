@@ -1,5 +1,8 @@
 package com.copychrist.app.prayer.util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.Html;
 import android.text.Spanned;
 
@@ -17,5 +20,17 @@ public class Utils {
             result = Html.fromHtml(html);
         }
         return result;
+    }
+
+    private String getCurrentTimeStamp() {
+        return String.valueOf(System.currentTimeMillis() / 1000);
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager
+                .getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 }

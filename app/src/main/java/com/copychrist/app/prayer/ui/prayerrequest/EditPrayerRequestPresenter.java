@@ -1,6 +1,6 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
-import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.data.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BasePresenter;
 
 /**

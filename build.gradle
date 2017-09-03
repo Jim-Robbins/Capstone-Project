@@ -11,16 +11,17 @@ buildscript {
 
         'supportLibrary': '26+',
         'gson': '2.6.2',
+        'okhttp': '3.8.1',
         'picasso': '2.5.2',
         'retrofit': '2.3.0',
         'dagger': '1.2.5',
         'butterKnife': '8.7.0',
         'leakCanary': '1.5.1',
+        'stetho': '1.5.0',
         'timber': '4.5.1',
         'espresso': '2.2.2',
         'junit': '4.12',
-
-        'realm': '3.5.0'
+        'mockito': '2.9.0',
     ]
 
     ext.deps = [
@@ -34,6 +35,8 @@ buildscript {
                     'constraintLayout': "com.android.support.constraint:constraint-layout:1.0.2",
             ],
             'picasso': "com.squareup.picasso:picasso:${versions.picasso}",
+            'okhttp': "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+            'okdownloader': "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0",
             'gson': "com.google.code.gson:gson:${versions.gson}",
             'retrofit': [
                     'core': "com.squareup.retrofit2:retrofit:${versions.retrofit}",
@@ -54,9 +57,19 @@ buildscript {
                     'compiler': "com.squareup.dagger:dagger-compiler:${versions.dagger}"
             ],
             'junit': "junit:junit:${versions.junit}",
+            'mockito': [
+                'android': "org.mockito:mockito-android:${versions.mockito}",
+                'core': "org.mockito:mockito-core:${versions.mockito}",
+            ],
             'espresso': [
                     'core': "com.android.support.test.espresso:espresso-core:${versions.espresso}",
                     'contrib': "com.android.support.test.espresso:espresso-contrib:${versions.espresso}",
+            ],
+            'stetho': [
+                    'stetho': "com.facebook.stetho:stetho:${versions.stetho}",
+                    'okhttp3': "com.facebook.stetho:stetho-okhttp3:${versions.stetho}",
+                    'okhttp': "com.facebook.stetho:stetho-okhttp:${versions.stetho}",
+                    'urlconnection': "com.facebook.stetho:stetho-urlconnection:${versions.stetho}",
             ],
     ]
 
@@ -68,7 +81,6 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${versions.gradle}"
-        classpath "io.realm:realm-gradle-plugin:${versions.realm}"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

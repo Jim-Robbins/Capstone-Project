@@ -1,11 +1,12 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
-import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
-import com.copychrist.app.prayer.model.BibleVerse;
-import com.copychrist.app.prayer.model.PrayerRequest;
+import android.database.Cursor;
 
-import io.realm.RealmList;
-import io.realm.RealmResults;
+import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
+import com.copychrist.app.prayer.data.model.BibleVerse;
+import com.copychrist.app.prayer.data.model.PrayerRequest;
+
+import java.util.List;
 
 /**
  * Created by jim on 8/19/17.
@@ -16,7 +17,7 @@ public interface EditPrayerRequestView {
     void finish();
     void showEditPrayerRequestError();
     void showEditPrayerRequestDetails(PrayerRequest request, PrayerListsListAdapter prayerListsListAdapter);
-    void showBibleVerses(RealmList<BibleVerse> bibleVerses);
+    void showBibleVerses(Cursor bibleVerses);
     void showBibleVerseDetails(String bibleVerse);
 
     class EmptyEditPrayerRequestView implements EditPrayerRequestView {
@@ -41,7 +42,7 @@ public interface EditPrayerRequestView {
         }
 
         @Override
-        public void showBibleVerses(RealmList<BibleVerse> bibleVerses) {
+        public void showBibleVerses(Cursor bibleVerses) {
 
         }
     }

@@ -1,15 +1,18 @@
 package com.copychrist.app.prayer.ui.contactgroups;
 
-import com.copychrist.app.prayer.model.ContactGroup;
-import com.copychrist.app.prayer.repository.RealmService;
+import android.support.annotation.NonNull;
+
+import com.copychrist.app.prayer.data.AppDataSource;
+import com.copychrist.app.prayer.data.model.ContactGroup;
 
 /**
  * Created by jim on 8/14/17.
  */
 
-public class ContactsPresenterImpl implements ContactsPresenter, RealmService.OnTransactionCallback {
-    private final RealmService realmService;
-    private final int contactGroupId;
+public class ContactsPresenterImpl implements ContactsPresenter {
+
+//    private final AppDataSource dataSource;
+    private final long contactGroupId;
     private ContactGroup myContactGroup;
 
     private ContactsView myListView = new ContactsView.EmptyMyListView();
@@ -17,38 +20,38 @@ public class ContactsPresenterImpl implements ContactsPresenter, RealmService.On
     private boolean contactsShown = false;
     private boolean contactGroupsShown = false;
 
-    public ContactsPresenterImpl(final RealmService realmService, int contactGroupId) {
-        this.realmService = realmService;
+    public ContactsPresenterImpl(long contactGroupId) {
         this.contactGroupId = contactGroupId;
+//        this.dataSource = dataSource;
     }
 
     @Override
     public void setView(final ContactsView view) {
         myListView = view;
-        myContactGroup = realmService.getContactGroup(contactGroupId);
+//        myContactGroup = dataSource.getContactGroup(contactGroupId);
         showContacts();
         showContactGroupsTabs();
     }
 
     private void showContacts() {
         if(!contactsShown) {
-            myListView.showContacts(myContactGroup.getContacts());
+//            myListView.showContacts(myContactGroup.getContacts());
             contactsShown = true;
         }
     }
 
     private void showContactGroupsTabs() {
         if(!contactGroupsShown) {
-            myListView.showContactGroupsTabs(realmService.getAllContactGroups(), myContactGroup);
+//            myListView.showContactGroupsTabs(dataSource.getAllContactGroups(), myContactGroup);
             contactGroupsShown = true;
         }
     }
 
     @Override
-    public void onContactGroupClicked(int contactGroupId) {
+    public void onContactGroupClicked(long contactGroupId) {
         if(contactGroupId != myContactGroup.getId()) {
             contactsShown = false;
-            myContactGroup = realmService.getContactGroup(contactGroupId);
+  //          myContactGroup = dataSource.getContactGroup(contactGroupId);
             showContacts();
         }
     }
@@ -64,11 +67,11 @@ public class ContactsPresenterImpl implements ContactsPresenter, RealmService.On
     }
 
     @Override
-    public void onSaveContactGroupClick(int contactGroupId, String groupName, String groupDesc, int sortOrder) {
+    public void onSaveContactGroupClick(long contactGroupId, String groupName, String groupDesc, int sortOrder) {
         if(contactGroupId > 0) {
-            realmService.editContactGroup(contactGroupId, groupName, groupDesc, sortOrder);
+            //dataSource.editContactGroup(contactGroupId, groupName, groupDesc, sortOrder);
         } else {
-            realmService.addContactGroup(groupName, groupDesc);
+            //dataSource.addContactGroup(groupName, groupDesc);
         }
         contactGroupsShown = false;
         showContactGroupsTabs();
@@ -81,8 +84,8 @@ public class ContactsPresenterImpl implements ContactsPresenter, RealmService.On
 
     @Override
     public void onDeleteContactGroupConfirmed() {
-        realmService.deleteContactGroup(myContactGroup.getId());
-        myContactGroup = realmService.getAllContactGroups().first();
+        //dataSource.deleteContactGroup(myContactGroup.getId());
+        //myContactGroup = dataSource.getAllContactGroups().first();
         contactGroupsShown = false;
         contactsShown = false;
         showContactGroupsTabs();
@@ -96,36 +99,31 @@ public class ContactsPresenterImpl implements ContactsPresenter, RealmService.On
 
     @Override
     public void onSaveContactClick(String firstName, String lastName, String groupName, String pictureUrl) {
-        realmService.addContact(firstName, lastName, pictureUrl, groupName, this);
+        //dataSource.addContact(firstName, lastName, pictureUrl, groupName, this);
     }
 
     @Override
-    public void onContactClick(int id) {
+    public void onContactClick(long id) {
         myListView.showContactDetailView(id);
     }
 
     @Override
-    public void onPrayerRequestClick(int requestId) {
+    public void onPrayerRequestClick(long requestId) {
         myListView.showPrayerRequestDetailView(requestId);
     }
+//
+//    @Override
+//    public void onDBSuccess() {
+//        myListView.showRealmResultMessage("ContactContract Added");
+//    }
 
-    @Override
-    public void onRealmSuccess() {
-        myListView.showRealmResultMessage("Contact Added");
-    }
-
-    @Override
-    public void onRealmError(Throwable e) {
-        myListView.showRealmResultMessage("Failed to add contact");
-    }
+//    @Override
+//    public void onDBError(Throwable e) {
+//        myListView.showRealmResultMessage("Failed to add contact");
+//    }
 
     @Override
     public void clearView() {
         myListView = new ContactsView.EmptyMyListView();
-    }
-
-    @Override
-    public void closeRealm() {
-        realmService.closeRealm();
     }
 }

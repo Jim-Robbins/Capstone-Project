@@ -22,13 +22,13 @@ public class DeleteDialogFragment extends AppCompatDialogFragment {
     private static String ITEM_NAME = "itemName";
 
     private DeleteActionDialogListener listener;
-    private int itemId;
+    private long itemId;
 
     /**
      * Public interface to listen for Confirm button clicked
      */
     public interface DeleteActionDialogListener {
-        void onConfirmedDeleteDialog(int itemId);
+        void onConfirmedDeleteDialog(long itemId);
     }
 
     /**
@@ -38,11 +38,11 @@ public class DeleteDialogFragment extends AppCompatDialogFragment {
      * @param itemName
      * @return
      */
-    public static DeleteDialogFragment newInstance(String title, int itemId, String itemName) {
+    public static DeleteDialogFragment newInstance(String title, long itemId, String itemName) {
         DeleteDialogFragment frag = new DeleteDialogFragment();
         Bundle args = new Bundle();
         args.putString(TITLE, title);
-        args.putInt(ITEM_ID, itemId);
+        args.putLong(ITEM_ID, itemId);
         args.putString(ITEM_NAME, itemName);
         frag.setArguments(args);
         return frag;
@@ -53,7 +53,7 @@ public class DeleteDialogFragment extends AppCompatDialogFragment {
         // Get params we passed to newInstance
         String title = getArguments().getString(TITLE);
         String itemName = getArguments().getString(ITEM_NAME);
-        itemId = getArguments().getInt(ITEM_ID);
+        itemId = getArguments().getLong(ITEM_ID);
 
         // Create alert dialog
         Resources res = getActivity().getResources();

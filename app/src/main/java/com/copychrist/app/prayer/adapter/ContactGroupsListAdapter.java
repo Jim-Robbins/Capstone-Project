@@ -1,50 +1,47 @@
 package com.copychrist.app.prayer.adapter;
 
-import android.support.annotation.Nullable;
-
+import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.ContactGroup;
+import com.copychrist.app.prayer.data.model.ContactGroup;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.OrderedRealmCollection;
-import io.realm.RealmBaseAdapter;
 
 /**
  * Created by jim on 8/20/17.
  */
 
-public class ContactGroupsListAdapter extends RealmBaseAdapter<ContactGroup> implements ListAdapter {
+public class ContactGroupsListAdapter extends CursorAdapter {
 
-    public ContactGroupsListAdapter(@Nullable OrderedRealmCollection<ContactGroup> realmResults) {
-        super(realmResults);
+    public ContactGroupsListAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (view == null) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_spinner, parent, false);
-            viewHolder = new ViewHolder(view);
-            view.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) view.getTag();
-        }
-
-        if (adapterData != null) {
-            final ContactGroup contactGroup = adapterData.get(position);
-            viewHolder.textItem.setText(contactGroup.getName());
-        }
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_spinner, parent, false);
+        ViewHolder viewHolder  = new ViewHolder(view);
+        view.setTag(viewHolder);
 
         return view;
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+
+        if (cursor != null) {
+            final ContactGroup contactGroup = ContactGroup.getContactGroupFromCursor(cursor);
+            viewHolder.textItem.setText(contactGroup.getName());
+        }
     }
 
     public class ViewHolder {

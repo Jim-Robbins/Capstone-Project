@@ -1,49 +1,46 @@
 package com.copychrist.app.prayer.adapter;
 
-import android.support.v7.widget.CardView;
+import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.data.model.Contact;
+import com.copychrist.app.prayer.data.model.PrayerRequest;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.RealmChangeListener;
-import io.realm.RealmList;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
  * Created by jim on 8/17/17.
  */
 
-public class ContactsListAdapter
-        extends RecyclerView.Adapter<ContactsListAdapter.ViewHolder>
-        implements RealmChangeListener {
+public class ContactsListAdapter extends CursorRecyclerViewAdapter<ContactsListAdapter.ViewHolder> {
 
-    private RealmList<Contact> contacts;
+     public ContactsListAdapter(Context context){
+         super(context);
+     }
+
     private OnContactClickListener contactClickListener;
-
-    public ContactsListAdapter() {}
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact,
-                                                                     parent,
-                                                                     false);
-        return new ViewHolder(view);
+        return new ViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_contact, parent, false)
+        );
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Contact contact = contacts.get(position);
+    public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
+        final Contact contact = new Contact(cursor);
 
         holder.textFirstName.setText(contact.getFirstName());
         holder.textLastName.setText(contact.getLastName());
@@ -56,7 +53,8 @@ public class ContactsListAdapter
             }
         });
 
-        RealmResults<PrayerRequest> prayerRequests = contact.getRequests().where().isNull("answered").findAll();
+        //Todo: Need to figure out how to get list of requests in a simple cursor
+        List<PrayerRequest> prayerRequests = contact.getRequests();
         if(prayerRequests.size() > 0) {
             final PrayerRequest request1 = prayerRequests.get(0);
             Timber.d("0:"+request1.getTitle());
@@ -114,23 +112,12 @@ public class ContactsListAdapter
     }
 
     @Override
-    public int getItemCount() {
-        return contacts != null ? contacts.size() : 0;
-    }
-
-    @Override
-    public void onChange(Object o) {
-        notifyDataSetChanged();
+    public void setCursor(Cursor cursor) {
+        changeCursor(cursor);
     }
 
     public void setContactClickListener(final OnContactClickListener onContactClickListener) {
         contactClickListener = onContactClickListener;
-    }
-
-    public void setContacts(final RealmList<Contact> contacts) {
-        this.contacts = contacts;
-        this.contacts.addChangeListener(this);
-        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -150,7 +137,7 @@ public class ContactsListAdapter
     }
 
     public interface OnContactClickListener {
-        void onContactClick(int id);
-        void onPrayerRequestClick(int id);
+        void onContactClick(long id);
+        void onPrayerRequestClick(long id);
     }
 }

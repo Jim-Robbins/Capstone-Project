@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.ui.contact;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -15,21 +16,20 @@ import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerRequestsListAdapter;
-import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.model.ContactGroup;
-import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.data.model.Contact;
+import com.copychrist.app.prayer.data.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
-import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
 import com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity;
 import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.RealmResults;
 
 public class ContactDetailActivity extends BaseActivity
         implements ContactView, PrayerRequestsListAdapter.OnPrayerRequestClickListener,
@@ -49,7 +49,7 @@ public class ContactDetailActivity extends BaseActivity
     public static String EXTRA_CONTACT_ID = "extra_contact_id";
     private Contact contact;
 
-    public static Intent getStartIntent(final Context context, final int contactId) {
+    public static Intent getStartIntent(final Context context, final long contactId) {
         Intent intent = new Intent(context, ContactDetailActivity.class);
         intent.putExtra(EXTRA_CONTACT_ID, contactId);
         return intent;
@@ -67,7 +67,7 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     protected Object getModule() {
-        int contactId = getIntent().getExtras().getInt(EXTRA_CONTACT_ID);
+        long contactId = getIntent().getExtras().getLong(EXTRA_CONTACT_ID);
         return new ContactModule(contactId);
     }
 
@@ -128,7 +128,7 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     private void initList() {
-        prayerRequestsListAdapter = new PrayerRequestsListAdapter();
+        prayerRequestsListAdapter = new PrayerRequestsListAdapter(this);
         prayerRequestsListAdapter.setPrayerRequestClickListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -148,12 +148,6 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    protected void closeRealm() {
-        contactPresenter.closeRealm();
-    }
-
-
-    @Override
     public void showContactDetail(final Contact contact) {
         this.contact = contact;
         txtFirstName.setText(contact.getFirstName());
@@ -161,13 +155,13 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showPrayerRequests(RealmResults<PrayerRequest> requests) {
+    public void showPrayerRequests(Cursor requests) {
         recyclerView.removeAllViews();
-        prayerRequestsListAdapter.setPrayerRequests(requests);
+        prayerRequestsListAdapter.setCursor(requests);
     }
 
     @Override
-    public void onPrayerRequestClick(int requestId) {
+    public void onPrayerRequestClick(long requestId) {
         contactPresenter.onPrayerRequestClick(requestId);
     }
 
@@ -177,18 +171,18 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showPrayerRequestDetailView(int requestId) {
+    public void showPrayerRequestDetailView(long requestId) {
         startActivity(EditPrayerRequestDetailActivity.getStartIntent(this, requestId));
     }
 
     @Override
-    public void showAddNewPrayerRequestView(int contactId) {
+    public void showAddNewPrayerRequestView(long contactId) {
         startActivity(AddPrayerRequestDetailActivity.getStartIntent(this, contactId));
         tabLayout.getTabAt(0).select();
     }
 
     @Override
-    public void showContactDetailEditView(int contactId) {
+    public void showContactDetailEditView(long contactId) {
         AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.neEditInstance(contact, contactPresenter);
         addEditContactDialogFragment.show(getSupportFragmentManager(), "EditContactDialogFragment");
     }
@@ -204,12 +198,12 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onConfirmedDeleteDialog(int contactId) {
+    public void onConfirmedDeleteDialog(long contactId) {
         contactPresenter.onDeleteConfirm(contactId);
     }
 
     @Override
-    public void showRealmResultMessage(String message) {
+    public void showDBResultMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

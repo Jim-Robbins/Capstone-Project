@@ -1,8 +1,7 @@
 package com.copychrist.app.prayer.ui.contact;
 
 import com.copychrist.app.prayer.ApplicationModule;
-import com.copychrist.app.prayer.repository.RealmService;
-
+import com.copychrist.app.prayer.data.AppDataSource;
 import dagger.Module;
 import dagger.Provides;
 
@@ -12,14 +11,14 @@ import dagger.Provides;
 @Module(injects = ContactDetailActivity.class, addsTo = ApplicationModule.class)
 public class ContactModule {
 
-    private final int contactId;
+    private final long contactId;
 
-    public ContactModule(final int contactId) {
+    public ContactModule(final long contactId) {
         this.contactId = contactId;
     }
 
     @Provides
-    ContactPresenter provideMyListPresenter(final RealmService realmService) {
-        return new ContactPresenterImpl(realmService, contactId);
+    ContactPresenter provideMyListPresenter() {
+        return new ContactPresenterImpl(contactId);
     }
 }

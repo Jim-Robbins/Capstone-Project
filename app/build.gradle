@@ -5,7 +5,6 @@ def versionPatch = 0
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 apply plugin: 'com.android.application'
-apply plugin: 'realm-android'
 
 def gitTimestamp() {
     def p = 'git log -n 1 --format=%at'.execute([], rootDir)
@@ -48,17 +47,15 @@ android {
         debug {
             applicationIdSuffix '.debug'
 //            buildConfigField "String", "OBJECT_SERVER_IP", "192.168.1.64"
+            buildConfigField 'String', 'BIBLES_ORG_API_KEY', BiblesOrgApiKey
         }
 
         release {
             minifyEnabled false
 //            buildConfigField "String", "OBJECT_SERVER_IP", "(live-host)"
+            buildConfigField 'String', 'BIBLES_ORG_API_KEY', BiblesOrgApiKey
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-
-    buildTypes.each {
-        it.buildConfigField 'String', 'BIBLES_ORG_API_KEY', BiblesOrgApiKey
     }
 
     productFlavors {
@@ -92,8 +89,13 @@ dependencies {
     compile deps.gson
     compile deps.picasso
 
+    compile deps.okhttp
+    compile deps.okdownloader
     compile deps.retrofit.core
     compile deps.retrofit.gson
+
+    compile deps.stetho.stetho
+    compile deps.stetho.okhttp
 
     compile deps.dagger.dagger
     compile deps.dagger.compiler
@@ -103,15 +105,19 @@ dependencies {
 
     compile deps.timber
 
-    compile 'io.realm:android-adapters:2.0.0'
-
     internalCompile deps.leakCanary.real
     productionCompile deps.leakCanary.noOp
 
     testCompile deps.junit
+    testCompile deps.mockito.core
 
+    androidTestCompile deps.junit
+    androidTestCompile deps.mockito.android
     androidTestCompile(deps.espresso.core, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    androidTestCompile('com.android.support.test:runner:0.3') {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 }

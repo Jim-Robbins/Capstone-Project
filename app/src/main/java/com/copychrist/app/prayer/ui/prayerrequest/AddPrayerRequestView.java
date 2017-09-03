@@ -1,7 +1,7 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
-import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.data.model.Contact;
 
 /**
  * Created by jim on 8/19/17.

@@ -1,9 +1,8 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
-import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.model.PrayerRequest;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.data.AppDataSource;
+import com.copychrist.app.prayer.data.model.PrayerRequest;
 
 import timber.log.Timber;
 
@@ -12,16 +11,16 @@ import timber.log.Timber;
  */
 
 public class EditPrayerRequestPresenterImpl
-        implements EditPrayerRequestPresenter, RealmService.OnTransactionCallback {
+        implements EditPrayerRequestPresenter {
 
     private static final String TAG = "[EditPRequestPresenterImpl] ";
-    private final RealmService realmService;
-    private int requestId;
+//    private final AppDataSource dataSource;
+    private long requestId;
     private PrayerRequest myRequest;
     private EditPrayerRequestView myEditView = new EditPrayerRequestView.EmptyEditPrayerRequestView();
 
-    public EditPrayerRequestPresenterImpl(final RealmService realmService, int requestId) {
-        this.realmService = realmService;
+    public EditPrayerRequestPresenterImpl(long requestId) {
+//        this.dataSource = dataSource;
         this.requestId = requestId;
     }
 
@@ -29,15 +28,15 @@ public class EditPrayerRequestPresenterImpl
     public void setView(EditPrayerRequestView view) {
         myEditView = view;
         if(requestId != 0) {
-            myRequest = realmService.getPrayerRequest(requestId);
+//            myRequest = dataSource.getPrayerRequest(requestId);
         }
-        PrayerListsListAdapter prayerListsListAdapter = new PrayerListsListAdapter(realmService.getAllPrayerLists());
-        myEditView.showEditPrayerRequestDetails(myRequest, prayerListsListAdapter);
-        showBibleVerses();
+//        PrayerListsListAdapter prayerListsListAdapter = new PrayerListsListAdapter(dataSource.getAllPrayerLists());
+//        myEditView.showEditPrayerRequestDetails(myRequest, prayerListsListAdapter);
+//        showBibleVerses();
     }
 
     private void showBibleVerses() {
-        myEditView.showBibleVerses(myRequest.getVerses());
+//        myEditView.showBibleVerses(myRequest.getVerses());
     }
 
     @Override
@@ -46,13 +45,9 @@ public class EditPrayerRequestPresenterImpl
     }
 
     @Override
-    public void closeRealm() {
-        realmService.closeRealm();
-    }
-
-    @Override
     public PrayerRequest onUpdateClick(String title, String desc, String verse, String endDate, String prayerList) {
-        return realmService.editPrayerRequest(requestId, title, desc, verse, endDate, prayerList);
+        return null;
+    //    return dataSource.editPrayerRequest(requestId, title, desc, verse, endDate, prayerList);
     }
 
     @Override
@@ -64,13 +59,13 @@ public class EditPrayerRequestPresenterImpl
     @Override
     public void onArchiveRequest() {
         Timber.d(TAG, "onArchiveRequest");
-        realmService.archivePrayerRequest(requestId);
+     //   dataSource.archivePrayerRequest(requestId);
     }
 
     @Override
     public void onDeleteRequest() {
         Timber.d(TAG, "onDeleteRequest");
-        realmService.deletePrayerRequest(requestId);
+     //   dataSource.deletePrayerRequest(requestId);
     }
 
     @Override
@@ -88,14 +83,14 @@ public class EditPrayerRequestPresenterImpl
         myEditView.showBibleVerseDetails(bibleVerse);
     }
 
-    @Override
-    public void onRealmSuccess() {
-        myEditView.finish();
-    }
-
-    @Override
-    public void onRealmError(Throwable e) {
-        e.printStackTrace();
-        myEditView.showEditPrayerRequestError();
-    }
+//    @Override
+//    public void onDBSuccess() {
+//        myEditView.finish();
+//    }
+//
+//    @Override
+//    public void onDBError(Throwable e) {
+//        e.printStackTrace();
+//        myEditView.showEditPrayerRequestError();
+//    }
 }

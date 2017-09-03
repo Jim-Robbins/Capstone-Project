@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.ContactGroup;
+import com.copychrist.app.prayer.data.model.ContactGroup;
 
 /**
  * Created by jim on 8/16/17.
@@ -18,7 +18,7 @@ import com.copychrist.app.prayer.model.ContactGroup;
 public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
     protected ContactGroup contactGroup;
     protected ContactsPresenter presenter;
-    private int contactId = -1;
+    private long contactId = -1;
     private int sortOrder = -1;
 
     private EditText textGroupName, textGroupDesc;

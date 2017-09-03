@@ -1,52 +1,50 @@
 package com.copychrist.app.prayer.adapter;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.BibleVerse;
-import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.data.model.BibleVerse;
+import com.copychrist.app.prayer.data.model.PrayerRequest;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.RealmChangeListener;
-import io.realm.RealmList;
-import io.realm.RealmResults;
 
 /**
  * Created by jim on 8/17/17.
  */
 
-public class PrayerRequestsListAdapter
-        extends RecyclerView.Adapter<PrayerRequestsListAdapter.ViewHolder>
-        implements RealmChangeListener {
+public class PrayerRequestsListAdapter extends CursorRecyclerViewAdapter<PrayerRequestsListAdapter.ViewHolder> {
 
-    private RealmResults<PrayerRequest> prayerRequests;
     private OnPrayerRequestClickListener prayerRequestClickListener;
 
-    public PrayerRequestsListAdapter() {}
-
-    @Override
-    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_request,
-                                                                     parent,
-                                                                     false);
-        return new ViewHolder(view);
+    public PrayerRequestsListAdapter(Context context){
+        super(context);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final PrayerRequest prayerRequest = prayerRequests.get(position);
+    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_request, parent, false)
+        );
+    }
+
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, Cursor cursor) {
+        final PrayerRequest prayerRequest = PrayerRequest.getPrayerRequestFromCursor(cursor);
 
         // Todo: Check if end date is < today
         holder.textRequestTitle.setText(prayerRequest.getTitle());
         holder.textRequestDesc.setText(prayerRequest.getDescription());
-        RealmList<BibleVerse> verses = prayerRequest.getVerses();
+        List<BibleVerse> verses = prayerRequest.getVerses();
         if (verses.size() > 0) {
             holder.textVerse.setText(prayerRequest.getVerses().get(0).getPassage());
         }
@@ -61,23 +59,17 @@ public class PrayerRequestsListAdapter
     }
 
     @Override
-    public int getItemCount() {
-        return prayerRequests != null ? prayerRequests.size() : 0;
+    public void registerAdapterDataObserver(RecyclerView.AdapterDataObserver observer) {
+        super.registerAdapterDataObserver(observer);
     }
 
     @Override
-    public void onChange(Object o) {
-        notifyDataSetChanged();
+    public void setCursor(Cursor cursor) {
+        changeCursor(cursor);
     }
 
     public void setPrayerRequestClickListener(final OnPrayerRequestClickListener onPrayerRequestClickListener) {
         prayerRequestClickListener = onPrayerRequestClickListener;
-    }
-
-    public void setPrayerRequests(final RealmResults<PrayerRequest> prayerRequests) {
-        this.prayerRequests = prayerRequests;
-        this.prayerRequests.addChangeListener(this);
-        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -94,6 +86,6 @@ public class PrayerRequestsListAdapter
     }
 
     public interface OnPrayerRequestClickListener {
-        void onPrayerRequestClick(int requestId);
+        void onPrayerRequestClick(long requestId);
     }
 }

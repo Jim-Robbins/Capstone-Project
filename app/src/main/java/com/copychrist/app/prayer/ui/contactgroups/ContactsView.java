@@ -1,34 +1,34 @@
 package com.copychrist.app.prayer.ui.contactgroups;
 
-import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.model.ContactGroup;
+import android.database.Cursor;
 
-import io.realm.RealmList;
-import io.realm.RealmResults;
+import com.copychrist.app.prayer.data.model.ContactGroup;
+
+import java.util.List;
 
 /**
  * Created by jim on 8/14/17.
  */
 
 public interface ContactsView {
-    void showContactGroupsTabs(RealmResults<ContactGroup> contactGroups, ContactGroup contactGroup);
-    void showContacts(RealmList<Contact> contacts);
+    void showContactGroupsTabs(List<ContactGroup>  contactGroups, ContactGroup contactGroup);
+    void showContacts(Cursor contacts);
     void showAddContactGroupDialog();
     void showEditContactGroupDialog(ContactGroup contactGroup);
     void showDeleteContactGroupDialog(ContactGroup contactGroup);
     void showAddNewContactView(String contactGroupName);
-    void showContactDetailView(int contactId);
-    void showPrayerRequestDetailView(int contactId);
-    void showRealmResultMessage(String message);
+    void showContactDetailView(long contactId);
+    void showPrayerRequestDetailView(long contactId);
+    void showDBResultMessage(String message);
 
     class EmptyMyListView implements ContactsView {
         @Override
-        public void showContactGroupsTabs(RealmResults<ContactGroup> contactGroups, ContactGroup contactGroup) {
+        public void showContactGroupsTabs(List<ContactGroup> contactGroups, ContactGroup contactGroup) {
 
         }
 
         @Override
-        public void showContacts(RealmList<Contact> contacts) {
+        public void showContacts(Cursor contacts) {
 
         }
 
@@ -53,17 +53,17 @@ public interface ContactsView {
         }
 
         @Override
-        public void showContactDetailView(int contactId) {
+        public void showContactDetailView(long contactId) {
 
         }
 
         @Override
-        public void showPrayerRequestDetailView(int contactId) {
+        public void showPrayerRequestDetailView(long contactId) {
 
         }
 
         @Override
-        public void showRealmResultMessage(String message) {
+        public void showDBResultMessage(String message) {
 
         }
     }

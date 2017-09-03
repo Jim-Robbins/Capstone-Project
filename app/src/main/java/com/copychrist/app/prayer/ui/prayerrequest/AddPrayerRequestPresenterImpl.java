@@ -1,23 +1,22 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
-import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
-import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.data.AppDataSource;
+import com.copychrist.app.prayer.data.model.Contact;
 
 /**
  * Created by jim on 8/19/17.
  */
 
 public class AddPrayerRequestPresenterImpl
-        implements AddPrayerRequestPresenter, RealmService.OnTransactionCallback {
+        implements AddPrayerRequestPresenter, AppDataSource.GetContactCallback {
 
-    private final RealmService realmService;
-    private int contactId;
+//    private final AppDataSource dataSource;
+    private long contactId;
     private Contact myContact;
     private AddPrayerRequestView myAddView = new AddPrayerRequestView.EmptyAddPrayerRequestView();
 
-    public AddPrayerRequestPresenterImpl(final RealmService realmService, int contactId) {
-        this.realmService = realmService;
+    public AddPrayerRequestPresenterImpl(long contactId) {
+//        this.dataSource = dataSource;
         this.contactId = contactId;
     }
 
@@ -25,10 +24,22 @@ public class AddPrayerRequestPresenterImpl
     public void setView(AddPrayerRequestView view) {
         myAddView = view;
         if(contactId != 0) {
-            myContact = realmService.getContact(contactId);
+//            dataSource.getContact(contactId, this);
         }
-        PrayerListsListAdapter prayerListsListAdapter = new PrayerListsListAdapter(realmService.getAllPrayerLists());
-        myAddView.showAddPrayerRequestDetails(myContact, prayerListsListAdapter);
+
+//        ToDo: Get prayerlists data
+//        PrayerListsListAdapter prayerListsListAdapter = new PrayerListsListAdapter(prayerLists);
+//        myAddView.showAddPrayerRequestDetails(myContact, prayerListsListAdapter);
+    }
+
+    @Override
+    public void onContactDataNotAvailable() {
+
+    }
+
+    @Override
+    public void onContactLoaded(Contact contact) {
+
     }
 
     @Override
@@ -36,14 +47,10 @@ public class AddPrayerRequestPresenterImpl
         myAddView = new AddPrayerRequestView.EmptyAddPrayerRequestView();
     }
 
-    @Override
-    public void closeRealm() {
-        realmService.closeRealm();
-    }
 
     @Override
     public void onSaveNewClick(String title, String desc, String verse, String endDate, String prayerList) {
-        realmService.addPrayerRequestAsync(contactId, title, desc, verse, endDate, prayerList, this);
+//        dataSource.addPrayerRequestAsync(contactId, title, desc, verse, endDate, prayerList, this);
     }
 
     @Override
@@ -66,14 +73,14 @@ public class AddPrayerRequestPresenterImpl
 
     }
 
-    @Override
-    public void onRealmSuccess() {
-        myAddView.finish();
-    }
-
-    @Override
-    public void onRealmError(Throwable e) {
-        e.printStackTrace();
-        myAddView.showAddPrayerRequestError();
-    }
+//    @Override
+//    public void onDBSuccess() {
+//        myAddView.finish();
+//    }
+//
+//    @Override
+//    public void onDBError(Throwable e) {
+//        e.printStackTrace();
+//        myAddView.showAddPrayerRequestError();
+//    }
 }

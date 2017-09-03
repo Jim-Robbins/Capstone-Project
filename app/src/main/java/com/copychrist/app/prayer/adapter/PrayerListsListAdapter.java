@@ -1,58 +1,59 @@
 package com.copychrist.app.prayer.adapter;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.PrayerList;
+import com.copychrist.app.prayer.data.model.PrayerList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.OrderedRealmCollection;
-import io.realm.RealmBaseAdapter;
 
 /**
  * Created by jim on 8/20/17.
  */
 
-public class PrayerListsListAdapter extends RealmBaseAdapter<PrayerList> implements ListAdapter {
+public class PrayerListsListAdapter extends CursorAdapter {
 
-    public PrayerListsListAdapter(@Nullable OrderedRealmCollection<PrayerList> realmResults) {
-        super(realmResults);
+    public PrayerListsListAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
     }
 
-
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (view == null) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_spinner, parent, false);
-            viewHolder = new ViewHolder(view);
-            view.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) view.getTag();
-        }
-
-        if (adapterData != null) {
-            final PrayerList prayerList = adapterData.get(position);
-            viewHolder.textItem.setText(prayerList.getName());
-        }
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_spinner, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
 
         return view;
     }
 
-    public class ViewHolder {
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+
+        if (cursor != null) {
+            final PrayerList prayerList = PrayerList.getPrayerListFromCursor(cursor);
+            viewHolder.textItem.setText(prayerList.getName());
+        }
+    }
+
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.layout_spinner_item_container) LinearLayout layoutItem;
         @BindView(R.id.text_spinner_item) TextView textItem;
 
         public ViewHolder(final View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
