@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.data.model.Contact;
+import com.copychrist.app.prayer.ui.contactgroups.ContactGroupContract;
 import com.copychrist.app.prayer.ui.contactgroups.ContactsPresenter;
 
 /**
@@ -18,7 +19,7 @@ import com.copychrist.app.prayer.ui.contactgroups.ContactsPresenter;
 
 public class AddEditContactDialogFragment extends AppCompatDialogFragment {
     private Contact contact;
-    private ContactsPresenter contactsPresenter;
+    private ContactGroupContract.Presenter contactsPresenter;
     private ContactPresenter contactPresenter;
     private long contactId = -1;
     private String groupName = "";
@@ -34,7 +35,7 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
     }
 
     public static AddEditContactDialogFragment newAddInstance(String groupName,
-                                                              ContactsPresenter contactsPresenter) {
+                                                              ContactGroupContract.Presenter contactsPresenter) {
         AddEditContactDialogFragment frag = new AddEditContactDialogFragment();
         frag.contact = null;
         frag.groupName = groupName;
@@ -96,11 +97,11 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
     }
 
     private void addContact() {
-        contactsPresenter.onSaveContactClick(
-                txtFirstName.getText().toString(),
-                txtLastName.getText().toString(),
-                groupName,
-                "");
+//        contactsPresenter.saveContact(new Contact(
+//                txtFirstName.getText().toString(),
+//                txtLastName.getText().toString(),
+//                groupName,
+//                ""));
     }
 
     private void editContact() {

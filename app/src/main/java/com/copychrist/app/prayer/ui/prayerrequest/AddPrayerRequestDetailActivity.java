@@ -81,17 +81,19 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
         return new AddPrayerRequestModule(contactId);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        addPrayerRequestPresenter.setView(this);
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        addPrayerRequestPresenter.setView(this);
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        addPrayerRequestPresenter.clearView();
+//    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        addPrayerRequestPresenter.clearView();
-    }
+
 
     @Override
     public void showAddPrayerRequestDetails(Contact contact, PrayerListsListAdapter prayerListsListAdapter) {

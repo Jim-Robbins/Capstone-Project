@@ -16,15 +16,16 @@ import com.copychrist.app.prayer.data.model.ContactGroup;
  */
 
 public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
+    public static final int REQUEST_ADD_TASK = 1;
     protected ContactGroup contactGroup;
-    protected ContactsPresenter presenter;
-    private long contactId = -1;
+    protected ContactGroupContract.Presenter presenter;
+    private long contactGroupId = -1;
     private int sortOrder = -1;
 
     private EditText textGroupName, textGroupDesc;
 
     public static AddContactGroupDialogFragment newInstance(ContactGroup contactGroup,
-                                                            ContactsPresenter contactsPresenter) {
+                                                            ContactGroupContract.Presenter contactsPresenter) {
         AddContactGroupDialogFragment frag = new AddContactGroupDialogFragment();
         frag.contactGroup = contactGroup;
         frag.presenter = contactsPresenter;
@@ -46,7 +47,7 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
             alertDialogBuilder.setTitle(R.string.dialog_edit_contact_group_title);
             textGroupName.setText(contactGroup.getName());
             textGroupDesc.setText(contactGroup.getDesc());
-            contactId = contactGroup.getId();
+            contactGroupId = contactGroup.getId();
             sortOrder = contactGroup.getOrder();
         } else {
             alertDialogBuilder.setTitle(R.string.dialog_add_contact_group_title);
@@ -79,10 +80,10 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
     }
 
     private void saveContactGroup() {
-        presenter.onSaveContactGroupClick(
-                contactId,
+        presenter.saveContactGroup(new ContactGroup(
+                contactGroupId,
                 textGroupName.getText().toString(),
                 textGroupDesc.getText().toString(),
-                sortOrder);
+                sortOrder));
     }
 }

@@ -9,7 +9,7 @@ import com.copychrist.app.prayer.data.model.Contact;
  * Created by jim on 8/19/17.
  */
 
-public class ContactPresenterImpl implements ContactPresenter, AppDataSource.GetContactCallback {
+public class ContactPresenterImpl implements ContactPresenter {
     //RealmService.OnTransactionCallback {
 
 //    private final AppDataSource appDataSource;
@@ -26,22 +26,27 @@ public class ContactPresenterImpl implements ContactPresenter, AppDataSource.Get
     }
 
     @Override
-    public void setView(ContactView view) {
-        myListView = view;
-//        appDataSource.getContact(contactId, this);
-        myListView.showContactDetail(myContact);
-        showActivePrayerRequests();
-    }
-
-    @Override
-    public void onContactLoaded(Contact contact) {
+    public void start() {
 
     }
 
-    @Override
-    public void onContactDataNotAvailable() {
-
-    }
+    //    @Override
+//    public void setView(ContactView view) {
+//        myListView = view;
+////        appDataSource.getContact(contactId, this);
+//        myListView.showContactDetail(myContact);
+//        showActivePrayerRequests();
+//    }
+//
+//    @Override
+//    public void onContactLoaded(Contact contact) {
+//
+//    }
+//
+//    @Override
+//    public void onContactDataNotAvailable() {
+//
+//    }
 
     private void showActivePrayerRequests() {
         if(!requestsShown) {
@@ -59,10 +64,10 @@ public class ContactPresenterImpl implements ContactPresenter, AppDataSource.Get
         }
     }
 
-    @Override
-    public void clearView() {
-        myListView = new ContactView.EmptyMyListView();
-    }
+//    @Override
+//    public void clearView() {
+//        myListView = new ContactView.EmptyMyListView();
+//    }
 
     @Override
     public void onPrayerRequestClick(long requestId) {

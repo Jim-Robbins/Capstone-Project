@@ -14,15 +14,17 @@ import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.ContactsListAdapter;
+import com.copychrist.app.prayer.data.AppRepository;
+import com.copychrist.app.prayer.data.LoaderProvider;
+import com.copychrist.app.prayer.data.local.AppLocalDataSource;
 import com.copychrist.app.prayer.data.model.ContactGroup;
+import com.copychrist.app.prayer.data.remote.AppRemoteDataSource;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
 import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
 import com.copychrist.app.prayer.ui.contact.AddEditContactDialogFragment;
 import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
 import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,17 +33,19 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class ContactsActivity extends BaseActivity
-        implements ContactsView, ContactsListAdapter.OnContactClickListener, DeleteDialogFragment.DeleteActionDialogListener {
+public class ContactsActivity extends BaseActivity implements ContactGroupContract.View,
+        ContactsListAdapter.OnContactClickListener, DeleteDialogFragment.DeleteActionDialogListener {
 
     private static final String TAG = "ContactsActivity";
+    private static final String CURRENT_FILTERING_KEY = "CURRENT_FILTERING_KEY";
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.tab_layout_groups) TabLayout tabLayoutGroups;
 
-    @Inject ContactsPresenter contactsPresenter;
+    @Inject ContactGroupContract.Presenter contactsPresenter;
 
     private ContactsListAdapter contactsListAdapter;
+
     private int selectedTabIndex = 0;
     public static String EXTRA_CONTACT_GROUP_ID = "extra_contact_id";
 
@@ -53,11 +57,28 @@ public class ContactsActivity extends BaseActivity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        initFilterType(savedInstanceState);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         ButterKnife.bind(this);
-
         initList();
+    }
+
+    ContactGroupFilter filter;
+    private void initFilterType(Bundle savedInstanceState) {
+        // Load previously saved state, if available.
+        filter = ContactGroupFilter.from(ContactGroupFilter.FilterType.ALL);
+        if (savedInstanceState != null) {
+            ContactGroupFilter.FilterType currentFiltering =
+                    (ContactGroupFilter.FilterType) savedInstanceState.getSerializable(CURRENT_FILTERING_KEY);
+            filter = ContactGroupFilter.from(currentFiltering);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        contactsPresenter.start();
     }
 
     @Override
@@ -73,13 +94,13 @@ public class ContactsActivity extends BaseActivity
             case android.R.id.home:
                 return true;
             case R.id.action_add_group:
-                contactsPresenter.onAddNewContactGroupClick();
+                contactsPresenter.addNewContactGroup();
                 return true;
             case R.id.action_edit_group:
-                contactsPresenter.onEditContactGroupClick();
+                contactsPresenter.openContactGroupDetails();
                 return true;
             case R.id.action_delete_group:
-                contactsPresenter.onDeleteContactGroupClick();
+                contactsPresenter.deleteContactGroupConfirm();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -92,7 +113,20 @@ public class ContactsActivity extends BaseActivity
         if(getIntent().hasExtra(EXTRA_CONTACT_GROUP_ID)) {
             contactGroupId = getIntent().getExtras().getInt(EXTRA_CONTACT_GROUP_ID);
         }
-        return new ContactsModule(contactGroupId);
+
+        LoaderProvider loaderProvider = new LoaderProvider(this);
+        AppRepository appRepository = new AppRepository(
+                new AppRemoteDataSource(),
+                new AppLocalDataSource(getContentResolver())
+        );
+
+        return new ContactsModule(
+                loaderProvider,
+                getSupportLoaderManager(),
+                appRepository,
+                this,
+                filter,
+                contactGroupId);
     }
 
     private void initList() {
@@ -109,13 +143,7 @@ public class ContactsActivity extends BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        contactsPresenter.setView(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        contactsPresenter.clearView();
+        contactsPresenter.start();
     }
 
     @Override
@@ -123,38 +151,49 @@ public class ContactsActivity extends BaseActivity
         contactsListAdapter.setCursor(contacts);
     }
 
+
     @Override
-    public void showContactGroupsTabs(List<ContactGroup> contactGroups, ContactGroup selectedGroup) {
+    public void setPresenter(ContactGroupContract.Presenter presenter) {
+        this.contactsPresenter = presenter;
+    }
+
+    @Override
+    public void showContactGroupsTabs(Cursor contactGroups, ContactGroup selectedGroup) {
         tabLayoutGroups.clearOnTabSelectedListeners();
         tabLayoutGroups.removeAllTabs();
-        for (ContactGroup contactGroup : contactGroups) {
-            Tab tab = tabLayoutGroups.newTab();
-            tab.setText(contactGroup.getName());
-            tab.setTag(contactGroup.getId());
-            tabLayoutGroups.addTab(tab);
-            if(contactGroup.getId() == selectedGroup.getId()) {
-                selectedTabIndex = tab.getPosition();
+        if(contactGroups != null) {
+            if(contactGroups.moveToFirst()) {
+                do {
+                    ContactGroup contactGroup = ContactGroup.getFrom(contactGroups);
+                    Tab tab = tabLayoutGroups.newTab();
+                    tab.setText(contactGroup.getName().toUpperCase());
+                    tab.setTag(contactGroup);
+                    tabLayoutGroups.addTab(tab);
+                    if (contactGroup.getId() == selectedGroup.getId()) {
+                        selectedTabIndex = tab.getPosition();
+                    }
+                } while (contactGroups.moveToNext());
             }
+            tabLayoutGroups.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    Timber.d(TAG, tab.getText() +":"+tab.getTag().toString());
+                    contactsPresenter.setContactGroup((ContactGroup) tab.getTag());
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+
+                }
+            });
+
+            tabLayoutGroups.getTabAt(selectedTabIndex).select();
         }
-        tabLayoutGroups.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Timber.d(TAG, tab.getText() +":"+tab.getTag().toString());
-                contactsPresenter.onContactGroupClicked(Integer.parseInt(tab.getTag().toString()));
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        tabLayoutGroups.getTabAt(selectedTabIndex).select();
     }
 
     @Override
@@ -163,6 +202,7 @@ public class ContactsActivity extends BaseActivity
                 AddContactGroupDialogFragment.newInstance(null, contactsPresenter);
         addContactGroupDialogFragment.show(getSupportFragmentManager(), "AddContactGroupDialog");
     }
+
 
     @Override
     public void showEditContactGroupDialog(ContactGroup contactGroup) {
@@ -191,12 +231,12 @@ public class ContactsActivity extends BaseActivity
 
     @Override
     public void onConfirmedDeleteDialog(long itemId) {
-        contactsPresenter.onDeleteContactGroupConfirmed();
+        contactsPresenter.deleteContactGroup(new ContactGroup(itemId,"","",0));
     }
 
     @OnClick(R.id.fab)
     public void onAddNewContactClick() {
-        contactsPresenter.onAddNewContactClick();
+        contactsPresenter.addNewContact();
     }
 
     @Override
@@ -207,7 +247,7 @@ public class ContactsActivity extends BaseActivity
 
     @Override
     public void onContactClick(long id) {
-        contactsPresenter.onContactClick(id);
+        //contactsPresenter.openContactDetails(id);
     }
 
 
@@ -218,7 +258,7 @@ public class ContactsActivity extends BaseActivity
 
     @Override
     public void onPrayerRequestClick(long requestId) {
-        contactsPresenter.onPrayerRequestClick(requestId);
+        //contactsPresenter.openPrayerRequestDetails(requestId);
     }
 
     @Override
@@ -227,7 +267,26 @@ public class ContactsActivity extends BaseActivity
     }
 
     @Override
-    public void showDBResultMessage(String message) {
+    public void setLoadingIndicator(boolean active) {
+
+    }
+
+    @Override
+    public void showLoadingError() {
+        showMessage(getString(R.string.loading_error));
+    }
+
+    @Override
+    public void showNoContactGroups() {
+        showMessage(getString(R.string.error_no_contact_groups));
+    }
+
+    @Override
+    public void showSuccessfullySavedMessage() {
+        showMessage(getString(R.string.dialog_contact_group_saved));
+    }
+
+    private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

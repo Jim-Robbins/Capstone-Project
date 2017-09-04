@@ -1,14 +1,20 @@
-package com.copychrist.app.prayer.data.local;
+package com.copychrist.app.prayer.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.copychrist.app.prayer.data.local.DatabaseContract;
+import com.copychrist.app.prayer.data.local.DatabaseHelper;
+
+import static android.database.DatabaseUtils.longForQuery;
 
 /**
  * Created by jim on 8/29/17.
@@ -20,10 +26,10 @@ public class AppContentProvider extends ContentProvider {
     private static final UriMatcher uriMatcher = buildUriMatcher();
     private DatabaseHelper dbHelper;
 
-
     public static final int BIBLE_VERSE = 100;
     public static final int CONTACT = 200;
     public static final int CONTACT_GROUP = 300;
+    public static final int CONTACT_GROUP_ITEM = 301;
     public static final int PRAYER_LIST = 400;
     public static final int PRAYER_REQUEST = 500;
 
@@ -32,11 +38,14 @@ public class AppContentProvider extends ContentProvider {
         final String authority = DatabaseContract.CONTENT_AUTHORITY;
 
         // For each type of URI create a corresponding code.
-        matcher.addURI(authority, DatabaseContract.PATH_BIBLE_VERSE + "/*", BIBLE_VERSE);
-        matcher.addURI(authority, DatabaseContract.PATH_CONTACT + "/#", CONTACT);
-        matcher.addURI(authority, DatabaseContract.PATH_CONTACT_GROUP + "/#", CONTACT_GROUP);
-        matcher.addURI(authority, DatabaseContract.PATH_PRAYER_LIST + "/#", PRAYER_LIST);
-        matcher.addURI(authority, DatabaseContract.PATH_PRAYER_REQUEST + "/#", PRAYER_REQUEST);
+        matcher.addURI(authority, DatabaseContract.BibleVerseEntry.TABLE_NAME.toLowerCase() + "/*", BIBLE_VERSE);
+        matcher.addURI(authority, DatabaseContract.ContactEntry.TABLE_NAME.toLowerCase() + "/#", CONTACT);
+
+        matcher.addURI(authority, DatabaseContract.ContactGroupEntry.TABLE_NAME.toLowerCase(), CONTACT_GROUP);
+        matcher.addURI(authority, DatabaseContract.ContactGroupEntry.TABLE_NAME.toLowerCase() + "/#", CONTACT_GROUP_ITEM);
+
+        matcher.addURI(authority, DatabaseContract.PrayerListEntry.TABLE_NAME.toLowerCase() + "/#", PRAYER_LIST);
+        matcher.addURI(authority, DatabaseContract.PrayerRequestEntry.TABLE_NAME.toLowerCase() + "/#", PRAYER_REQUEST);
 
         return matcher;
     }
@@ -56,6 +65,8 @@ public class AppContentProvider extends ContentProvider {
             case CONTACT:
                 return DatabaseContract.ContactEntry.CONTENT_ITEM_TYPE;
             case CONTACT_GROUP:
+                return DatabaseContract.ContactGroupEntry.CONTENT_TYPE;
+            case CONTACT_GROUP_ITEM:
                 return DatabaseContract.ContactGroupEntry.CONTENT_ITEM_TYPE;
             case PRAYER_LIST:
                 return DatabaseContract.PrayerListEntry.CONTENT_ITEM_TYPE;
@@ -64,6 +75,55 @@ public class AppContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+    }
+
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+                        String sortOrder) {
+        Cursor retCursor;
+        switch (uriMatcher.match(uri)) {
+            case BIBLE_VERSE:
+                retCursor = null; //Todo: getBibleVerseByPassage
+                break;
+            case CONTACT_GROUP:
+                retCursor = dbHelper.getReadableDatabase().query(
+                        DatabaseContract.ContactGroupEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case CONTACT_GROUP_ITEM:
+                String[] where = {uri.getLastPathSegment()};
+                retCursor = dbHelper.getReadableDatabase().query(
+                        DatabaseContract.ContactGroupEntry.TABLE_NAME,
+                        projection,
+                        DatabaseContract.ContactGroupEntry._ID + " = ?",
+                        where,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            //Todo: getContactGroups
+            //Todo: getContactGroupById
+            //Todo: getContactsByContactGroupId
+            //Todo: getPrayerRequestsByContactId
+            //Todo: getContactById
+            //Todo: getActivePrayerRequestById
+            //Todo: getArchiPrayerRequestById
+            //Todo: getPrayerLists
+            //Todo: getPrayerListsById
+            //Todo: getPrayerRequestsByPrayerListId
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return retCursor;
     }
 
     @Override
@@ -104,6 +164,7 @@ public class AppContentProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Uri returnUri = null;
+        String tableName;
         long insertId;
 
         switch (uriMatcher.match(uri)) {
@@ -127,11 +188,26 @@ public class AppContentProvider extends ContentProvider {
                 }
                 break;
             case CONTACT_GROUP:
-                insertId = db.insert(DatabaseContract.ContactGroupEntry.TABLE_NAME, null, contentValues);
-                if(insertId > 0) {
-                    returnUri = DatabaseContract.ContactGroupEntry.buildWithIdUri(insertId);
+                tableName =  DatabaseContract.ContactGroupEntry.TABLE_NAME;
+                Boolean exists = alreadyExists(db, tableName,
+                        new String[] {
+                                DatabaseContract.ContactGroupEntry._ID,
+                                DatabaseContract.ContactGroupEntry.COLUMN_NAME
+                        },
+                        DatabaseContract.ContactGroupEntry.COLUMN_NAME + " = ?",
+                        new String[] { contentValues.getAsString(DatabaseContract.ContactGroupEntry.COLUMN_NAME) });
+                if (exists) {
+                    returnUri = DatabaseContract.ContactGroupEntry.buildExistsUri();
                 } else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                    Long count = getRowCount(db, tableName);
+                    contentValues.put(DatabaseContract.ContactGroupEntry.COLUMN_SORT_ORDER, count);
+                    //Insert Entry
+                    long _id = db.insert(tableName, null, contentValues);
+                    if (_id > 0) {
+                        returnUri = DatabaseContract.ContactGroupEntry.buildWithIdUri(_id);
+                    } else {
+                        throw new android.database.SQLException("Failed to insert row into " + uri);
+                    }
                 }
                 break;
             case PRAYER_LIST:
@@ -238,37 +314,35 @@ public class AppContentProvider extends ContentProvider {
         rowsDeleted =  db.delete(tableName, selection, selectionArgs);
 
         // Because a null deletes all rows
-        if (rowsDeleted != 0) {
+        if (selection == null || rowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
     }
 
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
-                        String sortOrder) {
-        Cursor retCursor;
-        switch (uriMatcher.match(uri)) {
-            case BIBLE_VERSE:
-                retCursor = null; //Todo: getBibleVerseByPassage
-                break;
-            //Todo: getContactGroups
-            //Todo: getContactGroupById
-            //Todo: getContactsByContactGroupId
-            //Todo: getPrayerRequestsByContactId
-            //Todo: getContactById
-            //Todo: getActivePrayerRequestById
-            //Todo: getArchiPrayerRequestById
-            //Todo: getPrayerLists
-            //Todo: getPrayerListsById
-            //Todo: getPrayerRequestsByPrayerListId
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
-
-        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
-        return retCursor;
+    public long getRowCount(@NonNull SQLiteDatabase db, @NonNull String tableName) {
+        return DatabaseUtils.longForQuery(db, "SELECT COUNT(*) FROM " + tableName, null);
     }
+
+    public boolean alreadyExists(@NonNull SQLiteDatabase db, @NonNull String tableName,
+                                  String[] columns, String selection, String[] selectionArgs) {
+        boolean entryFound = false;
+        Cursor exists = db.query(
+                tableName,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        if (exists.moveToLast()) {
+            entryFound = true;
+        }
+        exists.close();
+        return entryFound;
+    }
+
 
     @Override
     public void shutdown() {

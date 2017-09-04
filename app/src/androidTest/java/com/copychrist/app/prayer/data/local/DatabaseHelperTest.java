@@ -33,6 +33,8 @@ public class DatabaseHelperTest extends AndroidTestCase  {
         tableNameHashSet.add(DatabaseContract.ContactGroupEntry.TABLE_NAME);
         tableNameHashSet.add(DatabaseContract.PrayerListEntry.TABLE_NAME);
         tableNameHashSet.add(DatabaseContract.PrayerRequestEntry.TABLE_NAME);
+        tableNameHashSet.add(DatabaseContract.PrayerListRequestEntry.TABLE_NAME);
+        tableNameHashSet.add(DatabaseContract.PrayerRequestVerseEntry.TABLE_NAME);
 
        mContext.deleteDatabase(DatabaseHelper.DATABASE_NAME);
         SQLiteDatabase db = new DatabaseHelper(mContext).getWritableDatabase();
@@ -70,7 +72,6 @@ public class DatabaseHelperTest extends AndroidTestCase  {
         contactColumnHashSet.add(DatabaseContract.ContactEntry.COLUMN_FIRST_NAME);
         contactColumnHashSet.add(DatabaseContract.ContactEntry.COLUMN_LAST_NAME);
         contactColumnHashSet.add(DatabaseContract.ContactEntry.COLUMN_PICTURE_URL);
-        contactColumnHashSet.add(DatabaseContract.ContactEntry.COLUMN_REQUESTS);
         contactColumnHashSet.add(DatabaseContract.ContactEntry.COLUMN_GROUP);
         contactColumnHashSet.add(DatabaseContract.ContactEntry.COLUMN_CREATED);
 
@@ -82,7 +83,6 @@ public class DatabaseHelperTest extends AndroidTestCase  {
         contactGroupColumnHashSet.add(DatabaseContract.ContactGroupEntry.COLUMN_NAME);
         contactGroupColumnHashSet.add(DatabaseContract.ContactGroupEntry.COLUMN_DESC);
         contactGroupColumnHashSet.add(DatabaseContract.ContactGroupEntry.COLUMN_SORT_ORDER);
-        contactGroupColumnHashSet.add(DatabaseContract.ContactGroupEntry.COLUMN_CONTACTS);
         contactGroupColumnHashSet.add(DatabaseContract.ContactGroupEntry.COLUMN_CREATED);
 
         checkColumns(DatabaseContract.ContactGroupEntry.TABLE_NAME, c, db, contactGroupColumnHashSet);
@@ -92,7 +92,6 @@ public class DatabaseHelperTest extends AndroidTestCase  {
         prayerListColumnHashSet.add(DatabaseContract.PrayerListEntry._ID);
         prayerListColumnHashSet.add(DatabaseContract.PrayerListEntry.COLUMN_NAME);
         prayerListColumnHashSet.add(DatabaseContract.PrayerListEntry.COLUMN_SORT_ORDER);
-        prayerListColumnHashSet.add(DatabaseContract.PrayerListEntry.COLUMN_REQUESTS);
         prayerListColumnHashSet.add(DatabaseContract.PrayerListEntry.COLUMN_CREATED);
 
         checkColumns(DatabaseContract.PrayerListEntry.TABLE_NAME, c, db, prayerListColumnHashSet);
@@ -102,7 +101,6 @@ public class DatabaseHelperTest extends AndroidTestCase  {
         prayerRequestColumnHashSet.add(DatabaseContract.PrayerRequestEntry._ID);
         prayerRequestColumnHashSet.add(DatabaseContract.PrayerRequestEntry.COLUMN_TITLE);
         prayerRequestColumnHashSet.add(DatabaseContract.PrayerRequestEntry.COLUMN_DESC);
-        prayerRequestColumnHashSet.add(DatabaseContract.PrayerRequestEntry.COLUMN_VERSES);
         prayerRequestColumnHashSet.add(DatabaseContract.PrayerRequestEntry.COLUMN_END_DATE);
         prayerRequestColumnHashSet.add(DatabaseContract.PrayerRequestEntry.COLUMN_ANSWERED);
         prayerRequestColumnHashSet.add(DatabaseContract.PrayerRequestEntry.COLUMN_CREATED);
@@ -110,6 +108,23 @@ public class DatabaseHelperTest extends AndroidTestCase  {
         prayerRequestColumnHashSet.add(DatabaseContract.PrayerRequestEntry.COLUMN_PRAYED_FOR);
 
         checkColumns(DatabaseContract.PrayerRequestEntry.TABLE_NAME, c, db, prayerRequestColumnHashSet);
+
+
+        // Build a HashSet of all of the column names we want to look for
+        final HashSet<String> prayerListRequestColumnHashSet = new HashSet<String>();
+        prayerListColumnHashSet.add(DatabaseContract.PrayerListRequestEntry.COLUMN_LIST_ID);
+        prayerListColumnHashSet.add(DatabaseContract.PrayerListRequestEntry.COLUMN_REQUEST_ID);
+        prayerListColumnHashSet.add(DatabaseContract.PrayerListRequestEntry.COLUMN_SORT_ORDER);
+
+        checkColumns(DatabaseContract.PrayerListRequestEntry.TABLE_NAME, c, db, prayerListRequestColumnHashSet);
+
+        // Build a HashSet of all of the column names we want to look for
+        final HashSet<String> prayerRequestVerseColumnHashSet = new HashSet<String>();
+        prayerListColumnHashSet.add(DatabaseContract.PrayerRequestVerseEntry.COLUMN_VERSE);
+        prayerListColumnHashSet.add(DatabaseContract.PrayerRequestVerseEntry.COLUMN_REQUEST_ID);
+        prayerListColumnHashSet.add(DatabaseContract.PrayerRequestVerseEntry.COLUMN_SORT_ORDER);
+
+        checkColumns(DatabaseContract.PrayerRequestVerseEntry.TABLE_NAME, c, db, prayerRequestVerseColumnHashSet);
 
         db.close();
     }
@@ -137,21 +152,63 @@ public class DatabaseHelperTest extends AndroidTestCase  {
 
     @Test
     public void testBibleVerseTable() {
+        testDBTable(DatabaseContract.BibleVerseEntry.TABLE_NAME, TestUtilities.createBibleVerseValues());
+    }
+
+    @Test
+    public void testContactTable() {
+        testDBTable(DatabaseContract.ContactEntry.TABLE_NAME, TestUtilities.createContactValues());
+    }
+
+    @Test
+    public void testContactGroupTable() {
+        testDBTable(DatabaseContract.ContactGroupEntry.TABLE_NAME, TestUtilities.createContactGroupValues());
+    }
+
+    @Test
+    public void testPrayerListTable() {
+        testDBTable(DatabaseContract.PrayerListEntry.TABLE_NAME, TestUtilities.createPrayerListValues());
+    }
+
+    @Test
+    public void testPrayerRequestTable() {
+        testDBTable(DatabaseContract.PrayerRequestEntry.TABLE_NAME, TestUtilities.createPrayerRequestValues());
+    }
+
+    @Test
+    public void testPrayerListRequestTable() {
+        testDBTable(DatabaseContract.PrayerListRequestEntry.TABLE_NAME, TestUtilities.createPrayerListRequestValues());
+    }
+
+    @Test
+    public void testPrayerRequestVerseTable() {
+        testDBTable(DatabaseContract.PrayerRequestVerseEntry.TABLE_NAME, TestUtilities.createPrayerRequestVerseValues());
+    }
+
+    @Test
+    public void testAppTables() {
+        testDBTable(DatabaseContract.BibleVerseEntry.TABLE_NAME, TestUtilities.createBibleVerseValues());
+        testDBTable(DatabaseContract.ContactEntry.TABLE_NAME, TestUtilities.createContactValues());
+        testDBTable(DatabaseContract.ContactGroupEntry.TABLE_NAME, TestUtilities.createContactGroupValues());
+        testDBTable(DatabaseContract.PrayerListEntry.TABLE_NAME, TestUtilities.createPrayerListValues());
+        testDBTable(DatabaseContract.PrayerRequestEntry.TABLE_NAME, TestUtilities.createPrayerRequestValues());
+        testDBTable(DatabaseContract.PrayerListRequestEntry.TABLE_NAME, TestUtilities.createPrayerListRequestValues());
+        testDBTable(DatabaseContract.PrayerRequestVerseEntry.TABLE_NAME, TestUtilities.createPrayerRequestVerseValues());
+    }
+
+    private void testDBTable(String tableName, ContentValues contentValues) {
         // First step: Get reference to writable database
         DatabaseHelper dbHelper = new DatabaseHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        // Second Step: Create movie values
-        ContentValues contentValues = TestUtilities.createBibleVerseValues();
-
-        // Third Step (Movies): Insert ContentValues into database and get a row ID back
-        long rowId = db.insert(DatabaseContract.BibleVerseEntry.TABLE_NAME, null, contentValues);
+        // Second Step (Movies): Insert ContentValues into database and get a row ID back
+        long rowId = db.insert(tableName, null, contentValues);
         assertTrue(rowId != -1);
 
-        // Fourth Step: Query the database and receive a Cursor back
+        // Third Step: Query the database and receive a Cursor back
         // A cursor is your primary interface to the query results.
         Cursor cursor = db.query(
-                DatabaseContract.BibleVerseEntry.TABLE_NAME,  // Table to Query
+                tableName,  // Table to Query
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
@@ -163,15 +220,15 @@ public class DatabaseHelperTest extends AndroidTestCase  {
         // Move the cursor to the first valid database row and check to see if we have any rows
         assertTrue( "Error: No Records returned from movies_list query", cursor.moveToFirst() );
 
-        // Fifth Step: Validate the movies_list Query
-        TestUtilities.validateCurrentRecord("testInsertReadDb " + DatabaseContract.BibleVerseEntry.TABLE_NAME + " failed to validate",
+        // Fourth Step: Validate the movies_list Query
+        TestUtilities.validateCurrentRecord("testInsertReadDb " + tableName + " failed to validate",
                 cursor, contentValues);
 
         // Move the cursor to demonstrate that there is only one record in the database
-        assertFalse( "Error: More than one record returned from " + DatabaseContract.BibleVerseEntry.TABLE_NAME + " query",
+        assertFalse( "Error: More than one record returned from " + tableName + " query",
                 cursor.moveToNext() );
 
-        // Sixth Step: Close cursor and database
+        // Fifth Step: Close cursor and database
         cursor.close();
         dbHelper.close();
     }

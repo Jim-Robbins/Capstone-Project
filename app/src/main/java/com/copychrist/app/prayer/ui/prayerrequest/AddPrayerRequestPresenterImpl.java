@@ -8,7 +8,7 @@ import com.copychrist.app.prayer.data.model.Contact;
  */
 
 public class AddPrayerRequestPresenterImpl
-        implements AddPrayerRequestPresenter, AppDataSource.GetContactCallback {
+        implements AddPrayerRequestPresenter {
 
 //    private final AppDataSource dataSource;
     private long contactId;
@@ -21,31 +21,37 @@ public class AddPrayerRequestPresenterImpl
     }
 
     @Override
-    public void setView(AddPrayerRequestView view) {
-        myAddView = view;
-        if(contactId != 0) {
-//            dataSource.getContact(contactId, this);
-        }
+    public void start() {
+
+    }
+
+    //
+//    @Override
+//    public void setView(AddPrayerRequestView view) {
+//        myAddView = view;
+//        if(contactId != 0) {
+////            dataSource.getContact(contactId, this);
+//        }
 
 //        ToDo: Get prayerlists data
 //        PrayerListsListAdapter prayerListsListAdapter = new PrayerListsListAdapter(prayerLists);
 //        myAddView.showAddPrayerRequestDetails(myContact, prayerListsListAdapter);
-    }
+    //}
 
-    @Override
-    public void onContactDataNotAvailable() {
+//    @Override
+//    public void onContactDataNotAvailable() {
+//
+//    }
+//
+//    @Override
+//    public void onContactLoaded(Contact contact) {
+//
+//    }
 
-    }
-
-    @Override
-    public void onContactLoaded(Contact contact) {
-
-    }
-
-    @Override
-    public void clearView() {
-        myAddView = new AddPrayerRequestView.EmptyAddPrayerRequestView();
-    }
+//    @Override
+//    public void clearView() {
+//        myAddView = new AddPrayerRequestView.EmptyAddPrayerRequestView();
+//    }
 
 
     @Override

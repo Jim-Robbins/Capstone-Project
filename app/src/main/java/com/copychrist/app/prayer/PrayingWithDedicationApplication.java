@@ -4,6 +4,7 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.copychrist.app.prayer.data.AppRepository;
 import com.copychrist.app.prayer.util.ReleaseTree;
 import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
@@ -53,10 +54,11 @@ public class PrayingWithDedicationApplication extends Application {
     }
 
     private void initApplicationGraph() {
-        appGraph = ObjectGraph.create(new ApplicationModule());
+        appGraph = ObjectGraph.create(new ApplicationModule(this));
     }
 
     public static void injectModules(@NonNull final Object object, final Object... modules) {
         instance.appGraph.plus(modules).inject(object);
     }
+
 }

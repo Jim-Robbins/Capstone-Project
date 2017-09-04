@@ -25,6 +25,11 @@ public class EditPrayerRequestPresenterImpl
     }
 
     @Override
+    public void start() {
+
+    }
+
+    //    @Override
     public void setView(EditPrayerRequestView view) {
         myEditView = view;
         if(requestId != 0) {
@@ -39,7 +44,7 @@ public class EditPrayerRequestPresenterImpl
 //        myEditView.showBibleVerses(myRequest.getVerses());
     }
 
-    @Override
+    //@Override
     public void clearView() {
         myEditView = new EditPrayerRequestView.EmptyEditPrayerRequestView();
     }

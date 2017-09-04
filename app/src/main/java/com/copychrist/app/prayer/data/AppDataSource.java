@@ -13,17 +13,32 @@ import java.util.List;
 
 public interface AppDataSource {
 
-    interface LoadContactGroupsCallback {
+    /**
+     * ContactGroup Interfaces
+     */
+    interface GetContactGroupsCallback {
         void onContactGroupsLoaded(List<ContactGroup> contactGroups);
         void onContactGroupDataNotAvailable();
     }
 
-    void getContactGroups(@NonNull LoadContactGroupsCallback callback);
-
-    interface GetContactCallback {
-        void onContactLoaded(Contact contact);
-        void onContactDataNotAvailable();
+    interface GetContactGroupCallback {
+        void onContactGroupLoaded(ContactGroup contactGroup);
+        void onContactGroupDataNotAvailable();
     }
 
-    void getContact(@NonNull long contactId, @NonNull GetContactCallback callback);
+    void getContactGroups(@NonNull GetContactGroupsCallback callback);
+
+    void getContactGroup(@NonNull long groupId, @NonNull GetContactGroupCallback callback);
+
+    void getContactGroup(@NonNull String groupId, @NonNull GetContactGroupCallback callback);
+
+    String saveContactGroup(@NonNull ContactGroup contactGroup);
+
+    void sortContactGroups(@NonNull List<ContactGroup> contactGroups);
+
+    void refreshContactGroups();
+
+    void deleteAllContactGroups();
+
+    void deleteContactGroup(@NonNull ContactGroup contactGroup);
 }

@@ -39,7 +39,7 @@ public class ContactGroupsListAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         if (cursor != null) {
-            final ContactGroup contactGroup = ContactGroup.getContactGroupFromCursor(cursor);
+            final ContactGroup contactGroup = ContactGroup.getFrom(cursor);
             viewHolder.textItem.setText(contactGroup.getName());
         }
     }

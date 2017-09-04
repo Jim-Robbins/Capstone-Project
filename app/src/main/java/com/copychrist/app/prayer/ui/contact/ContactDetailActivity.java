@@ -135,17 +135,19 @@ public class ContactDetailActivity extends BaseActivity
         recyclerView.setAdapter(prayerRequestsListAdapter);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        contactPresenter.setView(this);
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        contactPresenter.setView(this);
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        contactPresenter.clearView();
+//    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        contactPresenter.clearView();
-    }
+
 
     @Override
     public void showContactDetail(final Contact contact) {

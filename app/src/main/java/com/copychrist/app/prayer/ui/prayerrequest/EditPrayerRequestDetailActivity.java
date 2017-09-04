@@ -128,13 +128,13 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        editPrayerRequestPresenter.setView(this);
+//        editPrayerRequestPresenter.setView(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        editPrayerRequestPresenter.clearView();
+//        editPrayerRequestPresenter.clearView();
     }
 
     @Override

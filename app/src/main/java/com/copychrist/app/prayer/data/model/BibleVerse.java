@@ -4,7 +4,16 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.RegEx;
+
+import static java.lang.Integer.parseInt;
 
 public class BibleVerse {
     @NonNull
@@ -95,5 +104,42 @@ public class BibleVerse {
 
     public static BibleVerse getBibleVerseFromCursor(Cursor cursor) {
         return new BibleVerse(cursor.getString(0), cursor.getInt(1), cursor.getString(2));
+    }
+
+    public static BibleVerse getBibleVerseFromPassage(@NonNull String passage) {
+        Pattern pattern = Pattern.compile("([^\\s:]+)");
+        Matcher matcher = pattern.matcher(passage);
+        String book = "";
+        String verse = "";
+        int chapter = 0;
+
+        if(matcher.find()) {
+            book = pattern.matcher(passage).group(0);
+            chapter = Integer.parseInt(pattern.matcher(passage).group(1));
+
+            verse = pattern.matcher(passage).group(2);
+        }
+
+        return new BibleVerse(book, chapter, verse, null, null, null);
+    }
+
+    public static String getUrlEncodedPassage(String passage) {
+        String result = "";
+        try {
+            result = URLEncoder.encode(passage, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static String getUrlDecodedPassage(String passage) {
+        String result = "";
+        try {
+            result = URLDecoder.decode(passage, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

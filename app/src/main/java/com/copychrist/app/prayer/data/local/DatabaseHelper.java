@@ -1,6 +1,7 @@
 package com.copychrist.app.prayer.data.local;
 
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -23,15 +24,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-//        try {
+        try {
             db.execSQL(DatabaseContract.BibleVerseEntry.CREATE_TABLE_QUERY);
             db.execSQL(DatabaseContract.ContactEntry.CREATE_TABLE_QUERY);
             db.execSQL(DatabaseContract.ContactGroupEntry.CREATE_TABLE_QUERY);
             db.execSQL(DatabaseContract.PrayerListEntry.CREATE_TABLE_QUERY);
             db.execSQL(DatabaseContract.PrayerRequestEntry.CREATE_TABLE_QUERY);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+            db.execSQL(DatabaseContract.PrayerListRequestEntry.CREATE_TABLE_QUERY);
+            db.execSQL(DatabaseContract.PrayerRequestVerseEntry.CREATE_TABLE_QUERY);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -52,7 +55,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(DatabaseContract.ContactGroupEntry.DROP_TABLE_QUERY);
         db.execSQL(DatabaseContract.PrayerListEntry.DROP_TABLE_QUERY);
         db.execSQL(DatabaseContract.PrayerRequestEntry.DROP_TABLE_QUERY);
-
+        db.execSQL(DatabaseContract.PrayerListRequestEntry.DROP_TABLE_QUERY);
+        db.execSQL(DatabaseContract.PrayerRequestVerseEntry.DROP_TABLE_QUERY);
         onCreate(db);
     }
 

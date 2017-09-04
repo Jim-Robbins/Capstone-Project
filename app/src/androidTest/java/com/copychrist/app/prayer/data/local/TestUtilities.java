@@ -3,6 +3,7 @@ package com.copychrist.app.prayer.data.local;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import java.util.Map;
 import java.util.Set;
@@ -33,16 +34,74 @@ public class TestUtilities extends AndroidTestCase {
     }
 
     static ContentValues createBibleVerseValues() {
-        ContentValues bibleVerseValues = new ContentValues();
-        bibleVerseValues.put(DatabaseContract.BibleVerseEntry.COLUMN_BOOK, "John");
-        bibleVerseValues.put(DatabaseContract.BibleVerseEntry.COLUMN_CHAPTER, 3);
-        bibleVerseValues.put(DatabaseContract.BibleVerseEntry.COLUMN_VERSE, "16-17");
-        bibleVerseValues.put(DatabaseContract.BibleVerseEntry.COLUMN_TEXT, "6 For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.\n" +
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.BibleVerseEntry.COLUMN_BOOK, "John");
+        contentValues.put(DatabaseContract.BibleVerseEntry.COLUMN_CHAPTER, 3);
+        contentValues.put(DatabaseContract.BibleVerseEntry.COLUMN_VERSE, "16-17");
+        contentValues.put(DatabaseContract.BibleVerseEntry.COLUMN_TEXT, "6 For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.\n" +
                 "\n" +
                 "17 For God sent not his Son into the world to condemn the world; but that the world through him might be saved.");
-        bibleVerseValues.put(DatabaseContract.BibleVerseEntry.COLUMN_VERSION, "KJV");
-        bibleVerseValues.put(DatabaseContract.BibleVerseEntry.COLUMN_API_URL, "https://www.biblegateway.com/passage/?search=John+3:16-17&version=KJV");
+        contentValues.put(DatabaseContract.BibleVerseEntry.COLUMN_VERSION, "KJV");
+        contentValues.put(DatabaseContract.BibleVerseEntry.COLUMN_API_URL, "https://www.biblegateway.com/passage/?search=John+3:16-17&version=KJV");
 
-        return bibleVerseValues;
+        return contentValues;
+    }
+
+    static ContentValues createContactValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.ContactEntry.COLUMN_FIRST_NAME, "John");
+        contentValues.put(DatabaseContract.ContactEntry.COLUMN_LAST_NAME, "Calvin");
+        contentValues.put(DatabaseContract.ContactEntry.COLUMN_PICTURE_URL, "https://en.wikipedia.org/wiki/John_Calvin#/media/File:John_Calvin_by_Holbein.png");
+        contentValues.put(DatabaseContract.ContactEntry.COLUMN_SORT_ORDER, 1);
+        contentValues.put(DatabaseContract.ContactEntry.COLUMN_GROUP, 1);
+
+        return contentValues;
+    }
+
+    static ContentValues createContactGroupValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.ContactGroupEntry.COLUMN_NAME, "Family");
+        contentValues.put(DatabaseContract.ContactGroupEntry.COLUMN_DESC, "This is my wonderful family");
+        contentValues.put(DatabaseContract.ContactGroupEntry.COLUMN_SORT_ORDER, 1);
+
+        return contentValues;
+    }
+
+    static ContentValues createPrayerListValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.PrayerListEntry.COLUMN_NAME, "Family List");
+        contentValues.put(DatabaseContract.PrayerListEntry.COLUMN_SORT_ORDER, 1);
+
+        return contentValues;
+    }
+
+    static ContentValues createPrayerRequestValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.PrayerRequestEntry.COLUMN_CONTACT, 1);
+        contentValues.put(DatabaseContract.PrayerRequestEntry.COLUMN_TITLE, "John's release from prison");
+        contentValues.put(DatabaseContract.PrayerRequestEntry.COLUMN_DESC, "John was put in prison for preaching the true gospel.");
+        contentValues.put(DatabaseContract.PrayerRequestEntry.COLUMN_END_DATE, 1504462605);
+        contentValues.put(DatabaseContract.PrayerRequestEntry.COLUMN_ANSWERED, 1504462605);
+        contentValues.put(DatabaseContract.PrayerRequestEntry.COLUMN_PRAYED_FOR, "1504462604,1504462605");
+        Log.d("createPrayerRequestValu", contentValues.toString());
+        return contentValues;
+    }
+
+    static ContentValues createPrayerListRequestValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.PrayerListRequestEntry.COLUMN_LIST_ID, 2);
+        contentValues.put(DatabaseContract.PrayerListRequestEntry.COLUMN_REQUEST_ID, 2);
+        contentValues.put(DatabaseContract.PrayerListRequestEntry.COLUMN_SORT_ORDER, 1);
+
+        return contentValues;
+    }
+
+    static ContentValues createPrayerRequestVerseValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.PrayerRequestVerseEntry.COLUMN_VERSE, "John 3:16");
+        contentValues.put(DatabaseContract.PrayerRequestVerseEntry.COLUMN_REQUEST_ID, 2);
+        contentValues.put(DatabaseContract.PrayerRequestVerseEntry.COLUMN_SORT_ORDER, 1);
+
+        return contentValues;
     }
 }
