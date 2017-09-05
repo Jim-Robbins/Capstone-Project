@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import com.copychrist.app.prayer.data.local.Local;
+import com.copychrist.app.prayer.data.model.Contact;
 import com.copychrist.app.prayer.data.model.ContactGroup;
 import com.copychrist.app.prayer.data.remote.Remote;
 
@@ -42,7 +43,7 @@ public class AppRepository implements AppDataSource {
         localDataSource.getContactGroups(new GetContactGroupsCallback() {
             @Override
             public void onContactGroupsLoaded(List<ContactGroup> contactGroups) {
-                refreshLocalDataSource(contactGroups);
+//                refreshLocalDataSource(contactGroups);
                 callback.onContactGroupsLoaded(null);
             }
 
@@ -71,19 +72,8 @@ public class AppRepository implements AppDataSource {
     }
 
     @Override
-    public void getContactGroup(@NonNull String groupId, @NonNull final GetContactGroupCallback callback) {
-        // Load from server
-        remoteDataSource.getContactGroup(groupId, new GetContactGroupCallback() {
-            @Override
-            public void onContactGroupLoaded(ContactGroup contactGroup) {
-                callback.onContactGroupLoaded(contactGroup);
-            }
-
-            @Override
-            public void onContactGroupDataNotAvailable() {
-                callback.onContactGroupDataNotAvailable();
-            }
-        });
+    public void getContactGroup(@NonNull String groupId, @NonNull GetContactGroupCallback callback) {
+        getContactGroup(Long.getLong(groupId), callback);
     }
 
     @Override
@@ -98,11 +88,6 @@ public class AppRepository implements AppDataSource {
     public void sortContactGroups(@NonNull List<ContactGroup> contactGroups) {
         remoteDataSource.sortContactGroups(checkNotNull(contactGroups));
         localDataSource.sortContactGroups(checkNotNull(contactGroups));
-    }
-
-    @Override
-    public void refreshContactGroups() {
-
     }
 
     @Override
@@ -123,13 +108,75 @@ public class AppRepository implements AppDataSource {
         }
     }
 
-    public interface LoadDataCallback {
-        void onDataLoaded(Cursor data);
+    @Override
+    public void getContacts(@NonNull final GetContactsCallback callback) {
+        localDataSource.getContacts(new GetContactsCallback() {
+            @Override
+            public void onContactsLoaded(List<Contact> contacts) {
+//                refreshLocalDataSource(contacts);
+                callback.onContactsLoaded(null);
+            }
 
-        void onDataEmpty();
+            @Override
+            public void onContactDataNotAvailable() {
+                callback.onContactDataNotAvailable();
+            }
+        });
+    }
 
-        void onDataNotAvailable();
+    @Override
+    public void getContact(@NonNull long contactId, @NonNull final GetContactCallback callback) {
+        localDataSource.getContact(contactId, new GetContactCallback() {
 
-        void onDataReset();
+            @Override
+            public void onContactLoaded(Contact contact) {
+                callback.onContactLoaded(contact);
+            }
+
+            @Override
+            public void onContactDataNotAvailable() {
+                callback.onContactDataNotAvailable();
+            }
+        });
+    }
+
+    @Override
+    public void getContact(@NonNull String contactId, @NonNull GetContactCallback callback) {
+        getContact(Long.getLong(contactId), callback);
+    }
+
+    @Override
+    public String saveContact(@NonNull Contact contact) {
+        String result;
+        remoteDataSource.saveContact(checkNotNull(contact));
+        result = localDataSource.saveContact(checkNotNull(contact));
+        return result;
+    }
+
+    @Override
+    public void deleteContact(@NonNull Contact contact) {
+        remoteDataSource.deleteContact(checkNotNull(contact));
+        localDataSource.deleteContact(checkNotNull(contact));
+    }
+
+    public interface ContactsActivityLoadDataCallback {
+        void onContactGroupDataLoaded(Cursor data);
+        void onContactGroupDataEmpty();
+        void onContactGroupDataNotAvailable();
+        void onContactGroupDataReset();
+
+        void onContactDataLoaded(Cursor data);
+        void onContactDataEmpty();
+        void onContactDataNotAvailable();
+        void onContactDataReset();
+    }
+
+    //================ Contact Detail View ==============
+
+    public interface ContactDetailActivityLoadDataCallback {
+        void onContactDetailDataLoaded(Cursor data);
+        void onContactDetailataEmpty();
+        void onContactDetailDataNotAvailable();
+        void onContactDetailDataReset();
     }
 }

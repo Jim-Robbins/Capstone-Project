@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.Tab;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,7 +18,9 @@ import com.copychrist.app.prayer.adapter.ContactsListAdapter;
 import com.copychrist.app.prayer.data.AppRepository;
 import com.copychrist.app.prayer.data.LoaderProvider;
 import com.copychrist.app.prayer.data.local.AppLocalDataSource;
+import com.copychrist.app.prayer.data.model.Contact;
 import com.copychrist.app.prayer.data.model.ContactGroup;
+import com.copychrist.app.prayer.data.model.PrayerRequest;
 import com.copychrist.app.prayer.data.remote.AppRemoteDataSource;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
@@ -32,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
+
 
 public class ContactsActivity extends BaseActivity implements ContactGroupContract.View,
         ContactsListAdapter.OnContactClickListener, DeleteDialogFragment.DeleteActionDialogListener {
@@ -171,6 +175,7 @@ public class ContactsActivity extends BaseActivity implements ContactGroupContra
                     tabLayoutGroups.addTab(tab);
                     if (contactGroup.getId() == selectedGroup.getId()) {
                         selectedTabIndex = tab.getPosition();
+                        contactsPresenter.setContactGroup((ContactGroup) tab.getTag());
                     }
                 } while (contactGroups.moveToNext());
             }
@@ -240,25 +245,25 @@ public class ContactsActivity extends BaseActivity implements ContactGroupContra
     }
 
     @Override
-    public void showAddNewContactView(String groupName) {
-        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newAddInstance(groupName, contactsPresenter);
+    public void showAddNewContactView(long groupId) {
+        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newAddInstance(groupId, contactsPresenter);
         addEditContactDialogFragment.show(getSupportFragmentManager(), "AddContactDialogFragment");
     }
 
     @Override
-    public void onContactClick(long id) {
-        //contactsPresenter.openContactDetails(id);
+    public void onContactClick(Contact contact) {
+        contactsPresenter.openContactDetails(contact);
     }
 
 
     @Override
-    public void showContactDetailView(long id) {
-        startActivity(ContactDetailActivity.getStartIntent(this, id));
+    public void showContactDetailView(@NonNull Contact contact) {
+        startActivity(ContactDetailActivity.getStartIntent(this, contact.getId()));
     }
 
     @Override
-    public void onPrayerRequestClick(long requestId) {
-        //contactsPresenter.openPrayerRequestDetails(requestId);
+    public void onPrayerRequestClick(PrayerRequest prayerRequest) {
+        //contactsPresenter.openPrayerRequestDetails(prayerRequest);
     }
 
     @Override

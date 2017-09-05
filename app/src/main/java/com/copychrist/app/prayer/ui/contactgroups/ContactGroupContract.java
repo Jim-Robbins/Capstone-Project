@@ -9,8 +9,6 @@ import com.copychrist.app.prayer.data.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BasePresenter;
 import com.copychrist.app.prayer.ui.BaseView;
 
-import java.util.List;
-
 /**
  * Created by jim on 9/3/17.
  */
@@ -24,8 +22,8 @@ public class ContactGroupContract {
         void showAddContactGroupDialog();
         void showEditContactGroupDialog(ContactGroup contactGroup);
         void showDeleteContactGroupDialog(ContactGroup contactGroup);
-        void showAddNewContactView(String contactGroupName);
-        void showContactDetailView(long contactId);
+        void showAddNewContactView(long groupId);
+        void showContactDetailView(@NonNull Contact contact);
         void showPrayerRequestDetailView(long contactId);
         void showLoadingError();
         void showNoContactGroups();
@@ -41,14 +39,12 @@ public class ContactGroupContract {
         void deleteContactGroup(@NonNull ContactGroup contactGroup);
         void deleteContactGroupConfirm();
 
+        void loadContacts();
         void addNewContact();
         void saveContact(@NonNull Contact contact);
         void openContactDetails(@NonNull Contact contact);
 
         void openPrayerRequestDetails(@NonNull PrayerRequest prayerRequest);
-
-//        void takeView(ContactGroupContract.View view);
-//        void dropView();
     }
 
 }

@@ -20,25 +20,25 @@ import com.copychrist.app.prayer.ui.contactgroups.ContactsPresenter;
 public class AddEditContactDialogFragment extends AppCompatDialogFragment {
     private Contact contact;
     private ContactGroupContract.Presenter contactsPresenter;
-    private ContactPresenter contactPresenter;
+    private ContactContract.Presenter contactPresenter;
     private long contactId = -1;
-    private String groupName = "";
+    private long groupId = -1;
 
     private EditText txtFirstName, txtLastName;
 
-    public static AddEditContactDialogFragment neEditInstance(Contact contact,
-                                                              ContactPresenter contactPresenter) {
+    public static AddEditContactDialogFragment newEditInstance(Contact contact,
+                                                               ContactContract.Presenter contactPresenter) {
         AddEditContactDialogFragment frag = new AddEditContactDialogFragment();
         frag.contact = contact;
         frag.contactPresenter = contactPresenter;
         return frag;
     }
 
-    public static AddEditContactDialogFragment newAddInstance(String groupName,
+    public static AddEditContactDialogFragment newAddInstance(long groupId,
                                                               ContactGroupContract.Presenter contactsPresenter) {
         AddEditContactDialogFragment frag = new AddEditContactDialogFragment();
         frag.contact = null;
-        frag.groupName = groupName;
+        frag.groupId = groupId;
         frag.contactsPresenter = contactsPresenter;
         return frag;
     }
@@ -58,9 +58,8 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
             alertDialogBuilder.setTitle(R.string.dialog_edit_contact_title);
             txtFirstName.setText(contact.getFirstName());
             txtLastName.setText(contact.getLastName());
-            //Todo: get contact id and groupid
-            //contactId = contact.getId();
-            //groupName = contact.getGroup().getName();
+            contactId = contact.getId();
+            groupId = contact.getGroupId();
         } else {
             alertDialogBuilder.setTitle(R.string.dialog_add_contact_title);
         }
@@ -69,11 +68,7 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(contactId == -1) {
-                    addContact();
-                } else {
-                    editContact();
-                }
+                saveContact();
 
                 if (dialog != null) {
                     dialog.dismiss();
@@ -96,19 +91,12 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         return alertDialogBuilder.create();
     }
 
-    private void addContact() {
-//        contactsPresenter.saveContact(new Contact(
-//                txtFirstName.getText().toString(),
-//                txtLastName.getText().toString(),
-//                groupName,
-//                ""));
-    }
-
-    private void editContact() {
-        contactPresenter.onEditClick(
+    private void saveContact() {
+        contactsPresenter.saveContact(new Contact(
                 contactId,
+                groupId,
                 txtFirstName.getText().toString(),
                 txtLastName.getText().toString(),
-                "");
+                ""));
     }
 }

@@ -14,8 +14,6 @@ import android.support.annotation.Nullable;
 import com.copychrist.app.prayer.data.local.DatabaseContract;
 import com.copychrist.app.prayer.data.local.DatabaseHelper;
 
-import static android.database.DatabaseUtils.longForQuery;
-
 /**
  * Created by jim on 8/29/17.
  */
@@ -27,11 +25,15 @@ public class AppContentProvider extends ContentProvider {
     private DatabaseHelper dbHelper;
 
     public static final int BIBLE_VERSE = 100;
+    public static final int BIBLE_VERSE_ITEM = 101;
     public static final int CONTACT = 200;
+    public static final int CONTACT_ITEM = 201;
     public static final int CONTACT_GROUP = 300;
     public static final int CONTACT_GROUP_ITEM = 301;
     public static final int PRAYER_LIST = 400;
+    public static final int PRAYER_LIST_ITEM = 401;
     public static final int PRAYER_REQUEST = 500;
+    public static final int PRAYER_REQUEST_ITEM = 501;
 
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -39,13 +41,18 @@ public class AppContentProvider extends ContentProvider {
 
         // For each type of URI create a corresponding code.
         matcher.addURI(authority, DatabaseContract.BibleVerseEntry.TABLE_NAME.toLowerCase() + "/*", BIBLE_VERSE);
-        matcher.addURI(authority, DatabaseContract.ContactEntry.TABLE_NAME.toLowerCase() + "/#", CONTACT);
+
+        matcher.addURI(authority, DatabaseContract.ContactEntry.TABLE_NAME.toLowerCase(), CONTACT);
+        matcher.addURI(authority, DatabaseContract.ContactEntry.TABLE_NAME.toLowerCase() + "/#", CONTACT_ITEM);
 
         matcher.addURI(authority, DatabaseContract.ContactGroupEntry.TABLE_NAME.toLowerCase(), CONTACT_GROUP);
         matcher.addURI(authority, DatabaseContract.ContactGroupEntry.TABLE_NAME.toLowerCase() + "/#", CONTACT_GROUP_ITEM);
 
-        matcher.addURI(authority, DatabaseContract.PrayerListEntry.TABLE_NAME.toLowerCase() + "/#", PRAYER_LIST);
-        matcher.addURI(authority, DatabaseContract.PrayerRequestEntry.TABLE_NAME.toLowerCase() + "/#", PRAYER_REQUEST);
+        matcher.addURI(authority, DatabaseContract.PrayerListEntry.TABLE_NAME.toLowerCase(), PRAYER_LIST);
+        matcher.addURI(authority, DatabaseContract.PrayerListEntry.TABLE_NAME.toLowerCase() + "/#", PRAYER_LIST_ITEM);
+
+        matcher.addURI(authority, DatabaseContract.PrayerRequestEntry.TABLE_NAME.toLowerCase(), PRAYER_REQUEST);
+        matcher.addURI(authority, DatabaseContract.PrayerRequestEntry.TABLE_NAME.toLowerCase() + "/#", PRAYER_REQUEST_ITEM);
 
         return matcher;
     }
@@ -61,16 +68,24 @@ public class AppContentProvider extends ContentProvider {
     public String getType(@NonNull Uri uri) {
         switch (uriMatcher.match(uri)) {
             case BIBLE_VERSE:
+                return DatabaseContract.BibleVerseEntry.CONTENT_TYPE;
+            case BIBLE_VERSE_ITEM:
                 return DatabaseContract.BibleVerseEntry.CONTENT_ITEM_TYPE;
             case CONTACT:
+                return DatabaseContract.ContactEntry.CONTENT_TYPE;
+            case CONTACT_ITEM:
                 return DatabaseContract.ContactEntry.CONTENT_ITEM_TYPE;
             case CONTACT_GROUP:
                 return DatabaseContract.ContactGroupEntry.CONTENT_TYPE;
             case CONTACT_GROUP_ITEM:
                 return DatabaseContract.ContactGroupEntry.CONTENT_ITEM_TYPE;
             case PRAYER_LIST:
+                return DatabaseContract.PrayerListEntry.CONTENT_TYPE;
+            case PRAYER_LIST_ITEM:
                 return DatabaseContract.PrayerListEntry.CONTENT_ITEM_TYPE;
             case PRAYER_REQUEST:
+                return DatabaseContract.PrayerRequestEntry.CONTENT_TYPE;
+            case PRAYER_REQUEST_ITEM:
                 return DatabaseContract.PrayerRequestEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -97,12 +112,35 @@ public class AppContentProvider extends ContentProvider {
                 );
                 break;
             case CONTACT_GROUP_ITEM:
-                String[] where = {uri.getLastPathSegment()};
+                String[] contact_group_where = {uri.getLastPathSegment()};
                 retCursor = dbHelper.getReadableDatabase().query(
                         DatabaseContract.ContactGroupEntry.TABLE_NAME,
                         projection,
                         DatabaseContract.ContactGroupEntry._ID + " = ?",
-                        where,
+                        contact_group_where,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case CONTACT:
+                retCursor = dbHelper.getReadableDatabase().query(
+                        DatabaseContract.ContactEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case CONTACT_ITEM:
+                String[] contact_where = {uri.getLastPathSegment()};
+                retCursor = dbHelper.getReadableDatabase().query(
+                        DatabaseContract.ContactEntry.TABLE_NAME,
+                        projection,
+                        DatabaseContract.ContactEntry._ID + " = ?",
+                        contact_where,
                         null,
                         null,
                         sortOrder
@@ -163,9 +201,10 @@ public class AppContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Uri returnUri = null;
+        Uri returnUri;
         String tableName;
         long insertId;
+        Boolean exists;
 
         switch (uriMatcher.match(uri)) {
             case BIBLE_VERSE:
@@ -180,16 +219,34 @@ public class AppContentProvider extends ContentProvider {
                 }
                 break;
             case CONTACT:
-                insertId = db.insert(DatabaseContract.ContactEntry.TABLE_NAME, null, contentValues);
-                if(insertId > 0) {
-                    returnUri = DatabaseContract.ContactEntry.buildWithIdUri(insertId);
+                tableName =  DatabaseContract.ContactEntry.TABLE_NAME;
+                exists = alreadyExists(db, tableName,
+                        new String[] {
+                                DatabaseContract.ContactEntry._ID,
+                                DatabaseContract.ContactEntry.COLUMN_FIRST_NAME,
+                                DatabaseContract.ContactEntry.COLUMN_LAST_NAME
+                        },
+                        DatabaseContract.ContactEntry.COLUMN_FIRST_NAME + " = ? AND " +
+                                DatabaseContract.ContactEntry.COLUMN_LAST_NAME + " = ?",
+                        new String[] { contentValues.getAsString(DatabaseContract.ContactEntry.COLUMN_FIRST_NAME),
+                                contentValues.getAsString(DatabaseContract.ContactEntry.COLUMN_LAST_NAME)});
+                if (exists) {
+                    returnUri = DatabaseContract.ContactEntry.buildExistsUri();
                 } else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                    Long count = getRowCount(db, tableName, DatabaseContract.ContactEntry.COLUMN_GROUP + " = " + contentValues.getAsString(DatabaseContract.ContactEntry.COLUMN_GROUP));
+                    contentValues.put(DatabaseContract.ContactEntry.COLUMN_SORT_ORDER, count);
+                    //Insert Entry
+                    long _id = db.insert(tableName, null, contentValues);
+                    if (_id > 0) {
+                        returnUri = DatabaseContract.ContactEntry.buildWithIdUri(_id);
+                    } else {
+                        throw new android.database.SQLException("Failed to insert row into " + uri);
+                    }
                 }
                 break;
             case CONTACT_GROUP:
                 tableName =  DatabaseContract.ContactGroupEntry.TABLE_NAME;
-                Boolean exists = alreadyExists(db, tableName,
+                exists = alreadyExists(db, tableName,
                         new String[] {
                                 DatabaseContract.ContactGroupEntry._ID,
                                 DatabaseContract.ContactGroupEntry.COLUMN_NAME
@@ -199,7 +256,7 @@ public class AppContentProvider extends ContentProvider {
                 if (exists) {
                     returnUri = DatabaseContract.ContactGroupEntry.buildExistsUri();
                 } else {
-                    Long count = getRowCount(db, tableName);
+                    Long count = getRowCount(db, tableName, "");
                     contentValues.put(DatabaseContract.ContactGroupEntry.COLUMN_SORT_ORDER, count);
                     //Insert Entry
                     long _id = db.insert(tableName, null, contentValues);
@@ -320,8 +377,12 @@ public class AppContentProvider extends ContentProvider {
         return rowsDeleted;
     }
 
-    public long getRowCount(@NonNull SQLiteDatabase db, @NonNull String tableName) {
-        return DatabaseUtils.longForQuery(db, "SELECT COUNT(*) FROM " + tableName, null);
+    public long getRowCount(@NonNull SQLiteDatabase db, @NonNull String tableName, String whereParam) {
+        String where = "";
+        if (!whereParam.isEmpty()) {
+            where = " WHERE " + whereParam;
+        }
+        return DatabaseUtils.longForQuery(db, "SELECT COUNT(*) FROM " + tableName + where, null);
     }
 
     public boolean alreadyExists(@NonNull SQLiteDatabase db, @NonNull String tableName,

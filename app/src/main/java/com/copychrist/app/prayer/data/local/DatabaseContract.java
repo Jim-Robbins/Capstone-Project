@@ -74,6 +74,12 @@ public class DatabaseContract {
         public static final String COLUMN_GROUP         = "group_id";
         public static final String COLUMN_SORT_ORDER    = "sort_order";
         public static final String COLUMN_CREATED       = "create_date";
+        public static String[] CONTACT_COLUMNS = new String[]{
+                _ID,
+                COLUMN_FIRST_NAME,
+                COLUMN_LAST_NAME,
+                COLUMN_PICTURE_URL,
+                COLUMN_GROUP};
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME.toLowerCase()).build();
@@ -83,6 +89,14 @@ public class DatabaseContract {
 
         public static Uri buildWithIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildUri() {
+            return CONTENT_URI.buildUpon().build();
+        }
+
+        public static Uri buildExistsUri() {
+            return CONTENT_URI.buildUpon().appendPath(ALREADY_EXISTS).build();
         }
 
         public static String CREATE_TABLE_QUERY = "CREATE TABLE " + TABLE_NAME + " (" +

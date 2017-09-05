@@ -16,14 +16,15 @@ import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerRequestsListAdapter;
+import com.copychrist.app.prayer.data.AppRepository;
+import com.copychrist.app.prayer.data.LoaderProvider;
+import com.copychrist.app.prayer.data.local.AppLocalDataSource;
 import com.copychrist.app.prayer.data.model.Contact;
-import com.copychrist.app.prayer.data.model.PrayerRequest;
+import com.copychrist.app.prayer.data.remote.AppRemoteDataSource;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
 import com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity;
 import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ContactDetailActivity extends BaseActivity
-        implements ContactView, PrayerRequestsListAdapter.OnPrayerRequestClickListener,
+        implements ContactContract.View, PrayerRequestsListAdapter.OnPrayerRequestClickListener,
         DeleteDialogFragment.DeleteActionDialogListener {
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
@@ -44,7 +45,7 @@ public class ContactDetailActivity extends BaseActivity
     @BindView(R.id.tabLayout) TabLayout tabLayout;
 
     PrayerRequestsListAdapter prayerRequestsListAdapter;
-    @Inject ContactPresenter contactPresenter;
+    @Inject ContactContract.Presenter contactPresenter;
 
     public static String EXTRA_CONTACT_ID = "extra_contact_id";
     private Contact contact;
@@ -66,9 +67,26 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        contactPresenter.start();
+    }
+
+    @Override
     protected Object getModule() {
         long contactId = getIntent().getExtras().getLong(EXTRA_CONTACT_ID);
-        return new ContactModule(contactId);
+
+        LoaderProvider loaderProvider = new LoaderProvider(this);
+        AppRepository appRepository = new AppRepository(
+                new AppRemoteDataSource(),
+                new AppLocalDataSource(getContentResolver())
+        );
+
+        return new ContactModule(loaderProvider,
+                getSupportLoaderManager(),
+                appRepository,
+                this,
+                contactId);
     }
 
     @Override
@@ -135,12 +153,18 @@ public class ContactDetailActivity extends BaseActivity
         recyclerView.setAdapter(prayerRequestsListAdapter);
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        contactPresenter.setView(this);
-//    }
-//
+    @Override
+    protected void onStart() {
+        super.onStart();
+        contactPresenter.start();
+    }
+
+    @Override
+    public void setPresenter(ContactContract.Presenter presenter) {
+        this.contactPresenter = presenter;
+    }
+
+    //
 //    @Override
 //    protected void onStop() {
 //        super.onStop();
@@ -185,7 +209,7 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     public void showContactDetailEditView(long contactId) {
-        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.neEditInstance(contact, contactPresenter);
+        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newEditInstance(contact, contactPresenter);
         addEditContactDialogFragment.show(getSupportFragmentManager(), "EditContactDialogFragment");
     }
 

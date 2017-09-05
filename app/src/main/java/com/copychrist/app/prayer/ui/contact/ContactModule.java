@@ -1,7 +1,12 @@
 package com.copychrist.app.prayer.ui.contact;
 
+import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
+
 import com.copychrist.app.prayer.ApplicationModule;
-import com.copychrist.app.prayer.data.AppDataSource;
+import com.copychrist.app.prayer.data.AppRepository;
+import com.copychrist.app.prayer.data.LoaderProvider;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -12,13 +17,26 @@ import dagger.Provides;
 public class ContactModule {
 
     private final long contactId;
+    private final LoaderProvider loaderProvider;
+    private final AppRepository appRepository;
+    private final LoaderManager loaderManager;
+    private final ContactContract.View view;
 
-    public ContactModule(final long contactId) {
+    public ContactModule(@NonNull LoaderProvider loaderProvider,
+                         @NonNull LoaderManager loaderManager,
+                         @NonNull AppRepository repository,
+                         @NonNull ContactContract.View view,
+                         @NonNull long contactId) {
         this.contactId = contactId;
+        this.loaderProvider = loaderProvider;
+        this.loaderManager = loaderManager;
+        this.appRepository = repository;
+        this.view = view;
     }
 
     @Provides
-    ContactPresenter provideMyListPresenter() {
-        return new ContactPresenterImpl(contactId);
+    ContactContract.Presenter provideContactPresenter() {
+        return new ContactPresenter(loaderProvider, loaderManager,
+                appRepository, view, contactId);
     }
 }

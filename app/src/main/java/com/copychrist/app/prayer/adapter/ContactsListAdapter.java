@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,7 @@ public class ContactsListAdapter extends CursorRecyclerViewAdapter<ContactsListA
 
     @Override
     public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
-        final Contact contact = new Contact(cursor);
+        final Contact contact = Contact.getFrom(cursor);
 
         holder.textFirstName.setText(contact.getFirstName());
         holder.textLastName.setText(contact.getLastName());
@@ -48,67 +49,70 @@ public class ContactsListAdapter extends CursorRecyclerViewAdapter<ContactsListA
             @Override
             public void onClick(View view) {
                 if (contactClickListener != null) {
-                    contactClickListener.onContactClick(contact.getId());
+                    contactClickListener.onContactClick(contact);
                 }
             }
         });
 
-        //Todo: Need to figure out how to get list of requests in a simple cursor
-        List<PrayerRequest> prayerRequests = contact.getRequests();
-        if(prayerRequests.size() > 0) {
-            final PrayerRequest request1 = prayerRequests.get(0);
-            Timber.d("0:"+request1.getTitle());
-            holder.textItem1.setText(request1.getTitle());
-            holder.textItem1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (contactClickListener != null) {
-                        contactClickListener.onPrayerRequestClick(request1.getId());
-                    }
-                }
-            });
-            if(prayerRequests.size() > 1) {
-                final PrayerRequest request2 = prayerRequests.get(1);
-                Timber.d("1:"+request2.getTitle());
-                holder.textItem2.setText(request2.getTitle());
-                holder.textItem2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (contactClickListener != null) {
-                            contactClickListener.onPrayerRequestClick(request2.getId());
-                        }
-                    }
-                });
-                if(prayerRequests.size() > 2) {
-                    final PrayerRequest request3 = prayerRequests.get(2);
-                    Timber.d("2:"+request3.getTitle());
-                    holder.textItem3.setText(request3.getTitle());
-                    holder.textItem3.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (contactClickListener != null) {
-                                contactClickListener.onPrayerRequestClick(request3.getId());
-                            }
-                        }
-                    });
-                } else {
-                    holder.textItem3.setVisibility(View.GONE);
-                }
-            } else {
-                holder.textItem2.setVisibility(View.GONE);
-            }
-        } else {
-            holder.textItem1.setVisibility(View.GONE);
-        }
+        holder.textItem3.setVisibility(View.GONE);
+        holder.textItem2.setVisibility(View.GONE);
+        holder.textItem1.setVisibility(View.GONE);
+//        //Todo: Need to figure out how to get list of requests in a simple cursor
+//        List<PrayerRequest> prayerRequests = contact.getRequests();
+//        if(prayerRequests.size() > 0) {
+//            final PrayerRequest request1 = prayerRequests.get(0);
+//            Timber.d("0:"+request1.getTitle());
+//            holder.textItem1.setText(request1.getTitle());
+//            holder.textItem1.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (contactClickListener != null) {
+//                        contactClickListener.onPrayerRequestClick(request1.getId());
+//                    }
+//                }
+//            });
+//            if(prayerRequests.size() > 1) {
+//                final PrayerRequest request2 = prayerRequests.get(1);
+//                Timber.d("1:"+request2.getTitle());
+//                holder.textItem2.setText(request2.getTitle());
+//                holder.textItem2.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        if (contactClickListener != null) {
+//                            contactClickListener.onPrayerRequestClick(request2.getId());
+//                        }
+//                    }
+//                });
+//                if(prayerRequests.size() > 2) {
+//                    final PrayerRequest request3 = prayerRequests.get(2);
+//                    Timber.d("2:"+request3.getTitle());
+//                    holder.textItem3.setText(request3.getTitle());
+//                    holder.textItem3.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            if (contactClickListener != null) {
+//                                contactClickListener.onPrayerRequestClick(request3.getId());
+//                            }
+//                        }
+//                    });
+//                } else {
+//                    holder.textItem3.setVisibility(View.GONE);
+//                }
+//            } else {
+//                holder.textItem2.setVisibility(View.GONE);
+//            }
+//        } else {
+//            holder.textItem1.setVisibility(View.GONE);
+//        }
 
-        holder.textMoreItems.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (contactClickListener != null) {
-                    contactClickListener.onContactClick(contact.getId());
-                }
-            }
-        });
+//        holder.textMoreItems.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (contactClickListener != null) {
+//                    contactClickListener.onContactClick(contact.getId());
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -137,7 +141,7 @@ public class ContactsListAdapter extends CursorRecyclerViewAdapter<ContactsListA
     }
 
     public interface OnContactClickListener {
-        void onContactClick(long id);
-        void onPrayerRequestClick(long id);
+        void onContactClick(@NonNull Contact contact);
+        void onPrayerRequestClick(@NonNull PrayerRequest prayerRequest);
     }
 }

@@ -7,7 +7,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import com.copychrist.app.prayer.data.local.DatabaseContract;
-import com.copychrist.app.prayer.ui.contactgroups.ContactGroupFilter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -23,30 +22,29 @@ public class LoaderProvider {
         this.context = checkNotNull(context, "context cannot be null");
     }
 
-    public Loader<Cursor> createFilteredContactGroupsLoader(ContactGroupFilter contactGroupFilter) {
+    public Loader<Cursor> createContactGroupsLoader() {
         String selection = null;
         String[] selectionArgs = null;
-
-        switch (contactGroupFilter.getFilterType()) {
-            case ALL:
-            default:
-                selection = null;
-                selectionArgs = null;
-                break;
-        }
 
         return new CursorLoader(
                 context,
                 DatabaseContract.ContactGroupEntry.buildUri(),
-                DatabaseContract.ContactGroupEntry.CONTACT_GROUP_COLUMNS, selection, selectionArgs, null
+                DatabaseContract.ContactGroupEntry.CONTACT_GROUP_COLUMNS,
+                selection, selectionArgs,
+                null
         );
     }
 
-    public Loader<Cursor> createContactGroupLoader(String taskId) {
-        return new CursorLoader(context, DatabaseContract.ContactGroupEntry.buildWithIdUri(taskId),
-                null,
-                null,
-                new String[]{String.valueOf(taskId)}, null
+    public Loader<Cursor> createFilteredContactsLoader(Long groupId) {
+        String selection = DatabaseContract.ContactEntry.COLUMN_GROUP + " = ? ";
+        String[] selectionArgs = new String[]{String.valueOf(groupId)};
+
+        return new CursorLoader(
+                context,
+                DatabaseContract.ContactEntry.buildUri(),
+                DatabaseContract.ContactEntry.CONTACT_COLUMNS,
+                selection, selectionArgs,
+                null
         );
     }
 }

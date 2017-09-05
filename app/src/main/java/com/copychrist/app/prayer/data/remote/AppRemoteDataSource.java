@@ -3,6 +3,7 @@ package com.copychrist.app.prayer.data.remote;
 import android.support.annotation.NonNull;
 
 import com.copychrist.app.prayer.data.AppDataSource;
+import com.copychrist.app.prayer.data.model.Contact;
 import com.copychrist.app.prayer.data.model.ContactGroup;
 
 import java.util.List;
@@ -17,10 +18,9 @@ import javax.inject.Singleton;
 @Singleton
 public class AppRemoteDataSource implements AppDataSource {
 
-//    @Inject
-    public AppRemoteDataSource() {
-    }
-
+    /**
+     * ContactGroup Interfaces
+     */
     @Override
     public void getContactGroups(@NonNull GetContactGroupsCallback callback) {
 
@@ -47,11 +47,6 @@ public class AppRemoteDataSource implements AppDataSource {
     }
 
     @Override
-    public void refreshContactGroups() {
-
-    }
-
-    @Override
     public void deleteAllContactGroups() {
     }
 
@@ -59,4 +54,31 @@ public class AppRemoteDataSource implements AppDataSource {
     public void deleteContactGroup(@NonNull ContactGroup contactGroup) {
     }
 
+    /**
+     * Contact Interfaces
+     */
+    @Override
+    public void getContacts(@NonNull GetContactsCallback callback) {
+
+    }
+
+    @Override
+    public void getContact(@NonNull long contactId, @NonNull GetContactCallback callback) {
+
+    }
+
+    @Override
+    public void getContact(@NonNull String contactId, @NonNull GetContactCallback callback) {
+
+    }
+
+    @Override
+    public String saveContact(@NonNull Contact contact) {
+        return null;
+    }
+
+    @Override
+    public void deleteContact(@NonNull Contact contact) {
+
+    }
 }

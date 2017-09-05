@@ -3,15 +3,10 @@ package com.copychrist.app.prayer;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.copychrist.app.prayer.data.AppDataSource;
 import com.copychrist.app.prayer.data.AppRepository;
 import com.copychrist.app.prayer.data.local.AppLocalDataSource;
-import com.copychrist.app.prayer.data.local.Local;
 import com.copychrist.app.prayer.data.remote.AppRemoteDataSource;
-import com.copychrist.app.prayer.data.remote.Remote;
-import com.copychrist.app.prayer.repository.RealmService;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;

@@ -1,7 +1,5 @@
 package com.copychrist.app.prayer.ui.contactgroups;
 
-import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,23 +16,21 @@ import com.copychrist.app.prayer.data.model.PrayerRequest;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by jim on 8/14/17.
  */
 
-public class ContactsPresenter implements ContactGroupContract.Presenter, AppRepository.LoadDataCallback,
-        AppDataSource.GetContactGroupsCallback, LoaderManager.LoaderCallbacks<Cursor> {
+public class ContactsPresenter implements ContactGroupContract.Presenter,
+        LoaderManager.LoaderCallbacks<Cursor>, AppRepository.ContactsActivityLoadDataCallback,
+        AppDataSource.GetContactGroupsCallback,
+        AppDataSource.GetContactsCallback {
 
-    public final static int DATA_LOADER = 1;
+    public final static int CONTACT_GROUP_LOADER = 1;
+    public final static int CONTACT_LOADER = 2;
 
     private ContactGroupContract.View view;
-
-    @Inject
-    Context context;
 
     @NonNull
     private final AppRepository appRepository;
@@ -68,15 +64,8 @@ public class ContactsPresenter implements ContactGroupContract.Presenter, AppRep
     @Override
     public void setContactGroup(@NonNull ContactGroup contactGroup) {
         selectedContactGroup = contactGroup;
+        loadContacts();
     }
-
-//    @Override
-//    public void result(int requestCode, int resultCode) {
-//        // If a task was successfully added, show snackbar
-//        if (AddContactGroupDialogFragment.REQUEST_ADD_TASK == requestCode && Activity.RESULT_OK == resultCode) {
-//            view.showSuccessfullySavedMessage();
-//        }
-//    }
 
     @Override
     public void start() {
@@ -85,57 +74,87 @@ public class ContactsPresenter implements ContactGroupContract.Presenter, AppRep
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return loaderProvider.createFilteredContactGroupsLoader(currentFiltering);
+        switch (id) {
+            case CONTACT_LOADER:
+                return loaderProvider.createFilteredContactsLoader(selectedContactGroup.getId());
+            case CONTACT_GROUP_LOADER:
+            default:
+                return loaderProvider.createContactGroupsLoader();
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null) {
-            if (data.moveToLast()) {
-                onDataLoaded(data);
-            } else {
-                onDataEmpty();
-            }
-        } else {
-            onDataNotAvailable();
+        switch (loader.getId()) {
+            case CONTACT_LOADER:
+                if (data != null) {
+                    if (data.moveToLast()) {
+                        onContactDataLoaded(data);
+                    } else {
+                        onContactDataEmpty();
+                    }
+                } else {
+                    onContactDataNotAvailable();
+                }
+                break;
+            case CONTACT_GROUP_LOADER:
+            default:
+                if (data != null) {
+                    if (data.moveToLast()) {
+                        onContactGroupDataLoaded(data);
+                    } else {
+                        onContactGroupDataEmpty();
+                    }
+                } else {
+                    onContactGroupDataNotAvailable();
+                }
+                break;
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        onDataReset();
-    }
-
-//    @Override
-//    public void setView(ContactGroupContract.View view) {
-//
-//    }
-//
-//    @Override
-//    public void clearView() {
-//
-//    }
-
-    @Override
-    public void onContactGroupsLoaded(List<ContactGroup> contactGroups) {
-        // we don't care about the result since the CursorLoader will load the data for us
-        if (loaderManager.getLoader(DATA_LOADER) == null) {
-            loaderManager.initLoader(DATA_LOADER, null, this);
-        } else {
-            loaderManager.restartLoader(DATA_LOADER, null, this);
+        switch (loader.getId()) {
+            case CONTACT_LOADER:
+                onContactDataReset();
+                break;
+            case CONTACT_GROUP_LOADER:
+            default:
+                onContactGroupDataReset();
+                break;
         }
     }
 
     @Override
-    public void onContactGroupDataNotAvailable() {
-        view.setLoadingIndicator(false);
-        view.showLoadingError();
+    public void onContactGroupsLoaded(List<ContactGroup> contactGroups) {
+        // we don't care about the result since the CursorLoader will load the data for us
+        if (loaderManager.getLoader(CONTACT_GROUP_LOADER) == null) {
+            loaderManager.initLoader(CONTACT_GROUP_LOADER, null, this);
+        } else {
+            loaderManager.restartLoader(CONTACT_GROUP_LOADER, null, this);
+        }
+    }
+
+    @Override
+    public void onContactsLoaded(List<Contact> contacts) {
+        // we don't care about the result since the CursorLoader will load the data for us
+        if (loaderManager.getLoader(CONTACT_LOADER) == null) {
+            loaderManager.initLoader(CONTACT_LOADER, null, this);
+        } else {
+            loaderManager.restartLoader(CONTACT_LOADER, null, this);
+        }
     }
 
     @Override
     public void loadContactGroups(boolean forceUpdate) {
         view.setLoadingIndicator(true);
         appRepository.getContactGroups(this);
+    }
+
+    @Override
+    public void loadContacts() {
+        view.setLoadingIndicator(true);
+        appRepository.getContacts(this);
     }
 
     @Override
@@ -172,38 +191,29 @@ public class ContactsPresenter implements ContactGroupContract.Presenter, AppRep
     @Override
     public void addNewContact() {
         checkNotNull(selectedContactGroup, "contact group cannot be null!");
-        view.showAddNewContactView(selectedContactGroup.getName());
+        view.showAddNewContactView(selectedContactGroup.getId());
     }
 
     @Override
     public void saveContact(@NonNull Contact contact) {
-
+        String result = appRepository.saveContact(contact);
+        if(result == DatabaseContract.ALREADY_EXISTS) {
+            view.showLoadingError();
+        } else {
+            view.showSuccessfullySavedMessage();
+        }
     }
 
     @Override
     public void openContactDetails(@NonNull Contact contact) {
         checkNotNull(contact, "contact cannot be null!");
-        view.showContactDetailView(contact.getId());
+        view.showContactDetailView(contact);
     }
 
     @Override
     public void openPrayerRequestDetails(@NonNull PrayerRequest prayerRequest) {
         checkNotNull(prayerRequest, "prayerRequest cannot be null!");
         view.showPrayerRequestDetailView(prayerRequest.getId());
-    }
-
-    @Override
-    public void onDataLoaded(Cursor data) {
-        view.setLoadingIndicator(false);
-        // Show the list of tasks
-        view.showContactGroupsTabs(data, selectedContactGroup);
-    }
-
-    @Override
-    public void onDataEmpty() {
-        view.setLoadingIndicator(false);
-        // Show a message indicating there are no tasks for that filter type.
-        processEmptyTasks();
     }
 
     private void processEmptyTasks() {
@@ -215,17 +225,58 @@ public class ContactsPresenter implements ContactGroupContract.Presenter, AppRep
     }
 
     @Override
-    public void onDataNotAvailable() {
+    public void onContactGroupDataLoaded(Cursor data) {
+        view.setLoadingIndicator(false);
+        // Show the list of tasks
+        view.showContactGroupsTabs(data, selectedContactGroup);
+    }
+
+    @Override
+    public void onContactGroupDataEmpty() {
+        view.setLoadingIndicator(false);
+        // Show a message indicating there are no tasks for that filter type.
+        processEmptyTasks();
+    }
+
+    @Override
+    public void onContactGroupDataReset() {
+        view.showContactGroupsTabs(null, selectedContactGroup);
+    }
+
+    @Override
+    public void onContactGroupDataNotAvailable() {
         view.setLoadingIndicator(false);
         view.showLoadingError();
     }
 
     @Override
-    public void onDataReset() {
-        view.showContactGroupsTabs(null, selectedContactGroup);
+    public void onContactDataLoaded(Cursor data) {
+        view.setLoadingIndicator(false);
+        // Show the list of contacts
+        view.showContacts(data);
     }
 
-//    @Override
+    @Override
+    public void onContactDataEmpty() {
+        view.setLoadingIndicator(false);
+        // Show a message indicating there are no tasks for that filter type.
+        view.showContacts(null);
+    }
+
+    @Override
+    public void onContactDataNotAvailable() {
+        view.setLoadingIndicator(false);
+        view.showLoadingError();
+    }
+
+    @Override
+    public void onContactDataReset() {
+        view.showContacts(null);
+    }
+
+
+
+    //    @Override
 //    public void setView(final ContactGroupContract.View view) {
 ////        this.view = view;
 //////        selectedContactGroup = dataSource.getContactGroup(contactGroupId);
@@ -240,12 +291,6 @@ public class ContactsPresenter implements ContactGroupContract.Presenter, AppRep
 //        }
 //    }
 //
-//    private void showContactGroupsTabs() {
-//        if(!contactGroupsShown) {
-////            view.showContactGroupsTabs(dataSource.getAllContactGroups(), selectedContactGroup);
-//            contactGroupsShown = true;
-//        }
-//    }
 //
 //    @Override
 //    public void onContactGroupClicked(long contactGroupId) {

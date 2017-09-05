@@ -1,10 +1,12 @@
 package com.copychrist.app.prayer.data.model;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.List;
+import com.copychrist.app.prayer.data.local.DatabaseContract;
+
 import java.util.Objects;
 
 public class Contact  {
@@ -20,41 +22,66 @@ public class Contact  {
     @Nullable
     private final String pictureUrl;
 
-    @Nullable
-    private final List<PrayerRequest> requests;
-
     @NonNull
     private final long groupId;
 
-    public Contact(@NonNull long groupId, @NonNull String firstName, @Nullable String lastName) {
-        this(-1, groupId, firstName, lastName, null, null);
-    }
-
-    public Contact(@NonNull long groupId, @NonNull String firstName, @Nullable String lastName,
-                   @Nullable String pictureUrl, @Nullable List<PrayerRequest> requests) {
-        this(-1, groupId, firstName, lastName, pictureUrl, requests);
+    public Contact(@NonNull long id, @NonNull long groupId,
+                   @NonNull String firstName, @Nullable String lastName) {
+        this(id, groupId, firstName, lastName, null);
     }
 
     public Contact(@NonNull long id, @NonNull long groupId, @NonNull String firstName,
-                   @Nullable String lastName, @Nullable String pictureUrl,
-                   @Nullable List<PrayerRequest> requests) {
+                   @Nullable String lastName, @Nullable String pictureUrl) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.pictureUrl = pictureUrl;
         this.groupId = groupId;
-        this.requests = requests;
     }
 
-    public Contact(@NonNull Cursor cursor) {
-        this.id = cursor.getLong(0);
-        this.firstName = cursor.getString(1);
-        this.lastName = cursor.getString(2);
-        this.pictureUrl = cursor.getString(3);
-        this.groupId = cursor.getLong(4);
-        this.requests = null;
+    public static Contact getFrom(@NonNull Cursor cursor) {
+        long id = cursor.getLong(cursor.getColumnIndexOrThrow(
+                DatabaseContract.ContactEntry._ID));
+        long groupId = cursor.getLong(cursor.getColumnIndexOrThrow(
+                DatabaseContract.ContactEntry.COLUMN_GROUP));
+        String firstName = cursor.getString(cursor.getColumnIndexOrThrow(
+                DatabaseContract.ContactEntry.COLUMN_FIRST_NAME));
+        String lastName = cursor.getString(cursor.getColumnIndexOrThrow(
+                DatabaseContract.ContactEntry.COLUMN_LAST_NAME));
+        String pictureUrl = cursor.getString(cursor.getColumnIndexOrThrow(
+                DatabaseContract.ContactEntry.COLUMN_PICTURE_URL));
+        return new Contact(id, groupId, firstName, lastName, pictureUrl);
     }
 
+    /**
+     * Return a ContactGroup instance from ContentValues object
+     * @param contentValues
+     * @return
+     */
+    public static Contact getFrom(ContentValues contentValues) {
+        long id = contentValues.getAsLong(
+                DatabaseContract.ContactEntry._ID);
+        long groupId = contentValues.getAsLong(
+                DatabaseContract.ContactEntry.COLUMN_GROUP);
+        String firstName = contentValues.getAsString(
+                DatabaseContract.ContactEntry.COLUMN_FIRST_NAME);
+        String lastName = contentValues.getAsString(
+                DatabaseContract.ContactEntry.COLUMN_LAST_NAME);
+        String pictureUrl = contentValues.getAsString(
+                DatabaseContract.ContactEntry.COLUMN_PICTURE_URL);
+        return new Contact(id, groupId, firstName, lastName, pictureUrl);
+    }
+
+    public static ContentValues from(Contact contact) {
+        ContentValues values = new ContentValues();
+        if(contact.getId() > 0)
+            values.put(DatabaseContract.ContactEntry._ID, contact.getId());
+        values.put(DatabaseContract.ContactEntry.COLUMN_GROUP, contact.getGroupId());
+        values.put(DatabaseContract.ContactEntry.COLUMN_FIRST_NAME, contact.getFirstName());
+        values.put(DatabaseContract.ContactEntry.COLUMN_LAST_NAME, contact.getLastName());
+        values.put(DatabaseContract.ContactEntry.COLUMN_PICTURE_URL, contact.getPictureUrl());
+        return values;
+    }
     @NonNull
     public long getId() {
         return id;
@@ -78,29 +105,6 @@ public class Contact  {
     @Nullable
     public String getPictureUrl() {
         return pictureUrl;
-    }
-
-    public List<PrayerRequest> getRequests() {
-        return requests;
-    }
-
-    @Nullable
-    public void setRequests(List<PrayerRequest> requests) {
-        this.requests.addAll(requests);
-    }
-
-    public void addRequest(PrayerRequest request) {
-        this.requests.add(request);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Contact contact = (Contact) o;
-        return Objects.equals(id, contact.id) &&
-                Objects.equals(groupId, contact.groupId) &&
-                Objects.equals(firstName, contact.firstName);
     }
 
     @Override
