@@ -12,10 +12,10 @@ import com.copychrist.app.prayer.data.model.ContactGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static com.copychrist.app.prayer.data.local.DatabaseContract.ContactGroupEntry.getResultFromUri;
+import static com.copychrist.app.prayer.data.local.DatabaseContract.ContactEntry;
+import static com.copychrist.app.prayer.data.local.DatabaseContract.ContactGroupEntry;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -56,16 +56,16 @@ public class AppLocalDataSource implements AppDataSource {
         Uri uri;
         if(contactGroup.getId() > 0) {
             int rowId = contentResolver.update(
-                    DatabaseContract.ContactGroupEntry.buildUri(),
+                    ContactGroupEntry.buildUri(),
                     values,
-                    DatabaseContract.ContactGroupEntry._ID + " = ? ",
+                    ContactGroupEntry._ID + " = ? ",
                     new String[] { Long.toString(contactGroup.getId()) }
             );
-            uri = DatabaseContract.ContactGroupEntry.buildWithIdUri(rowId);
+            uri = ContactGroupEntry.buildWithIdUri(rowId);
         } else {
-            uri = contentResolver.insert(DatabaseContract.ContactGroupEntry.buildUri(), values);
+            uri = contentResolver.insert(ContactGroupEntry.buildUri(), values);
         }
-        return getResultFromUri(uri);
+        return ContactGroupEntry.getResultFromUri(uri);
     }
 
     @Override
@@ -75,15 +75,15 @@ public class AppLocalDataSource implements AppDataSource {
 
     @Override
     public void deleteAllContactGroups() {
-        contentResolver.delete(DatabaseContract.ContactGroupEntry.buildUri(), null, null);
+        contentResolver.delete(ContactGroupEntry.buildUri(), null, null);
     }
 
     @Override
     public void deleteContactGroup(@NonNull ContactGroup contactGroup) {
-        String selection = DatabaseContract.ContactGroupEntry._ID + " = ?";
+        String selection = ContactGroupEntry._ID + " = ?";
         String[] selectionArgs = {Long.toString(contactGroup.getId())};
 
-        contentResolver.delete(DatabaseContract.ContactGroupEntry.buildUri(), selection, selectionArgs);
+        contentResolver.delete(ContactGroupEntry.buildUri(), selection, selectionArgs);
     }
 
     /**
@@ -96,12 +96,12 @@ public class AppLocalDataSource implements AppDataSource {
 
     @Override
     public void getContact(@NonNull long contactId, @NonNull GetContactCallback callback) {
-
+        callback.onContactLoaded(null);
     }
 
     @Override
     public void getContact(@NonNull String contactId, @NonNull GetContactCallback callback) {
-
+        callback.onContactLoaded(null);
     }
 
     @Override
@@ -110,23 +110,23 @@ public class AppLocalDataSource implements AppDataSource {
         Uri uri;
         if(contact.getId() > 0) {
             int rowId = contentResolver.update(
-                    DatabaseContract.ContactEntry.buildUri(),
+                    ContactEntry.buildUri(),
                     values,
-                    DatabaseContract.ContactGroupEntry._ID + " = ? ",
+                    ContactGroupEntry._ID + " = ? ",
                     new String[] { Long.toString(contact.getId()) }
             );
-            uri = DatabaseContract.ContactEntry.buildWithIdUri(rowId);
+            uri = ContactEntry.buildWithIdUri(rowId);
         } else {
-            uri = contentResolver.insert(DatabaseContract.ContactEntry.buildUri(), values);
+            uri = contentResolver.insert(ContactEntry.buildUri(), values);
         }
-        return getResultFromUri(uri);
+        return ContactEntry.getIdFromUri(uri);
     }
 
     @Override
     public void deleteContact(@NonNull Contact contact) {
-        String selection = DatabaseContract.ContactEntry._ID + " = ?";
+        String selection = ContactEntry._ID + " = ?";
         String[] selectionArgs = {Long.toString(contact.getId())};
 
-        contentResolver.delete(DatabaseContract.ContactEntry.buildWithIdUri(contact.getId()), selection, selectionArgs);
+        contentResolver.delete(ContactEntry.buildWithIdUri(contact.getId()), selection, selectionArgs);
     }
 }

@@ -11,6 +11,8 @@ import com.copychrist.app.prayer.data.AppRepository;
 import com.copychrist.app.prayer.data.LoaderProvider;
 import com.copychrist.app.prayer.data.model.Contact;
 
+import timber.log.Timber;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -19,9 +21,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ContactPresenter implements ContactContract.Presenter,
         LoaderManager.LoaderCallbacks<Cursor>, AppRepository.ContactDetailActivityLoadDataCallback,
-        AppDataSource.GetContactCallback
-        {
+        AppDataSource.GetContactCallback {
 
+    public final static int CONTACT_DETAIL_LOADER = 1;
     @NonNull
     private final AppRepository appRepository;
 
@@ -31,6 +33,7 @@ public class ContactPresenter implements ContactContract.Presenter,
     @NonNull
     private final LoaderProvider loaderProvider;
 
+    private ContactFilter currentFilter = ContactFilter.from(ContactFilter.FilterType.REQUESTS);
     private final long contactId;
     private ContactContract.View view;
     private Contact contact;
@@ -54,17 +57,21 @@ public class ContactPresenter implements ContactContract.Presenter,
         loadContactDetail();
     }
 
+    private static final String TAG = "ContactPresenter";
     private void loadContactDetail() {
 //        view.setLoadingIndicator(true);
+        Timber.d(TAG, "loadContactDetail() called");
         appRepository.getContact(contactId, this);
     }
 
     private void showActivePrayerRequests() {
-//            view.showPrayerRequests(appDataSource.getActiveRequestsByContact(contact));
+        currentFilter = ContactFilter.from(ContactFilter.FilterType.REQUESTS);
+        loadContactDetail();
     }
 
     private void showArchivedPrayerRequests() {
-//            view.showPrayerRequests(appDataSource.getArchivedRequestsByContact(contact));
+        currentFilter = ContactFilter.from(ContactFilter.FilterType.ARCHIVED);
+        loadContactDetail();
     }
 
     @Override
@@ -84,7 +91,7 @@ public class ContactPresenter implements ContactContract.Presenter,
 
     @Override
     public void onEditClick(long contactId, String firstName, String lastName, String pictureUrl) {
-//        appDataSource.editContact(contactId, firstName, lastName, pictureUrl, contact.getGroup().getName(), this);
+        appRepository.saveContact(contact);
     }
 
     @Override
@@ -94,7 +101,7 @@ public class ContactPresenter implements ContactContract.Presenter,
 
     @Override
     public void onDeleteConfirm(long id) {
-//        appDataSource.deleteContact(id);
+        appRepository.deleteContact(new Contact(id, -1, "", ""));
         view.finish();
     }
 
@@ -110,46 +117,72 @@ public class ContactPresenter implements ContactContract.Presenter,
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        Timber.d(TAG, "onCreateLoader() called with: id = [" + id + "], args = [" + args + "]");
+        return loaderProvider.createFilteredContactLoader(contactId, currentFilter);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        Timber.d(TAG, "onLoadFinished() called with: loader = [" + loader + "], data = [" + data + "]");
+        if (data != null) {
+            if (data.moveToLast()) {
+                onContactDetailDataLoaded(data);
+            } else {
+                onContactDetailDataEmpty();
+            }
+        } else {
+            onContactDataNotAvailable();
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        onContactDetailDataReset();
     }
 
     @Override
     public void onContactDetailDataLoaded(Cursor data) {
-
+//        view.setLoadingIndicator(false);
+        // Show contact detail
+        Timber.d(TAG, "onContactDetailDataLoaded() called with: data = [" + data + "]");
+        view.showContactDetail(data);
     }
 
     @Override
-    public void onContactDetailataEmpty() {
-
+    public void onContactDetailDataEmpty() {
+        Timber.d(TAG, "onContactDetailDataEmpty() called");
+//        view.setLoadingIndicator(false);
+        // Show a message indicating there are no tasks for that filter type.
+        view.showContactDetail(null);
     }
 
     @Override
     public void onContactDetailDataNotAvailable() {
-
+        Timber.d(TAG, "onContactDetailDataNotAvailable() called");
+//        view.setLoadingIndicator(false);
+//        view.showLoadingError();
     }
 
     @Override
     public void onContactDetailDataReset() {
-
+        view.showContactDetail(null);
     }
 
     @Override
     public void onContactLoaded(Contact contact) {
-
+        Timber.d(TAG, "onContactLoaded() called with: contact = [" + contact + "]");
+        // we don't care about the result since the CursorLoader will load the data for us
+        if (loaderManager.getLoader(CONTACT_DETAIL_LOADER) == null) {
+            loaderManager.initLoader(CONTACT_DETAIL_LOADER, null, this);
+        } else {
+            loaderManager.restartLoader(CONTACT_DETAIL_LOADER, null, this);
+        }
     }
 
     @Override
     public void onContactDataNotAvailable() {
-
+        Timber.d(TAG, "onContactDataNotAvailable() called");
+//        view.setLoadingIndicator(false);
+//        view.showLoadingError();
     }
 }

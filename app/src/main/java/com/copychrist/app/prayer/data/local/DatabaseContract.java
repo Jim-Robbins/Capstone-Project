@@ -19,10 +19,12 @@ public class DatabaseContract {
     private static final String SEPARATOR = "/";
     public static final String ALREADY_EXISTS = "exists";
     private static final String BASE_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + SEPARATOR + CONTENT_AUTHORITY + SEPARATOR;
-    private static final String BASE_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + SEPARATOR + CONTENT_AUTHORITY + SEPARATOR ;
+    private static final String BASE_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + SEPARATOR + CONTENT_AUTHORITY + SEPARATOR ;
 
 
     public static abstract class BibleVerseEntry implements BaseColumns {
+        private BibleVerseEntry() {}
+
         public static final String TABLE_NAME = "BibleVerse";
 
         public static final String COLUMN_BOOK      = "book";
@@ -33,8 +35,7 @@ public class DatabaseContract {
         public static final String COLUMN_API_URL   = "api_url";
         public static final String COLUMN_CREATED   = "create_date";
 
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME.toLowerCase()).build();
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME.toLowerCase());
 
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + TABLE_NAME.toLowerCase();
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + TABLE_NAME.toLowerCase();
@@ -46,8 +47,12 @@ public class DatabaseContract {
         }
 
         public static String getPassageFromUri(Uri uri) {
-            String encodedPassage = uri.getPathSegments().get(2);
+            String encodedPassage = uri.getLastPathSegment();
             return BibleVerse.getUrlDecodedPassage(encodedPassage);
+        }
+
+        public static Uri buildExistsUri() {
+            return CONTENT_URI.buildUpon().appendPath(ALREADY_EXISTS).build();
         }
 
         public static String CREATE_TABLE_QUERY = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -65,6 +70,7 @@ public class DatabaseContract {
     }
 
     public static final class ContactEntry implements BaseColumns {
+        private ContactEntry() {}
 
         public static final String TABLE_NAME = "Contact";
 
@@ -81,8 +87,7 @@ public class DatabaseContract {
                 COLUMN_PICTURE_URL,
                 COLUMN_GROUP};
 
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME.toLowerCase()).build();
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME.toLowerCase());
 
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + TABLE_NAME.toLowerCase();
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + TABLE_NAME.toLowerCase();
@@ -110,9 +115,27 @@ public class DatabaseContract {
                 " );";
 
         public static String DROP_TABLE_QUERY = getDropTableQuery(TABLE_NAME);
+
+        public static String[] CONTACT_REQUEST_COLUMNS = new String[]{
+                TABLE_NAME+"."+_ID,
+                COLUMN_FIRST_NAME,
+                COLUMN_LAST_NAME,
+                COLUMN_PICTURE_URL,
+                COLUMN_GROUP,
+                PrayerRequestEntry.TABLE_NAME+"."+PrayerRequestEntry._ID + " AS request_id",
+                PrayerRequestEntry.COLUMN_TITLE,
+                PrayerRequestEntry.COLUMN_DESC,
+                PrayerRequestEntry.COLUMN_END_DATE,
+                PrayerRequestEntry.COLUMN_ANSWERED
+                };
+
+        public static String getIdFromUri(Uri uri) {
+                return uri.getLastPathSegment();
+        }
     }
 
     public static final class ContactGroupEntry implements BaseColumns {
+        private ContactGroupEntry() {}
 
         public static final String TABLE_NAME = "ContactGroup";
 
@@ -127,8 +150,7 @@ public class DatabaseContract {
                 COLUMN_SORT_ORDER,
                 COLUMN_CREATED};
 
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME.toLowerCase()).build();
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME.toLowerCase());
 
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + TABLE_NAME.toLowerCase();
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + TABLE_NAME.toLowerCase();
@@ -150,7 +172,7 @@ public class DatabaseContract {
         }
 
         public static String getResultFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
+            return uri.getLastPathSegment();
         }
 
         public static String CREATE_TABLE_QUERY = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -172,14 +194,17 @@ public class DatabaseContract {
         public static final String COLUMN_SORT_ORDER = "sort_order";
         public static final String COLUMN_CREATED    = "create_date";
 
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME.toLowerCase()).build();
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME.toLowerCase());
 
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + TABLE_NAME.toLowerCase();
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + TABLE_NAME.toLowerCase();
 
         public static Uri buildWithIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildExistsUri() {
+            return CONTENT_URI.buildUpon().appendPath(ALREADY_EXISTS).build();
         }
 
         public static String CREATE_TABLE_QUERY = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -203,15 +228,26 @@ public class DatabaseContract {
         public static final String COLUMN_CREATED   = "create_date";
         public static final String COLUMN_CONTACT   = "contact_id";
         public static final String COLUMN_PRAYED_FOR = "prayed_for_on";
+        public static String[] PRAYER_REQUEST_COLUMNS = new String[]{
+                _ID,
+                COLUMN_TITLE,
+                COLUMN_DESC,
+                COLUMN_END_DATE,
+                COLUMN_ANSWERED,
+                COLUMN_CONTACT
+        };
 
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME.toLowerCase()).build();
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME.toLowerCase());
 
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + TABLE_NAME.toLowerCase();
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + TABLE_NAME.toLowerCase();
 
         public static Uri buildWithIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildExistsUri() {
+            return CONTENT_URI.buildUpon().appendPath(ALREADY_EXISTS).build();
         }
 
         public static String CREATE_TABLE_QUERY = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -236,14 +272,22 @@ public class DatabaseContract {
         public static final String COLUMN_REQUEST_ID = "prayer_request_id";
         public static final String COLUMN_SORT_ORDER = "sort_order";
 
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME.toLowerCase()).build();
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME.toLowerCase());
 
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + TABLE_NAME.toLowerCase();
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + TABLE_NAME.toLowerCase();
 
+        // Accepts a prayerList id to filter by
         public static Uri buildWithIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildDeleteUri(long listId, long requestId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(listId)).appendPath(encodedPassage).build();
+        }
+
+        public static Uri buildExistsUri() {
+            return CONTENT_URI.buildUpon().appendPath(ALREADY_EXISTS).build();
         }
 
         public static String CREATE_TABLE_QUERY = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -260,8 +304,7 @@ public class DatabaseContract {
 
         public static final String TABLE_NAME = "PrayerRequestVerse";
 
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME.toLowerCase()).build();
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME.toLowerCase());
 
         public static final String CONTENT_TYPE = BASE_CONTENT_TYPE + TABLE_NAME.toLowerCase();
         public static final String CONTENT_ITEM_TYPE = BASE_CONTENT_ITEM_TYPE + TABLE_NAME.toLowerCase();
@@ -272,6 +315,23 @@ public class DatabaseContract {
 
         public static Uri buildWithIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildDeleteUri(long requestId, String passage) {
+            return ContentUris.appendId(CONTENT_URI.buildUpon(), requestId).appendEncodedPath(passage).build();
+        }
+
+        public static String getPassageFromUri(Uri uri) {
+            String encodedPassage = uri.getEncodedPath()
+            return BibleVerse.getUrlDecodedPassage(encodedPassage);
+        }
+
+        public static long getRequestIdFromUri(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
+        }
+
+        public static Uri buildExistsUri() {
+            return CONTENT_URI.buildUpon().appendPath(ALREADY_EXISTS).build();
         }
 
         public static String CREATE_TABLE_QUERY = "CREATE TABLE " + TABLE_NAME + " (" +

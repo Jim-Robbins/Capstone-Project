@@ -13,6 +13,7 @@ import com.copychrist.app.prayer.data.local.DatabaseContract;
 import com.copychrist.app.prayer.data.model.Contact;
 import com.copychrist.app.prayer.data.model.ContactGroup;
 import com.copychrist.app.prayer.data.model.PrayerRequest;
+import com.copychrist.app.prayer.ui.contact.ContactFilter;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ContactsPresenter implements ContactGroupContract.Presenter,
     @NonNull
     private final LoaderProvider loaderProvider;
 
-    private ContactGroupFilter currentFiltering;
+    private ContactFilter currentFiltering;
 
     private ContactGroup selectedContactGroup;
 
@@ -49,7 +50,7 @@ public class ContactsPresenter implements ContactGroupContract.Presenter,
                              @NonNull LoaderManager loaderManager,
                              @NonNull AppRepository repository,
                              @NonNull ContactGroupContract.View view,
-                             @NonNull ContactGroupFilter filter,
+                             @NonNull ContactFilter filter,
                              @NonNull long contactGroupId) {
         this.loaderProvider = checkNotNull(loaderProvider, "loaderProvider provider cannot be null");
         this.loaderManager = checkNotNull(loaderManager, "loaderManager provider cannot be null");

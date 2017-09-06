@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.data;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.copychrist.app.prayer.data.local.Local;
 import com.copychrist.app.prayer.data.model.Contact;
@@ -11,6 +12,8 @@ import com.copychrist.app.prayer.data.remote.Remote;
 import java.util.List;
 
 import javax.inject.Singleton;
+
+import timber.log.Timber;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -124,17 +127,21 @@ public class AppRepository implements AppDataSource {
         });
     }
 
+    private static final String TAG = "AppRepository";
     @Override
     public void getContact(@NonNull long contactId, @NonNull final GetContactCallback callback) {
+        Timber.d(TAG, "getContact() called with: contactId = [" + contactId + "], callback = [" + callback + "]");
         localDataSource.getContact(contactId, new GetContactCallback() {
 
             @Override
             public void onContactLoaded(Contact contact) {
+                Timber.d(TAG, "GetContactCallback().onContactLoaded()");
                 callback.onContactLoaded(contact);
             }
 
             @Override
             public void onContactDataNotAvailable() {
+                Timber.d(TAG, "GetContactCallback().onContactDataNotAvailable()");
                 callback.onContactDataNotAvailable();
             }
         });
@@ -175,7 +182,7 @@ public class AppRepository implements AppDataSource {
 
     public interface ContactDetailActivityLoadDataCallback {
         void onContactDetailDataLoaded(Cursor data);
-        void onContactDetailataEmpty();
+        void onContactDetailDataEmpty();
         void onContactDetailDataNotAvailable();
         void onContactDetailDataReset();
     }

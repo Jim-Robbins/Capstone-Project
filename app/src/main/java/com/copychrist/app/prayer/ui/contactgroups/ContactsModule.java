@@ -6,6 +6,7 @@ import android.support.v4.app.LoaderManager;
 import com.copychrist.app.prayer.ApplicationModule;
 import com.copychrist.app.prayer.data.AppRepository;
 import com.copychrist.app.prayer.data.LoaderProvider;
+import com.copychrist.app.prayer.ui.contact.ContactFilter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,13 +23,13 @@ public class ContactsModule {
     private final AppRepository appRepository;
     private final LoaderManager loaderManager;
     private final ContactGroupContract.View view;
-    private final ContactGroupFilter filter;
+    private final ContactFilter filter;
 
     public ContactsModule(@NonNull LoaderProvider loaderProvider,
                           @NonNull LoaderManager loaderManager,
                           @NonNull AppRepository repository,
                           @NonNull ContactGroupContract.View view,
-                          @NonNull ContactGroupFilter filter,
+                          @NonNull ContactFilter filter,
                           @NonNull long contactGroupId) {
         this.contactGroupId = contactGroupId;
         this.loaderProvider = loaderProvider;

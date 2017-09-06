@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class ContactDetailActivity extends BaseActivity
         implements ContactContract.View, PrayerRequestsListAdapter.OnPrayerRequestClickListener,
@@ -164,20 +166,17 @@ public class ContactDetailActivity extends BaseActivity
         this.contactPresenter = presenter;
     }
 
-    //
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        contactPresenter.clearView();
-//    }
-
-
-
+    private static final String TAG = "ContactDetailActivity";
     @Override
-    public void showContactDetail(final Contact contact) {
-        this.contact = contact;
-        txtFirstName.setText(contact.getFirstName());
-        txtLastName.setText(contact.getLastName());
+    public void showContactDetail(Cursor contactData) {
+        Timber.d(TAG, "showContactDetail() called with: contactData = [" + contactData + "]");
+        if(contactData != null) {
+            if (contactData.moveToFirst()) {
+                contact = Contact.getFrom(contactData);
+                txtFirstName.setText(contact.getFirstName());
+                txtLastName.setText(contact.getLastName());
+            }
+        }
     }
 
     @Override

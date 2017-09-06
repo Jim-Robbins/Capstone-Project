@@ -7,12 +7,17 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.copychrist.app.prayer.data.local.DatabaseContract;
+import com.copychrist.app.prayer.data.local.DatabaseContract.*;
 import com.copychrist.app.prayer.data.local.DatabaseHelper;
+import com.copychrist.app.prayer.data.model.BibleVerse;
+import com.copychrist.app.prayer.data.model.PrayerRequest;
 
 /**
  * Created by jim on 8/29/17.
@@ -208,77 +213,77 @@ public class AppContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case BIBLE_VERSE:
-                insertId = db.insert(DatabaseContract.BibleVerseEntry.TABLE_NAME, null, contentValues);
+                insertId = db.insert(BibleVerseEntry.TABLE_NAME, null, contentValues);
                 if(insertId > 0) {
-                    String passage = contentValues.getAsString(DatabaseContract.BibleVerseEntry.COLUMN_BOOK) + " " +
-                            contentValues.getAsString(DatabaseContract.BibleVerseEntry.COLUMN_CHAPTER) + ":" +
-                            contentValues.getAsString(DatabaseContract.BibleVerseEntry.COLUMN_VERSE);
-                    returnUri = DatabaseContract.BibleVerseEntry.buildWithPassageUri(passage);
+                    String passage = contentValues.getAsString(BibleVerseEntry.COLUMN_BOOK) + " " +
+                            contentValues.getAsString(BibleVerseEntry.COLUMN_CHAPTER) + ":" +
+                            contentValues.getAsString(BibleVerseEntry.COLUMN_VERSE);
+                    returnUri = BibleVerseEntry.buildWithPassageUri(passage);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;
             case CONTACT:
-                tableName =  DatabaseContract.ContactEntry.TABLE_NAME;
+                tableName =  ContactEntry.TABLE_NAME;
                 exists = alreadyExists(db, tableName,
                         new String[] {
-                                DatabaseContract.ContactEntry._ID,
-                                DatabaseContract.ContactEntry.COLUMN_FIRST_NAME,
-                                DatabaseContract.ContactEntry.COLUMN_LAST_NAME
+                                ContactEntry._ID,
+                                ContactEntry.COLUMN_FIRST_NAME,
+                                ContactEntry.COLUMN_LAST_NAME
                         },
-                        DatabaseContract.ContactEntry.COLUMN_FIRST_NAME + " = ? AND " +
-                                DatabaseContract.ContactEntry.COLUMN_LAST_NAME + " = ?",
-                        new String[] { contentValues.getAsString(DatabaseContract.ContactEntry.COLUMN_FIRST_NAME),
-                                contentValues.getAsString(DatabaseContract.ContactEntry.COLUMN_LAST_NAME)});
+                        ContactEntry.COLUMN_FIRST_NAME + " = ? AND " +
+                                ContactEntry.COLUMN_LAST_NAME + " = ?",
+                        new String[] { contentValues.getAsString(ContactEntry.COLUMN_FIRST_NAME),
+                                contentValues.getAsString(ContactEntry.COLUMN_LAST_NAME)});
                 if (exists) {
-                    returnUri = DatabaseContract.ContactEntry.buildExistsUri();
+                    returnUri = ContactEntry.buildExistsUri();
                 } else {
-                    Long count = getRowCount(db, tableName, DatabaseContract.ContactEntry.COLUMN_GROUP + " = " + contentValues.getAsString(DatabaseContract.ContactEntry.COLUMN_GROUP));
-                    contentValues.put(DatabaseContract.ContactEntry.COLUMN_SORT_ORDER, count);
+                    Long count = getRowCount(db, tableName, ContactEntry.COLUMN_GROUP + " = " + contentValues.getAsString(ContactEntry.COLUMN_GROUP));
+                    contentValues.put(ContactEntry.COLUMN_SORT_ORDER, count);
                     //Insert Entry
                     long _id = db.insert(tableName, null, contentValues);
                     if (_id > 0) {
-                        returnUri = DatabaseContract.ContactEntry.buildWithIdUri(_id);
+                        returnUri = ContactEntry.buildWithIdUri(_id);
                     } else {
                         throw new android.database.SQLException("Failed to insert row into " + uri);
                     }
                 }
                 break;
             case CONTACT_GROUP:
-                tableName =  DatabaseContract.ContactGroupEntry.TABLE_NAME;
+                tableName =  ContactGroupEntry.TABLE_NAME;
                 exists = alreadyExists(db, tableName,
                         new String[] {
-                                DatabaseContract.ContactGroupEntry._ID,
-                                DatabaseContract.ContactGroupEntry.COLUMN_NAME
+                                ContactGroupEntry._ID,
+                                ContactGroupEntry.COLUMN_NAME
                         },
-                        DatabaseContract.ContactGroupEntry.COLUMN_NAME + " = ?",
-                        new String[] { contentValues.getAsString(DatabaseContract.ContactGroupEntry.COLUMN_NAME) });
+                        ContactGroupEntry.COLUMN_NAME + " = ?",
+                        new String[] { contentValues.getAsString(ContactGroupEntry.COLUMN_NAME) });
                 if (exists) {
-                    returnUri = DatabaseContract.ContactGroupEntry.buildExistsUri();
+                    returnUri = ContactGroupEntry.buildExistsUri();
                 } else {
                     Long count = getRowCount(db, tableName, "");
-                    contentValues.put(DatabaseContract.ContactGroupEntry.COLUMN_SORT_ORDER, count);
+                    contentValues.put(ContactGroupEntry.COLUMN_SORT_ORDER, count);
                     //Insert Entry
                     long _id = db.insert(tableName, null, contentValues);
                     if (_id > 0) {
-                        returnUri = DatabaseContract.ContactGroupEntry.buildWithIdUri(_id);
+                        returnUri = ContactGroupEntry.buildWithIdUri(_id);
                     } else {
                         throw new android.database.SQLException("Failed to insert row into " + uri);
                     }
                 }
                 break;
             case PRAYER_LIST:
-                insertId = db.insert(DatabaseContract.PrayerListEntry.TABLE_NAME, null, contentValues);
+                insertId = db.insert(PrayerListEntry.TABLE_NAME, null, contentValues);
                 if(insertId > 0) {
-                    returnUri = DatabaseContract.PrayerListEntry.buildWithIdUri(insertId);
+                    returnUri = PrayerListEntry.buildWithIdUri(insertId);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;
             case PRAYER_REQUEST:
-                insertId = db.insert(DatabaseContract.PrayerRequestEntry.TABLE_NAME, null, contentValues);
+                insertId = db.insert(PrayerRequestEntry.TABLE_NAME, null, contentValues);
                 if(insertId > 0) {
-                    returnUri = DatabaseContract.PrayerRequestEntry.buildWithIdUri(insertId);
+                    returnUri = PrayerRequestEntry.buildWithIdUri(insertId);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
@@ -295,7 +300,7 @@ public class AppContentProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
 //            case BIBLE_VERSE:
 //                try {
-//                    returnId = db.replaceOrThrow(DatabaseContract.BibleVerseEntry.TABLE_NAME, null, values);
+//                    returnId = db.replaceOrThrow(BibleVerseEntry.TABLE_NAME, null, values);
 //                } catch (SQLiteConstraintException e) {
 //                    throw e;
 //                }
@@ -314,19 +319,19 @@ public class AppContentProvider extends ContentProvider {
         String tableName;
         switch (uriMatcher.match(uri)) {
             case BIBLE_VERSE:
-                tableName =  DatabaseContract.BibleVerseEntry.TABLE_NAME;
+                tableName =  BibleVerseEntry.TABLE_NAME;
                 break;
             case CONTACT:
-                tableName =  DatabaseContract.ContactEntry.TABLE_NAME;
+                tableName =  ContactEntry.TABLE_NAME;
                 break;
             case CONTACT_GROUP:
-                tableName =  DatabaseContract.ContactGroupEntry.TABLE_NAME;
+                tableName =  ContactGroupEntry.TABLE_NAME;
                 break;
             case PRAYER_LIST:
-                tableName =  DatabaseContract.PrayerListEntry.TABLE_NAME;
+                tableName =  PrayerListEntry.TABLE_NAME;
                 break;
             case PRAYER_REQUEST:
-                tableName =  DatabaseContract.PrayerRequestEntry.TABLE_NAME;
+                tableName =  PrayerRequestEntry.TABLE_NAME;
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -350,19 +355,19 @@ public class AppContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case BIBLE_VERSE:
-                tableName =  DatabaseContract.BibleVerseEntry.TABLE_NAME;
+                tableName =  BibleVerseEntry.TABLE_NAME;
                 break;
             case CONTACT:
-                tableName =  DatabaseContract.ContactEntry.TABLE_NAME;
+                tableName =  ContactEntry.TABLE_NAME;
                 break;
             case CONTACT_GROUP:
-                tableName =  DatabaseContract.ContactGroupEntry.TABLE_NAME;
+                tableName =  ContactGroupEntry.TABLE_NAME;
                 break;
             case PRAYER_LIST:
-                tableName =  DatabaseContract.PrayerListEntry.TABLE_NAME;
+                tableName =  PrayerListEntry.TABLE_NAME;
                 break;
             case PRAYER_REQUEST:
-                tableName =  DatabaseContract.PrayerRequestEntry.TABLE_NAME;
+                tableName =  PrayerRequestEntry.TABLE_NAME;
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -407,7 +412,34 @@ public class AppContentProvider extends ContentProvider {
 
     @Override
     public void shutdown() {
-        //Todo:: DBHelper close
+        dbHelper.close();
         super.shutdown();
+    }
+
+    private static final SQLiteQueryBuilder contactDetailQueryBuilder;
+    static {
+        contactDetailQueryBuilder = new SQLiteQueryBuilder();
+
+        //This is an inner join which looks like
+        //movies LEFT OUTER JOIN favorite_movies ON movies.movie_id = favorite_movies.movie_id
+        contactDetailQueryBuilder.setTables(
+                ContactEntry.TABLE_NAME + " LEFT OUTER JOIN " +
+                        PrayerRequestEntry.TABLE_NAME +
+                        " ON " + ContactEntry.TABLE_NAME +
+                        "." + ContactEntry._ID +
+                        " = " + PrayerRequestEntry.TABLE_NAME +
+                        "." + PrayerRequestEntry.COLUMN_CONTACT);
+    }
+
+    private Cursor getContactWithRequests(Uri uri, String[] projection, String selection, String[] selectionArgs) {
+        Cursor cursor = contactDetailQueryBuilder.query(dbHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        return cursor;
     }
 }

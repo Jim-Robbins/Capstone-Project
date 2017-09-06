@@ -16,7 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 1;
 
-    static final String DATABASE_NAME = "pray_with_dedication.db";
+    public static final String DATABASE_NAME = "pray_with_dedication.db";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

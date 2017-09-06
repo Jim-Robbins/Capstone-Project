@@ -27,6 +27,7 @@ import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
 import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
 import com.copychrist.app.prayer.ui.contact.AddEditContactDialogFragment;
 import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
+import com.copychrist.app.prayer.ui.contact.ContactFilter;
 import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
 
 import javax.inject.Inject;
@@ -68,14 +69,14 @@ public class ContactsActivity extends BaseActivity implements ContactGroupContra
         initList();
     }
 
-    ContactGroupFilter filter;
+    ContactFilter filter;
     private void initFilterType(Bundle savedInstanceState) {
         // Load previously saved state, if available.
-        filter = ContactGroupFilter.from(ContactGroupFilter.FilterType.ALL);
+        filter = ContactFilter.from(ContactFilter.FilterType.ALL);
         if (savedInstanceState != null) {
-            ContactGroupFilter.FilterType currentFiltering =
-                    (ContactGroupFilter.FilterType) savedInstanceState.getSerializable(CURRENT_FILTERING_KEY);
-            filter = ContactGroupFilter.from(currentFiltering);
+            ContactFilter.FilterType currentFiltering =
+                    (ContactFilter.FilterType) savedInstanceState.getSerializable(CURRENT_FILTERING_KEY);
+            filter = ContactFilter.from(currentFiltering);
         }
     }
 

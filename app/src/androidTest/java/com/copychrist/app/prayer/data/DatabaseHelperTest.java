@@ -1,9 +1,12 @@
-package com.copychrist.app.prayer.data.local;
+package com.copychrist.app.prayer.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
+
+import com.copychrist.app.prayer.data.local.DatabaseContract;
+import com.copychrist.app.prayer.data.local.DatabaseHelper;
 
 import org.junit.Test;
 

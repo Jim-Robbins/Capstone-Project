@@ -15,7 +15,7 @@ public class ContactContract {
         void showPrayerRequests(Cursor requests);
         void showPrayerRequestDetailView(long id);
         void showAddNewPrayerRequestView(long contactId);
-        void showContactDetail(Contact contact);
+        void showContactDetail(Cursor contactData);
         void showContactDetailEditView(long contactId);
         void showDBResultMessage(String message);
         void showDeleteContactDialog(Contact myContact);
