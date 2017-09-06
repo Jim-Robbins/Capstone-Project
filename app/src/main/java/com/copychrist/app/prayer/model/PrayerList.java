@@ -1,47 +1,88 @@
 package com.copychrist.app.prayer.model;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public class PrayerList extends RealmObject {
-    @PrimaryKey
-    private int id;
-    @Required
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@IgnoreExtraProperties
+public class PrayerList {
+    @NonNull
+    private String id;
+
+    @NonNull
     private String name;
-    private RealmList<PrayerRequest> requests;
+
+    @NonNull
     private int order;
 
+    @Nullable
+    private List<PrayerRequest> requests;
+
+    public PrayerList() {}
+
+    public PrayerList(@NonNull String name) {
+        this(name, -1, null);
+    }
+
+    public PrayerList(@NonNull String name, @NonNull int order) {
+        this(name, order, null);
+    }
+
+    public PrayerList(@NonNull String name, @NonNull int order,
+                      @Nullable List<PrayerRequest> requests) {
+        this.id = createPrayerListId(name);
+        this.name = name;
+        this.order = order;
+        this.requests = new ArrayList<>(requests);
+    }
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    @NonNull
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public RealmList<PrayerRequest> getRequests() {
+    @Nullable
+    public List<PrayerRequest> getRequests() {
         return requests;
     }
 
-    public void setRequests(RealmList<PrayerRequest> requests) {
-        this.requests = requests;
+    @Exclude
+    public List<PrayerRequest> addRequests(List<PrayerRequest> requests) {
+        this.requests.addAll(requests);
+        return requests;
     }
 
+    @Exclude
+    public List<PrayerRequest> addRequest(PrayerRequest request) {
+        this.requests.add(request);
+        return requests;
+    }
+
+    @Exclude
+    public List<PrayerRequest> deleteRequest(PrayerRequest request) {
+        this.requests.remove(request);
+        return requests;
+    }
+
+    @NonNull
     public int getOrder() {
         return order;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    @Exclude
+    private String createPrayerListId(String name) {
+        return name.replaceAll("\\s","").toLowerCase();
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 }

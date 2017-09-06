@@ -1,9 +1,8 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
-import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.repository.DatabaseSerivce;
 
 import timber.log.Timber;
 
@@ -12,15 +11,15 @@ import timber.log.Timber;
  */
 
 public class EditPrayerRequestPresenterImpl
-        implements EditPrayerRequestPresenter, RealmService.OnTransactionCallback {
+        implements EditPrayerRequestPresenter, DatabaseSerivce.OnTransactionCallback {
 
     private static final String TAG = "[EditPRequestPresenterImpl] ";
-    private final RealmService realmService;
+    private final DatabaseSerivce realmService;
     private int requestId;
     private PrayerRequest myRequest;
     private EditPrayerRequestView myEditView = new EditPrayerRequestView.EmptyEditPrayerRequestView();
 
-    public EditPrayerRequestPresenterImpl(final RealmService realmService, int requestId) {
+    public EditPrayerRequestPresenterImpl(final DatabaseSerivce realmService, int requestId) {
         this.realmService = realmService;
         this.requestId = requestId;
     }

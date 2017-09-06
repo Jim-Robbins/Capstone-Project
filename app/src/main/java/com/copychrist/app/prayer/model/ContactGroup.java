@@ -1,56 +1,87 @@
 package com.copychrist.app.prayer.model;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public class ContactGroup extends RealmObject {
-    @PrimaryKey
-    private int id;
-    @Required
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@IgnoreExtraProperties
+public class ContactGroup {
+    @NonNull
+    private String id;
+
+    @NonNull
     private String name;
-    private int order;
-    private String desc;
-    private RealmList<Contact> contacts;
 
+    @Nullable
+    private String description;
+
+    @NonNull
+    private int order;
+
+    @Nullable
+    private List<Contact> members;
+
+    public ContactGroup() {}
+
+    public ContactGroup(@NonNull String name, @Nullable String description,
+                        @NonNull int order, @Nullable List<Contact> contacts) {
+        this.id = name.replaceAll("\\s","").toLowerCase();
+        this.name = name;
+        this.description = description;
+        this.order = order;
+        this.members = new ArrayList<>(contacts);
+    }
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    @NonNull
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Nullable
+    public String getDesc() {
+        return description;
     }
 
+    @NonNull
     public int getOrder() {
         return order;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    @Nullable
+    public List<Contact> getMembers() {
+        return members;
     }
 
-    public String getDesc() {
-        return desc;
+    @Exclude
+    public List<Contact> addMember(Contact contact) {
+        members.add(contact);
+        return members;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    @Exclude
+    public List<Contact> deleteMember(Contact contact) {
+        members.remove(contact);
+        return members;
     }
 
-    public RealmList<Contact> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(RealmList<Contact> contacts) {
-        this.contacts = contacts;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    @Exclude
+    @Override
+    public String toString() {
+        return "ContactGroup { " +
+                "   id = " + getId() + ", " +
+                "   name = " + getName() + ", " +
+                "   desc = " + getDesc() + ", " +
+                "   order = " + getOrder() + ", " +
+                "}";
     }
 }

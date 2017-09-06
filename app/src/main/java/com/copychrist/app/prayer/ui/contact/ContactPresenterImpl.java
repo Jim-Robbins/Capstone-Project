@@ -1,17 +1,15 @@
 package com.copychrist.app.prayer.ui.contact;
 
-import android.support.v7.widget.RecyclerView;
-
 import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.repository.DatabaseSerivce;
 
 /**
  * Created by jim on 8/19/17.
  */
 
-public class ContactPresenterImpl implements ContactPresenter, RealmService.OnTransactionCallback {
+public class ContactPresenterImpl implements ContactPresenter, DatabaseSerivce.OnTransactionCallback {
 
-    private final RealmService realmService;
+    private final DatabaseSerivce realmService;
     private final int contactId;
     private ContactView myListView = new ContactView.EmptyMyListView();
     private Contact myContact;
@@ -19,7 +17,7 @@ public class ContactPresenterImpl implements ContactPresenter, RealmService.OnTr
     private boolean requestsShown = false;
     private boolean archivesShown = false;
 
-    public ContactPresenterImpl(final RealmService realmService, final int contactId) {
+    public ContactPresenterImpl(final DatabaseSerivce realmService, final int contactId) {
         this.realmService = realmService;
         this.contactId = contactId;
     }

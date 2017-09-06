@@ -1,7 +1,7 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.ApplicationModule;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.repository.DatabaseSerivce;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,7 +22,7 @@ public class EditPrayerRequestModule {
     }
 
     @Provides
-    EditPrayerRequestPresenter provideEditPrayerRequestPresenter(final RealmService realmService) {
+    EditPrayerRequestPresenter provideEditPrayerRequestPresenter(final DatabaseSerivce realmService) {
         return new EditPrayerRequestPresenterImpl(realmService, requestId);
     }
 }

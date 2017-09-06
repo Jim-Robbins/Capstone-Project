@@ -1,14 +1,14 @@
 package com.copychrist.app.prayer.ui.contactgroups;
 
 import com.copychrist.app.prayer.model.ContactGroup;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.repository.DatabaseSerivce;
 
 /**
  * Created by jim on 8/14/17.
  */
 
-public class ContactsPresenterImpl implements ContactsPresenter, RealmService.OnTransactionCallback {
-    private final RealmService realmService;
+public class ContactsPresenterImpl implements ContactsPresenter, DatabaseSerivce.OnTransactionCallback {
+    private final DatabaseSerivce realmService;
     private final int contactGroupId;
     private ContactGroup myContactGroup;
 
@@ -17,7 +17,7 @@ public class ContactsPresenterImpl implements ContactsPresenter, RealmService.On
     private boolean contactsShown = false;
     private boolean contactGroupsShown = false;
 
-    public ContactsPresenterImpl(final RealmService realmService, int contactGroupId) {
+    public ContactsPresenterImpl(final DatabaseSerivce realmService, int contactGroupId) {
         this.realmService = realmService;
         this.contactGroupId = contactGroupId;
     }

@@ -2,21 +2,21 @@ package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
 import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.repository.DatabaseSerivce;
 
 /**
  * Created by jim on 8/19/17.
  */
 
 public class AddPrayerRequestPresenterImpl
-        implements AddPrayerRequestPresenter, RealmService.OnTransactionCallback {
+        implements AddPrayerRequestPresenter, DatabaseSerivce.OnTransactionCallback {
 
-    private final RealmService realmService;
+    private final DatabaseSerivce realmService;
     private int contactId;
     private Contact myContact;
     private AddPrayerRequestView myAddView = new AddPrayerRequestView.EmptyAddPrayerRequestView();
 
-    public AddPrayerRequestPresenterImpl(final RealmService realmService, int contactId) {
+    public AddPrayerRequestPresenterImpl(final DatabaseSerivce realmService, int contactId) {
         this.realmService = realmService;
         this.contactId = contactId;
     }

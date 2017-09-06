@@ -1,7 +1,7 @@
 package com.copychrist.app.prayer.ui.contact;
 
 import com.copychrist.app.prayer.ApplicationModule;
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.repository.DatabaseSerivce;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,7 +19,7 @@ public class ContactModule {
     }
 
     @Provides
-    ContactPresenter provideMyListPresenter(final RealmService realmService) {
+    ContactPresenter provideMyListPresenter(final DatabaseSerivce realmService) {
         return new ContactPresenterImpl(realmService, contactId);
     }
 }

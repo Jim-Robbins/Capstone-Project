@@ -1,10 +1,11 @@
 package com.copychrist.app.prayer;
 
-import com.copychrist.app.prayer.repository.RealmService;
+import com.copychrist.app.prayer.repository.DatabaseSerivce;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Module;
 import dagger.Provides;
-import io.realm.Realm;
 
 /**
  * Created by jim on 8/14/17.
@@ -16,12 +17,12 @@ public class ApplicationModule {
     public ApplicationModule() {}
 
     @Provides
-    Realm provideRealm() {
-        return Realm.getDefaultInstance();
+    DatabaseReference provideDatabase() {
+        return FirebaseDatabase.getInstance().getReference();
     }
 
     @Provides
-    RealmService provideRealmService(final Realm realm) {
-        return new RealmService(realm);
+    DatabaseSerivce provideDatabaseService() {
+        return new DatabaseSerivce();
     }
 }

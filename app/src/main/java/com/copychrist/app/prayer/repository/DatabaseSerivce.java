@@ -1,85 +1,94 @@
 package com.copychrist.app.prayer.repository;
 
 import android.text.TextUtils;
+import android.widget.Toast;
 
-import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.BibleVerse;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
 import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
-import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmResults;
+import io.databaseReference.DatabaseReference;
+import io.databaseReference.DatabaseReferenceList;
+import io.databaseReference.List;
 import timber.log.Timber;
 
-import static android.R.attr.format;
-import static io.realm.internal.android.JsonUtils.stringToDate;
+import static io.databaseReference.internal.android.JsonUtils.stringToDate;
 
 /**
  * Created by jim on 8/14/17.
- * Reference : https://www.thedroidsonroids.com/blog/android/example-realm-mvp-dagger/
+ * Reference : https://www.thedroidsonroids.com/blog/android/example-databaseReference-mvp-dagger/
  */
 
-public class RealmService {
-    private final Realm realm;
+public class DatabaseSerivce {
+    private final DatabaseReference dbReference;
 
-    public RealmService(final Realm realm) {
-        this.realm = realm;
+    public DatabaseSerivce() {
+        this.dbReference = FirebaseDatabase.getInstance().getReference();
     }
 
-    public void closeRealm() {
-        realm.close();
+    private boolean isUserLoggedIn(DataSnapshot snapshot) {
+        User user = snapshot.getValue(User.class);
+
+        return (user == null);
     }
 
+//    public String getUid() {
+//        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+//    }
     /* ========= Public Contact Queries ================ */
 
     /**
      * Query for entire list of contacts
      * @return
      */
-    public RealmResults<Contact> getAllContacts() {
-        return getAllContactsByRealm(realm);
+    public List<Contact> getAllContacts() {
+        return getAllContactsByDatabaseReference(dbReference);
     }
 
     /**
      * Look up contact by id
      * @param contactId
-     * @return Contact RealmObject
+     * @return Contact DatabaseReferenceObject
      */
     public Contact getContact(final int contactId) {
-        return getContactByRealm(contactId, realm);
+        return getContactByDatabaseReference(contactId, dbReference);
     }
 
     /**
      * Query on first and last name to see if the contact exists
      * @param firstName
      * @param lastName
-     * @return RealmResults/<Contact/>
+     * @return List/<Contact/>
      */
-    public RealmResults<Contact> getContactByName(final String firstName, final String lastName) {
-        return getContactByNameByRealm(firstName, lastName, realm);
+    public List<Contact> getContactByName(final String firstName, final String lastName) {
+        return getContactByNameByDatabaseReference(firstName, lastName, dbReference);
     }
 
-    private RealmResults<Contact> getAllContactsByRealm(Realm realm) {
-        return realm.where(Contact.class).findAll();
+    private List<Contact> getAllContactsByDatabaseReference(DatabaseReference databaseReference) {
+        return databaseReference.child(Contact.DB_NAME).child();
     }
 
-    private Contact getContactByRealm(final int contactId, Realm realm) {
-        return realm.where(Contact.class).equalTo("id", contactId).findFirst();
+    private Contact getContactByDatabaseReference(final int contactId, DatabaseReference databaseReference) {
+        return databaseReference.where(Contact.class).equalTo("id", contactId).findFirst();
     }
 
-    private RealmResults<Contact> getContactByNameByRealm(final String firstName,
+    private List<Contact> getContactByNameByDatabaseReference(final String firstName,
                                                          final String lastName,
-                                                         Realm realm) {
-        return realm.where(Contact.class)
+                                                         DatabaseReference databaseReference) {
+        return databaseReference.where(Contact.class)
                 .equalTo("firstName", firstName)
                 .equalTo("lastName", lastName)
                 .findAll();
@@ -87,7 +96,7 @@ public class RealmService {
 
 
     /**
-     * Add new contact to the realm db
+     * Add new contact to the dbReference db
      * @param firstName
      * @param lastName
      * @param pictureUrl
@@ -97,37 +106,19 @@ public class RealmService {
     public void addContact(final String firstName, final String lastName, final String pictureUrl,
                            final String groupName, final OnTransactionCallback onTransactionCallback) {
 
-        final int nextId = getNextId(getAllContacts());
+        Contact contact = new Contact(groupName, firstName, lastName, pictureUrl, null);
+        ContactGroup group = createOrGetContactGroup(groupName, contact);
 
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                Contact contact = realm.createObject(Contact.class, nextId);
-                contact.setFirstName(firstName);
-                contact.setLastName(lastName);
-                contact.setPictureUrl(pictureUrl);
-                contact.setGroup(createOrGetContactGroup(groupName, contact, realm));
-            }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                if (onTransactionCallback != null) {
-                    onTransactionCallback.onRealmSuccess();
-                }
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                if (onTransactionCallback != null) {
-                    Timber.e(error);
-                    onTransactionCallback.onRealmError(error);
-                }
-            }
-        });
+        if(groupName.isEmpty())
+            contact.setGroup(group.getName());
+
+        dbReference.child(Contact.DB_NAME).child(contact.getId()).setValue(contact);
+
+        onTransactionCallback();
     }
 
     /**
-     * Edit and existing Contact RealmObject
+     * Edit and existing Contact DatabaseReferenceObject
      * @param contactId
      * @param firstName
      * @param lastName
@@ -138,22 +129,22 @@ public class RealmService {
     public void editContact(final int contactId, final String firstName, final String lastName,
                             final String pictureUrl, final String groupName,
                             final OnTransactionCallback onTransactionCallback) {
-        editContactByRealm(contactId, firstName, lastName, pictureUrl, groupName,
-                onTransactionCallback, realm);
+        editContactByDatabaseReference(contactId, firstName, lastName, pictureUrl, groupName,
+                onTransactionCallback, dbReference);
     }
 
-    private void editContactByRealm(final int contactId, final String firstName, final String lastName,
+    private void editContactByDatabaseReference(final int contactId, final String firstName, final String lastName,
                                 final String pictureUrl, final String group,
                                 final OnTransactionCallback onTransactionCallback,
-                                Realm realm) {
+                                DatabaseReference databaseReference) {
 
 
 
 
-        realm.executeTransactionAsync(new Realm.Transaction() {
+        databaseReference.executeTransactionAsync(new DatabaseReference.Transaction() {
             @Override
-            public void execute(Realm realm) {
-                final Contact contact = getContactByRealm(contactId, realm);
+            public void execute(DatabaseReference databaseReference) {
+                final Contact contact = getContactByDatabaseReference(contactId, databaseReference);
                     contact.setFirstName(firstName);
                     contact.setLastName(lastName);
                     contact.setPictureUrl(pictureUrl);
@@ -162,26 +153,26 @@ public class RealmService {
                         if(contactGroup != null && contactGroup.getName() != group) {
                             contactGroup.getContacts().remove(contact);
                             if(!TextUtils.isEmpty(group)) {
-                                contact.setGroup(createOrGetContactGroup(group, contact, realm));
+                                contact.setGroup(createOrGetContactGroup(group, contact, databaseReference));
                             }
                         }
                     } else {
                         contact.setGroup(null);
                     }
                 }
-            }, new Realm.Transaction.OnSuccess() {
+            }, new DatabaseReference.Transaction.OnSuccess() {
                 @Override
                 public void onSuccess() {
                     if (onTransactionCallback != null) {
-                        onTransactionCallback.onRealmSuccess();
+                        onTransactionCallback.onDatabaseReferenceSuccess();
                     }
                 }
-            }, new Realm.Transaction.OnError() {
+            }, new DatabaseReference.Transaction.OnError() {
                 @Override
                 public void onError(Throwable error) {
                     if (onTransactionCallback != null) {
                         Timber.e(error);
-                        onTransactionCallback.onRealmError(error);
+                        onTransactionCallback.onDatabaseReferenceError(error);
                     }
                 }
             });
@@ -194,11 +185,11 @@ public class RealmService {
     public void deleteContact(final int contactId) {
         final Contact contact = getContact(contactId);
         if(contact != null) {
-            realm.executeTransaction(new Realm.Transaction() {
+            dbReference.executeTransaction(new DatabaseReference.Transaction() {
                 @Override
-                public void execute(Realm realm) {
+                public void execute(DatabaseReference databaseReference) {
                     contact.getGroup().getContacts().remove(contact);
-                    contact.deleteFromRealm();
+                    contact.deleteFromDatabaseReference();
                 }
             });
         }
@@ -208,10 +199,10 @@ public class RealmService {
 
     /**
      * Return all Contact Groups
-     * @return RealmResults<ContactGroup>
+     * @return List<ContactGroup>
      */
-    public RealmResults<ContactGroup> getAllContactGroups() {
-        return getAllContactGroupsByRealm(realm);
+    public List<ContactGroup> getAllContactGroups() {
+        return getAllContactGroupsByDatabaseReference(dbReference);
     }
 
     /**
@@ -220,7 +211,7 @@ public class RealmService {
      * @return ContactGroup
      */
     public ContactGroup getContactGroupByName(final String groupName) {
-        return getContactGroupByNameByRealm(groupName, realm);
+        return getContactGroupByNameByDatabaseReference(groupName, dbReference);
     }
 
     /**
@@ -229,7 +220,7 @@ public class RealmService {
      * @return ContactGroup
      */
     public ContactGroup getContactGroup(final int groupId) {
-        return getContactGroupByRealm(groupId, realm);
+        return getContactGroupByDatabaseReference(groupId, dbReference);
     }
 
     /**
@@ -238,10 +229,10 @@ public class RealmService {
      * @param groupDesc
      */
     public void addContactGroup(final String groupName, final String groupDesc) {
-        realm.executeTransaction(new Realm.Transaction() {
+        dbReference.executeTransaction(new DatabaseReference.Transaction() {
             @Override
-            public void execute(Realm realm) {
-                addContactGroupByRealm(groupName, groupDesc, realm);
+            public void execute(DatabaseReference databaseReference) {
+                addContactGroupByDatabaseReference(groupName, groupDesc, databaseReference);
             }
         });
     }
@@ -256,9 +247,9 @@ public class RealmService {
     public void editContactGroup(final int groupId, final String groupName,
                                  final String groupDesc, final int sortOrder) {
         final ContactGroup contactGroup = getContactGroup(groupId);
-        realm.executeTransaction(new Realm.Transaction() {
+        dbReference.executeTransaction(new DatabaseReference.Transaction() {
             @Override
-            public void execute(Realm realm) {
+            public void execute(DatabaseReference databaseReference) {
                 if (contactGroup != null) {
                     if(contactGroup.getName() != groupName) {
                         contactGroup.setName(groupName);
@@ -281,16 +272,16 @@ public class RealmService {
     public void deleteContactGroup(final int groupId) {
         final ContactGroup contactGroup = getContactGroup(groupId);
         if(contactGroup != null) {
-            realm.executeTransaction(new Realm.Transaction() {
+            dbReference.executeTransaction(new DatabaseReference.Transaction() {
                 @Override
-                public void execute(Realm realm) {
-//                    RealmList<Contact> contacts = contactGroup.getContacts();
+                public void execute(DatabaseReference databaseReference) {
+//                    DatabaseReferenceList<Contact> contacts = contactGroup.getContacts();
 //                    for (Contact contact : contacts) {
-//                        editContactByRealm(contact.getId(), contact.getFirstName(),
+//                        editContactByDatabaseReference(contact.getId(), contact.getFirstName(),
 //                                contact.getLastName(), contact.getPictureUrl(),
-//                                null, null, realm);
+//                                null, null, dbReference);
 //                    }
-                    contactGroup.deleteFromRealm();
+                    contactGroup.deleteFromDatabaseReference();
                 }
             });
         }
@@ -298,31 +289,31 @@ public class RealmService {
 
     // ToDo: Add ability to resort contact groups
 
-    private RealmResults<ContactGroup> getAllContactGroupsByRealm(Realm realm) {
-        return realm.where(ContactGroup.class).findAll();
+    private List<ContactGroup> getAllContactGroupsByDatabaseReference(DatabaseReference databaseReference) {
+        return databaseReference.where(ContactGroup.class).findAll();
     }
 
-    private ContactGroup getContactGroupByNameByRealm(final String groupName, final Realm realm) {
-        return realm.where(ContactGroup.class).equalTo("name", groupName).findFirst();
+    private ContactGroup getContactGroupByNameByDatabaseReference(final String groupName, final DatabaseReference databaseReference) {
+        return databaseReference.where(ContactGroup.class).equalTo("name", groupName).findFirst();
     }
 
-    private ContactGroup getContactGroupByRealm(final int groupId, final Realm realm) {
-        return realm.where(ContactGroup.class).equalTo("id", groupId).findFirst();
+    private ContactGroup getContactGroupByDatabaseReference(final int groupId, final DatabaseReference databaseReference) {
+        return databaseReference.where(ContactGroup.class).equalTo("id", groupId).findFirst();
     }
 
-    private ContactGroup createOrGetContactGroup(final String groupName, final Contact contact, final Realm realm) {
-        ContactGroup contactGroup = getContactGroupByNameByRealm(groupName, realm);
+    private ContactGroup createOrGetContactGroup(final String groupName, final Contact contact=) {
+        ContactGroup contactGroup = getContactGroupByNameByDatabaseReference(groupName, dbReference);
         if(contactGroup == null) {
-            contactGroup = addContactGroupByRealm(groupName, "", realm);
+            contactGroup = addContactGroupByDatabaseReference(groupName, "", dbReference);
         }
         contactGroup.getContacts().add(contact);
         return contactGroup;
     }
 
-    private ContactGroup addContactGroupByRealm (final String groupName, final String groupDesc, final Realm realm) {
-        int nextId = getNextId(getAllContactGroupsByRealm(realm), "id");
+    private ContactGroup addContactGroupByDatabaseReference (final String groupName, final String groupDesc, final DatabaseReference databaseReference) {
+        int nextId = getNextId(getAllContactGroupsByDatabaseReference(databaseReference), "id");
 
-        ContactGroup contactGroup = realm.createObject(ContactGroup.class, nextId);
+        ContactGroup contactGroup = databaseReference.createObject(ContactGroup.class, nextId);
         contactGroup.setName(groupName);
         contactGroup.setOrder(nextId);
         contactGroup.setDesc(groupDesc);
@@ -332,50 +323,50 @@ public class RealmService {
 
     /* ========= Prayer List Queries ================ */
 
-    public RealmResults<PrayerList> getAllPrayerLists() {
-        return getAllPrayerListsByRealm(realm);
+    public List<PrayerList> getAllPrayerLists() {
+        return getAllPrayerListsByDatabaseReference(dbReference);
     }
 
     public PrayerList getPrayerListByName(String listName) {
-        return getPrayerListByNameByRealm(listName, realm);
+        return getPrayerListByNameByDatabaseReference(listName, dbReference);
     }
 
     public PrayerList getPrayerList(int listId) {
-        return getPrayerListByRealm(listId, realm);
+        return getPrayerListByDatabaseReference(listId, dbReference);
     }
 
     public void addPrayerList(final String listName) {
-        realm.executeTransaction(new Realm.Transaction() {
+        dbReference.executeTransaction(new DatabaseReference.Transaction() {
             @Override
-            public void execute(Realm realm) {
-                addPrayerListByRealm(listName, realm);
+            public void execute(DatabaseReference databaseReference) {
+                addPrayerListByDatabaseReference(listName, databaseReference);
             }
         });
     }
 
     public void editPrayerList(final int listId, final String listName) {
-        realm.executeTransaction(new Realm.Transaction() {
+        dbReference.executeTransaction(new DatabaseReference.Transaction() {
             @Override
-            public void execute(Realm realm) {
-                editPrayerListByRealm(listId, listName, realm);
+            public void execute(DatabaseReference databaseReference) {
+                editPrayerListByDatabaseReference(listId, listName, databaseReference);
             }
         });
     }
 
-    private RealmResults<PrayerList> getAllPrayerListsByRealm(Realm realm) {
-        return realm.where(PrayerList.class).findAll();
+    private List<PrayerList> getAllPrayerListsByDatabaseReference(DatabaseReference databaseReference) {
+        return databaseReference.where(PrayerList.class).findAll();
     }
 
-    private PrayerList addPrayerListByRealm(String listName, Realm realm) {
-        int nextId = getNextId(getAllPrayerListsByRealm(realm), "id");
-        PrayerList prayerList = realm.createObject(PrayerList.class, nextId);
+    private PrayerList addPrayerListByDatabaseReference(String listName, DatabaseReference databaseReference) {
+        int nextId = getNextId(getAllPrayerListsByDatabaseReference(databaseReference), "id");
+        PrayerList prayerList = databaseReference.createObject(PrayerList.class, nextId);
         prayerList.setName(listName);
         prayerList.setOrder(nextId);
         return prayerList;
     }
 
-    private PrayerList editPrayerListByRealm(int listId, String listName, Realm realm) {
-        PrayerList prayerList = getPrayerListByRealm(listId, realm);
+    private PrayerList editPrayerListByDatabaseReference(int listId, String listName, DatabaseReference databaseReference) {
+        PrayerList prayerList = getPrayerListByDatabaseReference(listId, databaseReference);
         if(prayerList != null) {
             if(!TextUtils.isEmpty(listName)) {
                 prayerList.setName(listName);
@@ -386,38 +377,38 @@ public class RealmService {
 
     //Todo : allow sorting of lists
 
-    private PrayerList getPrayerListByNameByRealm(String listName, Realm realm) {
-        return realm.where(PrayerList.class).equalTo("name", listName).findFirst();
+    private PrayerList getPrayerListByNameByDatabaseReference(String listName, DatabaseReference databaseReference) {
+        return databaseReference.where(PrayerList.class).equalTo("name", listName).findFirst();
     }
 
-    private PrayerList getPrayerListByRealm(int listId, Realm realm) {
-        return realm.where(PrayerList.class).equalTo("id", listId).findFirst();
+    private PrayerList getPrayerListByDatabaseReference(int listId, DatabaseReference databaseReference) {
+        return databaseReference.where(PrayerList.class).equalTo("id", listId).findFirst();
     }
 
     /* ========= Prayer Request Queries ================ */
 
-    public RealmResults<PrayerRequest> getActiveRequestsByContact(Contact contact) {
+    public List<PrayerRequest> getActiveRequestsByContact(Contact contact) {
         return contact.getRequests().where().isNull("answered").findAll();
     }
 
-    public RealmResults<PrayerRequest> getArchivedRequestsByContact(Contact contact) {
+    public List<PrayerRequest> getArchivedRequestsByContact(Contact contact) {
         return contact.getRequests().where().isNotNull("answered").findAll();
     }
 
-    public RealmResults<PrayerRequest> getAllPrayerRequests() {
-        return getAllPrayerRequestsByRealm(realm);
+    public List<PrayerRequest> getAllPrayerRequests() {
+        return getAllPrayerRequestsByDatabaseReference(dbReference);
     }
 
     public PrayerRequest getPrayerRequest(int prayerRequestId) {
-        return getPrayerRequestByRealm(prayerRequestId, realm);
+        return getPrayerRequestByDatabaseReference(prayerRequestId, dbReference);
     }
 
-    private RealmResults<PrayerRequest> getAllPrayerRequestsByRealm(Realm realm) {
-        return realm.where(PrayerRequest.class).findAll();
+    private List<PrayerRequest> getAllPrayerRequestsByDatabaseReference(DatabaseReference databaseReference) {
+        return databaseReference.where(PrayerRequest.class).findAll();
     }
 
-    private PrayerRequest getPrayerRequestByRealm(int prayerRequestId, Realm realm) {
-        return realm.where(PrayerRequest.class).equalTo("id", prayerRequestId).findFirst();
+    private PrayerRequest getPrayerRequestByDatabaseReference(int prayerRequestId, DatabaseReference databaseReference) {
+        return databaseReference.where(PrayerRequest.class).equalTo("id", prayerRequestId).findFirst();
     }
 
     public void addPrayerRequestAsync(final int contactId, final String title,
@@ -426,45 +417,45 @@ public class RealmService {
                                            final OnTransactionCallback onTransactionCallback) {
 
         final int nextId = getNextId(getAllPrayerRequests());
-        realm.executeTransactionAsync(new Realm.Transaction() {
+        dbReference.executeTransactionAsync(new DatabaseReference.Transaction() {
             @Override
-            public void execute(Realm realm) {
-                PrayerRequest prayerRequest = realm.createObject(PrayerRequest.class, nextId);
+            public void execute(DatabaseReference databaseReference) {
+                PrayerRequest prayerRequest = databaseReference.createObject(PrayerRequest.class, nextId);
                 prayerRequest.setTitle(title);
                 prayerRequest.setDescription(desc);
                 prayerRequest.setEndDate(stringToDate(endDate));
 
                 //Add contact to request and request to contact
-                Contact contact = getContactByRealm(contactId, realm);
+                Contact contact = getContactByDatabaseReference(contactId, databaseReference);
                 prayerRequest.setContact(contact);
                 contact.getRequests().add(prayerRequest);
 
                 if(!TextUtils.isEmpty(verse)) {
-                    BibleVerse bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", realm);
+                    BibleVerse bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", databaseReference);
                     prayerRequest.getVerses().add(bibleVerse);
                 }
 
                 //Add prayer list to request and request to prayer list
                 if(!TextUtils.isEmpty(prayerListName)) {
-                    PrayerList prayerlist = getPrayerListByNameByRealm(prayerListName, realm);
+                    PrayerList prayerlist = getPrayerListByNameByDatabaseReference(prayerListName, databaseReference);
                     if (prayerlist != null) {
                         prayerlist.getRequests().add(prayerRequest);
                     }
                 }
             }
-        }, new Realm.Transaction.OnSuccess() {
+        }, new DatabaseReference.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
                 if (onTransactionCallback != null) {
-                    onTransactionCallback.onRealmSuccess();
+                    onTransactionCallback.onDatabaseReferenceSuccess();
                 }
             }
-        }, new Realm.Transaction.OnError() {
+        }, new DatabaseReference.Transaction.OnError() {
             @Override
             public void onError(Throwable error) {
                 if (onTransactionCallback != null) {
                     Timber.e(error);
-                    onTransactionCallback.onRealmError(error);
+                    onTransactionCallback.onDatabaseReferenceError(error);
                 }
             }
         });
@@ -476,15 +467,15 @@ public class RealmService {
 
         final PrayerRequest prayerRequest = getPrayerRequest(prayerRequestId);
 
-        realm.executeTransaction(new Realm.Transaction() {
+        dbReference.executeTransaction(new DatabaseReference.Transaction() {
             @Override
-            public void execute(Realm realm) {
+            public void execute(DatabaseReference databaseReference) {
                 prayerRequest.setTitle(title);
                 prayerRequest.setDescription(desc);
                 prayerRequest.setEndDate(stringToDate(endDate));
 
                 if(!TextUtils.isEmpty(verse)) {
-                    BibleVerse bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", realm);
+                    BibleVerse bibleVerse = createOrGetBibleVerse(verse, "", "", "KJV", databaseReference);
                     if (!prayerRequest.getVerses().contains(bibleVerse)) {
                         prayerRequest.getVerses().add(bibleVerse);
                     }
@@ -492,7 +483,7 @@ public class RealmService {
 
                 //Add prayer list to request and request to prayer list
                 if(!TextUtils.isEmpty(prayerListName)) {
-                    PrayerList prayerlist = getPrayerListByNameByRealm(prayerListName, realm);
+                    PrayerList prayerlist = getPrayerListByNameByDatabaseReference(prayerListName, databaseReference);
                     if (prayerlist != null && !prayerlist.getRequests().contains(prayerRequest)) {
                         prayerlist.getRequests().add(prayerRequest);
                     }
@@ -507,9 +498,9 @@ public class RealmService {
         final PrayerRequest prayerRequest = getPrayerRequest(prayerRequestId);
 
         if(prayerRequest != null) {
-            realm.executeTransaction(new Realm.Transaction() {
+            dbReference.executeTransaction(new DatabaseReference.Transaction() {
                 @Override
-                public void execute(Realm realm) {
+                public void execute(DatabaseReference databaseReference) {
 
                     prayerRequest.getPrayedForOn().add(dateStrToAdd);
                 }
@@ -520,9 +511,9 @@ public class RealmService {
     public void archivePrayerRequest (int prayerRequestId) {
         final PrayerRequest prayerRequest = getPrayerRequest(prayerRequestId);
         if(prayerRequest != null) {
-            realm.executeTransaction(new Realm.Transaction() {
+            dbReference.executeTransaction(new DatabaseReference.Transaction() {
                 @Override
-                public void execute(Realm realm) {
+                public void execute(DatabaseReference databaseReference) {
                     Calendar now = Calendar.getInstance();
                     prayerRequest.setAnswered(now.getTime());
                 }
@@ -533,10 +524,10 @@ public class RealmService {
     public void deletePrayerRequest (int prayerRequestId) {
         final PrayerRequest prayerRequest = getPrayerRequest(prayerRequestId);
         if(prayerRequest != null) {
-            realm.executeTransaction(new Realm.Transaction() {
+            dbReference.executeTransaction(new DatabaseReference.Transaction() {
                 @Override
-                public void execute(Realm realm) {
-                    prayerRequest.deleteFromRealm();
+                public void execute(DatabaseReference databaseReference) {
+                    prayerRequest.deleteFromDatabaseReference();
                 }
             });
         }
@@ -545,11 +536,11 @@ public class RealmService {
     /* ========= BibleVerse Queries ================ */
 
     public BibleVerse getBibleVerse(String verse, String version) {
-        return getBibleVerseByRealm(verse, version, realm);
+        return getBibleVerseByDatabaseReference(verse, version, dbReference);
     }
 
-    public BibleVerse getBibleVerseByRealm(String verse, String version, Realm realm) {
-        return realm.where(BibleVerse.class)
+    public BibleVerse getBibleVerseByDatabaseReference(String verse, String version, DatabaseReference databaseReference) {
+        return databaseReference.where(BibleVerse.class)
                 .equalTo("passage", verse)
                 .equalTo("version", version)
                 .findFirst();
@@ -557,32 +548,32 @@ public class RealmService {
 
     public void addBibleVerse(final String verse, final String verseText,
                               final String apiUrl, final String version) {
-        realm.executeTransaction(new Realm.Transaction() {
+        dbReference.executeTransaction(new DatabaseReference.Transaction() {
             @Override
-            public void execute(Realm realm) {
-                BibleVerse bibleVerse = createOrGetBibleVerse(verse, verseText, apiUrl, version, realm);
+            public void execute(DatabaseReference databaseReference) {
+                BibleVerse bibleVerse = createOrGetBibleVerse(verse, verseText, apiUrl, version, databaseReference);
             }
         });
     }
 
     private BibleVerse createOrGetBibleVerse(String verse, String verseText,
                                              String apiUrl, String version,
-                                             Realm realm) {
-        BibleVerse bibleVerse = getBibleVerseByRealm(verse, version, realm);
+                                             DatabaseReference databaseReference) {
+        BibleVerse bibleVerse = getBibleVerseByDatabaseReference(verse, version, databaseReference);
         if(bibleVerse == null) {
-            bibleVerse = addBibleVerseByRealm(verse, verseText, apiUrl, version, realm);
+            bibleVerse = addBibleVerseByDatabaseReference(verse, verseText, apiUrl, version, databaseReference);
         }
         return bibleVerse;
     }
 
-    private BibleVerse addBibleVerseByRealm (String verse, String verseText, String apiUrl,
-                                             String version, Realm realm) {
+    private BibleVerse addBibleVerseByDatabaseReference (String verse, String verseText, String apiUrl,
+                                             String version, DatabaseReference databaseReference) {
         if(!verse.contains(" ")) {
             return null;
         }
         String[] reference = verse.split(" ");
 
-        BibleVerse bibleVerse = realm.createObject(BibleVerse.class);
+        BibleVerse bibleVerse = databaseReference.createObject(BibleVerse.class);
         bibleVerse.setBook(reference[0]);
 
         if(reference[1].contains(":")) {
@@ -599,17 +590,17 @@ public class RealmService {
         return bibleVerse;
     }
 
-    private BibleVerse editBibleVerseByRealm (String verse, String version, final String verseText,
-                                              final String apiUrl, Realm realm) {
+    private BibleVerse editBibleVerseByDatabaseReference (String verse, String version, final String verseText,
+                                              final String apiUrl, DatabaseReference databaseReference) {
         if(!verse.contains(" ")) {
             return null;
         }
 
-        final BibleVerse bibleVerse = getBibleVerseByRealm(verse, version, realm);
+        final BibleVerse bibleVerse = getBibleVerseByDatabaseReference(verse, version, databaseReference);
         if(bibleVerse != null) {
-            realm.executeTransaction(new Realm.Transaction() {
+            databaseReference.executeTransaction(new DatabaseReference.Transaction() {
                 @Override
-                public void execute(Realm realm) {
+                public void execute(DatabaseReference databaseReference) {
                     bibleVerse.setText(verseText);
                     bibleVerse.setApiUrl(apiUrl);
                 }
@@ -620,12 +611,12 @@ public class RealmService {
     }
 
     private void deleteBibleVerse (String verse, String version) {
-        final BibleVerse bibleVerse = getBibleVerseByRealm(verse, version, realm);
+        final BibleVerse bibleVerse = getBibleVerseByDatabaseReference(verse, version, dbReference);
         if(bibleVerse != null) {
-            realm.executeTransaction(new Realm.Transaction() {
+            dbReference.executeTransaction(new DatabaseReference.Transaction() {
                 @Override
-                public void execute(Realm realm) {
-                   bibleVerse.deleteFromRealm();
+                public void execute(DatabaseReference databaseReference) {
+                   bibleVerse.deleteFromDatabaseReference();
                 }
             });
         }
@@ -635,17 +626,17 @@ public class RealmService {
     /* ========= OnTransactionCallback ================ */
 
     public interface OnTransactionCallback {
-        void onRealmSuccess();
-        void onRealmError(final Throwable e);
+        void onDatabaseReferenceSuccess();
+        void onDatabaseReferenceError(final Throwable e);
     }
 
     /* ========= Utilities ================ */
 
-    private int getNextId(RealmResults results) {
+    private int getNextId(List results) {
         return getNextId(results, "id");
     }
 
-    private int getNextId(RealmResults results, String key) {
+    private int getNextId(List results, String key) {
         return (results.size() > 0) ? results.max(key).intValue() + 1 : 1;
     }
 

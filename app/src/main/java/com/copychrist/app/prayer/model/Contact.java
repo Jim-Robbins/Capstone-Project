@@ -1,63 +1,126 @@
 package com.copychrist.app.prayer.model;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public class Contact extends RealmObject {
-    @PrimaryKey
-    private int id;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+@IgnoreExtraProperties
+public class Contact  {
+    public static String DB_NAME = "contact";
+
+    @NonNull
+    private String id;
+
+    @NonNull
     private String firstName;
-    private String lastName;
-    private String pictureUrl;
-    private RealmList<PrayerRequest> requests;
-    private ContactGroup group;
 
+    @Nullable
+    private String lastName;
+
+    @Nullable
+    private String pictureUrl;
+
+    @NonNull
+    private String group;
+
+    @Nullable
+    private List<PrayerRequest> requestList;
+
+    public Contact() {
+        // Default constructor required for calls to DataSnapshot.getValue()
+    }
+
+    public Contact(@NonNull String group,
+                   @NonNull String firstName, @Nullable String lastName) {
+        this(group, firstName, lastName, null, null);
+    }
+
+    public Contact(@NonNull String group, @NonNull String firstName,
+                   @Nullable String lastName, @Nullable String pictureUrl,
+                   @Nullable List<PrayerRequest> requestList) {
+        this.id = createContactId();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.pictureUrl = pictureUrl;
+        this.group = group;
+        this.requestList = new ArrayList<>(requestList);
+    }
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    @NonNull
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    @NonNull
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
+    @Nullable
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
+    @Nullable
     public String getPictureUrl() {
         return pictureUrl;
     }
 
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
+    @Nullable
+    public List<PrayerRequest> getRequestList() {
+        return requestList;
     }
 
-    public RealmList<PrayerRequest> getRequests() {
-        return requests;
+    @Exclude
+    public List<PrayerRequest> addPrayerRequest(PrayerRequest request) {
+        requestList.add(request);
+        return requestList;
     }
 
-    public void setRequests(RealmList<PrayerRequest> requests) {
-        this.requests = requests;
+    @Exclude
+    public List<PrayerRequest> deletePrayerRequest(PrayerRequest request) {
+        requestList.remove(request);
+        return requestList;
     }
 
-    public ContactGroup getGroup() {
-        return group;
+    @Exclude
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, group, firstName);
     }
 
-    public void setGroup(ContactGroup group) {
-        this.group = group;
+    @Exclude
+    @Override
+    public String toString() {
+        return "ContactEntry {"+
+                "id='" + id + '\'' +
+                ", group='" + group + '\'' +
+                ", firstName='" + firstName + '\'' +
+                " ,lastName='" + lastName + '\'' +
+                " ,pictureUrl=" + pictureUrl + '\'' +
+                "}";
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    private String createContactId() {
+        Random rnd = new Random();
+        return firstName.replaceAll("\\s","").toLowerCase() + "_" +
+                lastName.replaceAll("\\s","").toLowerCase() + "_" +
+                rnd.nextInt();
     }
 }
