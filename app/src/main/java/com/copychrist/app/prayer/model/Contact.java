@@ -13,7 +13,7 @@ import java.util.Random;
 
 @IgnoreExtraProperties
 public class Contact  {
-    public static String DB_NAME = "contact";
+    public static String DB_NAME = "contacts";
 
     @NonNull
     private String id;
@@ -28,29 +28,13 @@ public class Contact  {
     private String pictureUrl;
 
     @NonNull
-    private String group;
+    private String groupId;
 
     @Nullable
-    private List<PrayerRequest> requestList;
+    private List<PrayerRequest> requestList = new ArrayList<>();
 
     public Contact() {
         // Default constructor required for calls to DataSnapshot.getValue()
-    }
-
-    public Contact(@NonNull String group,
-                   @NonNull String firstName, @Nullable String lastName) {
-        this(group, firstName, lastName, null, null);
-    }
-
-    public Contact(@NonNull String group, @NonNull String firstName,
-                   @Nullable String lastName, @Nullable String pictureUrl,
-                   @Nullable List<PrayerRequest> requestList) {
-        this.id = createContactId();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.pictureUrl = pictureUrl;
-        this.group = group;
-        this.requestList = new ArrayList<>(requestList);
     }
 
     @NonNull
@@ -59,12 +43,12 @@ public class Contact  {
     }
 
     @NonNull
-    public String getGroup() {
-        return group;
+    public String getGroupId() {
+        return groupId;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     @NonNull
@@ -102,7 +86,7 @@ public class Contact  {
     @Exclude
     @Override
     public int hashCode() {
-        return Objects.hash(id, group, firstName);
+        return Objects.hash(id, groupId, firstName);
     }
 
     @Exclude
@@ -110,7 +94,7 @@ public class Contact  {
     public String toString() {
         return "ContactEntry {"+
                 "id='" + id + '\'' +
-                ", group='" + group + '\'' +
+                ", groupId='" + groupId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 " ,lastName='" + lastName + '\'' +
                 " ,pictureUrl=" + pictureUrl + '\'' +
@@ -122,5 +106,21 @@ public class Contact  {
         return firstName.replaceAll("\\s","").toLowerCase() + "_" +
                 lastName.replaceAll("\\s","").toLowerCase() + "_" +
                 rnd.nextInt();
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
+
+    public void setFirstName(@NonNull String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(@Nullable String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setPictureUrl(@Nullable String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 }

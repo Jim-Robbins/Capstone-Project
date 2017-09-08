@@ -18,23 +18,24 @@ import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.BibleVerseRecyclerViewAdapter;
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
 import com.copychrist.app.prayer.model.BibleVerse;
+import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
 import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
+import com.copychrist.app.prayer.util.Utils;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.RealmList;
-import timber.log.Timber;
 
 public class EditPrayerRequestDetailActivity extends BaseActivity
-        implements EditPrayerRequestView, BibleVerseRecyclerViewAdapter.OnBibleVerseClickListener {
+        implements PrayerRequestContract.View, BibleVerseRecyclerViewAdapter.OnBibleVerseClickListener {
 
     @BindView(R.id.add_layout_container) LinearLayout layoutContainer;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -55,11 +56,11 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
     @Inject EditPrayerRequestPresenter editPrayerRequestPresenter;
 
     public static String EXTRA_REQUEST_ID = "extra_request_id";
-    private BibleVerseRecyclerViewAdapter bibleVerseAdapter;
-    private int requestId = 0;
-    private int contactId = 0;
+    BibleVerseRecyclerViewAdapter bibleVerseAdapter;
+    private String requestId;
+    private String contactId;
 
-    public static Intent getStartIntent(final Context context, final int requestId) {
+    public static Intent getStartIntent(final Context context, final String requestId) {
         Intent intent = new Intent(context, EditPrayerRequestDetailActivity.class);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         return intent;
@@ -111,8 +112,8 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showBibleVerses(RealmList<BibleVerse> bibleVerses) {
-        bibleVerseAdapter = new BibleVerseRecyclerViewAdapter(bibleVerses);
+    public void showBibleVerses(List<BibleVerse> bibleVerses) {
+        bibleVerseAdapter = new BibleVerseRecyclerViewAdapter();
         bibleVerseAdapter.setBibleVerseClickListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -122,9 +123,9 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
     @Override
     protected Object getModule() {
         if (getIntent().hasExtra(EXTRA_REQUEST_ID)) {
-            requestId = getIntent().getExtras().getInt(EXTRA_REQUEST_ID);
+            requestId = getIntent().getExtras().getString(EXTRA_REQUEST_ID);
         }
-        return new EditPrayerRequestModule(requestId);
+        return new PrayerRequestModule(requestId);
     }
 
     @Override
@@ -140,27 +141,23 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
     }
 
     @Override
-    protected void closeRealm() {
-        editPrayerRequestPresenter.closeRealm();
-    }
-
-
-    @Override
     public void showEditPrayerRequestDetails(PrayerRequest prayerRequest, PrayerListsListAdapter prayerListsListAdapter) {
         spinnerPrayerLists.setAdapter(prayerListsListAdapter);
         // If wa already have a contact, hide the contact entry view
         if(prayerRequest != null) {
-            contactId = prayerRequest.getContact().getId();
-            txtFirstName.setText(prayerRequest.getContact().getFirstName());
-            txtLastName.setText(prayerRequest.getContact().getLastName());
+            Contact contact = new Contact(); //DatabaseService.getContact(prayerRequest.getContact());
+            contactId = contact.getId();
+            txtFirstName.setText(contact.getFirstName());
+            txtLastName.setText(contact.getLastName());
             editRequestTitle.setText(prayerRequest.getTitle());
             editRequestDesc.setText(prayerRequest.getDescription());
-            if(prayerRequest.getVerses().size() > 0) {
-                editPassage.setText(prayerRequest.getVerses().first().getPassage());
+            if(prayerRequest.getVerses() != null && prayerRequest.getVerses().size() > 0) {
+                BibleVerse bibleVerse = new BibleVerse(); //DatabaseService.getBibleVerse(prayerRequest.getVerses().get(0);
+                editPassage.setText(bibleVerse.getPassage());
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format));
+            SimpleDateFormat dateFormat = Utils.getDateFormat(this);
             if(prayerRequest.getEndDate() != null)
-                editEndDate.setText(dateFormat.format(prayerRequest.getEndDate()).toString());
+                editEndDate.setText(dateFormat.format(prayerRequest.getEndDate()));
 
             editEndDate.setFocusable(false);
             editEndDate.setOnClickListener(new DatePickerOnClickListener(dateFormat));
@@ -168,7 +165,7 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showEditPrayerRequestError() {
+    public void showPrayerRequestError() {
         Snackbar.make(layoutContainer, R.string.edit_new_prayer_request_error, Snackbar.LENGTH_SHORT).show();
     }
 
@@ -182,7 +179,6 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
                 null
                 //spinnerPrayerLists.getSelectedItem().toString()
         );
-        closeRealm();
         onNavUp();
     }
 
@@ -205,5 +201,10 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
     private void onNavUp() {
         startActivity(ContactDetailActivity.getStartIntent(this, contactId));
         finish();
+    }
+
+    @Override
+    public void showAddPrayerRequestDetails(Contact contact, PrayerListsListAdapter prayerListsListAdapter) {
+
     }
 }

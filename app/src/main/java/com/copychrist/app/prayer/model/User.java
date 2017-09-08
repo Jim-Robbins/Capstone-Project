@@ -8,6 +8,8 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
 public class User {
+    public static String DB_NAME = "users";
+
     public String username;
     public String email;
 

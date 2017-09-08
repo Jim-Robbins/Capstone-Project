@@ -1,7 +1,6 @@
 package com.copychrist.app.prayer;
 
-import com.copychrist.app.prayer.repository.DatabaseSerivce;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Module;
@@ -17,12 +16,12 @@ public class ApplicationModule {
     public ApplicationModule() {}
 
     @Provides
-    DatabaseReference provideDatabase() {
-        return FirebaseDatabase.getInstance().getReference();
+    FirebaseApp provideFirebaseApp() {
+        return FirebaseApp.getInstance();
     }
 
     @Provides
-    DatabaseSerivce provideDatabaseService() {
-        return new DatabaseSerivce();
+    FirebaseDatabase provideFirebaseDatabase() {
+        return FirebaseDatabase.getInstance(provideFirebaseApp());
     }
 }

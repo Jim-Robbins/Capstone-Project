@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 @IgnoreExtraProperties
 public class BibleVerse {
+    public static String DB_NAME = "bibleVerses";
+
     @NonNull
     private String book;
 
@@ -34,23 +36,10 @@ public class BibleVerse {
         // Default constructor required for calls to DataSnapshot.getValue(BibleVerse.class)
     }
 
-    public BibleVerse(@NonNull String book, @NonNull int chapter, @Nullable String verse) {
-        this(book, chapter, verse, null, null, null);
-    }
-
-    public BibleVerse(@NonNull String book, @NonNull int chapter,
-                      @Nullable String verse, @Nullable String text) {
-        this(book, chapter, verse, text, null, null);
-    }
-
-    public BibleVerse(@NonNull String book, @NonNull int chapter, @Nullable String verse,
-                      @Nullable String text, @Nullable String version, @Nullable String apiUrl) {
+    public BibleVerse(String book, int chapter, String verse) {
         this.book = book;
         this.chapter = chapter;
         this.verse = verse;
-        this.text = text;
-        this.version = version;
-        this.apiUrl = apiUrl;
     }
 
     public String getBook() {
@@ -119,6 +108,30 @@ public class BibleVerse {
             verse = pattern.matcher(passage).group(2);
         }
 
-        return new BibleVerse(book, chapter, verse, null, null, null);
+        return new BibleVerse(book, chapter, verse);
+    }
+
+    public void setBook(@NonNull String book) {
+        this.book = book;
+    }
+
+    public void setChapter(@NonNull int chapter) {
+        this.chapter = chapter;
+    }
+
+    public void setVerse(@Nullable String verse) {
+        this.verse = verse;
+    }
+
+    public void setText(@Nullable String text) {
+        this.text = text;
+    }
+
+    public void setVersion(@Nullable String version) {
+        this.version = version;
+    }
+
+    public void setApiUrl(@Nullable String apiUrl) {
+        this.apiUrl = apiUrl;
     }
 }

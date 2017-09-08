@@ -17,16 +17,16 @@ import com.copychrist.app.prayer.model.ContactGroup;
 
 public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
     protected ContactGroup contactGroup;
-    protected ContactsPresenter presenter;
-    private int contactId = -1;
-    private int sortOrder = -1;
+    protected int groupCounter;
+    protected ContactGroupContract.Presenter presenter;
 
     private EditText textGroupName, textGroupDesc;
 
     public static AddContactGroupDialogFragment newInstance(ContactGroup contactGroup,
-                                                            ContactsPresenter contactsPresenter) {
+                                                            ContactGroupContract.Presenter contactsPresenter, int tabCount) {
         AddContactGroupDialogFragment frag = new AddContactGroupDialogFragment();
         frag.contactGroup = contactGroup;
+        frag.groupCounter = tabCount;
         frag.presenter = contactsPresenter;
         return frag;
     }
@@ -45,9 +45,7 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
         if(contactGroup != null) {
             alertDialogBuilder.setTitle(R.string.dialog_edit_contact_group_title);
             textGroupName.setText(contactGroup.getName());
-            textGroupDesc.setText(contactGroup.getDesc());
-            contactId = contactGroup.getId();
-            sortOrder = contactGroup.getOrder();
+            textGroupDesc.setText(contactGroup.getDescription());
         } else {
             alertDialogBuilder.setTitle(R.string.dialog_add_contact_group_title);
         }
@@ -79,10 +77,12 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
     }
 
     private void saveContactGroup() {
-        presenter.onSaveContactGroupClick(
-                contactId,
-                textGroupName.getText().toString(),
-                textGroupDesc.getText().toString(),
-                sortOrder);
+        if(contactGroup == null) {
+            contactGroup = new ContactGroup();
+            contactGroup.setOrder(groupCounter);
+        }
+        contactGroup.setName(textGroupName.getText().toString());
+        contactGroup.setDescription(textGroupDesc.getText().toString());
+        presenter.onSaveContactGroupClick(contactGroup);
     }
 }

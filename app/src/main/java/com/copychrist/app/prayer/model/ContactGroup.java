@@ -6,12 +6,15 @@ import android.support.annotation.Nullable;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @IgnoreExtraProperties
 public class ContactGroup {
-    @NonNull
+    public static final String CREATED = "dateCreated";
+    public static final String DB_NAME = "contactGroups";
+    public static final String ORDER_BY = "order";
+
+    @Exclude
     private String id;
 
     @NonNull
@@ -24,23 +27,11 @@ public class ContactGroup {
     private int order;
 
     @Nullable
-    private List<Contact> members;
+    private List<Contact> contacts;
+
+    private Long dateCreated;
 
     public ContactGroup() {}
-
-    public ContactGroup(@NonNull String name, @Nullable String description,
-                        @NonNull int order, @Nullable List<Contact> contacts) {
-        this.id = name.replaceAll("\\s","").toLowerCase();
-        this.name = name;
-        this.description = description;
-        this.order = order;
-        this.members = new ArrayList<>(contacts);
-    }
-
-    @NonNull
-    public String getId() {
-        return id;
-    }
 
     @NonNull
     public String getName() {
@@ -48,7 +39,7 @@ public class ContactGroup {
     }
 
     @Nullable
-    public String getDesc() {
+    public String getDescription() {
         return description;
     }
 
@@ -58,30 +49,65 @@ public class ContactGroup {
     }
 
     @Nullable
-    public List<Contact> getMembers() {
-        return members;
+    public List<Contact> getContacts() {
+        return contacts;
+    }
+
+    @NonNull
+    public Long getDateCreated() {
+        if(dateCreated == null) {
+            dateCreated = System.currentTimeMillis()/1000;
+        }
+
+        return dateCreated;
     }
 
     @Exclude
-    public List<Contact> addMember(Contact contact) {
-        members.add(contact);
-        return members;
+    public List<Contact> addContact(Contact contact) {
+        contacts.add(contact);
+        return contacts;
     }
 
     @Exclude
-    public List<Contact> deleteMember(Contact contact) {
-        members.remove(contact);
-        return members;
+    public List<Contact> deleteContact(Contact contact) {
+        contacts.remove(contact);
+        return contacts;
+    }
+
+    @Exclude
+    public String getId() {
+        return id;
     }
 
     @Exclude
     @Override
     public String toString() {
         return "ContactGroup { " +
-                "   id = " + getId() + ", " +
                 "   name = " + getName() + ", " +
-                "   desc = " + getDesc() + ", " +
+                "   desc = " + getDescription() + ", " +
                 "   order = " + getOrder() + ", " +
                 "}";
     }
+
+    public void setName(@NonNull String name) {
+        this.name = name;
+    }
+
+    public void setDescription(@Nullable String description) {
+        this.description = description;
+    }
+
+    public void setOrder(@NonNull int order) {
+        this.order = order;
+    }
+
+    public void setContacts(@Nullable List<Contact> contacts) {
+        this.contacts = contacts;
+    }
+
+    @Exclude
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }

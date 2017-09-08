@@ -13,8 +13,10 @@ import java.util.List;
 
 @IgnoreExtraProperties
 public class PrayerRequest {
+    public static String DB_NAME = "prayerRequests";
+
     @NonNull
-    private long id;
+    private String id;
 
     @NonNull
     private String contact;
@@ -42,29 +44,29 @@ public class PrayerRequest {
     public PrayerRequest() {}
 
     public PrayerRequest(@NonNull String contact, @NonNull String title ) {
-        this(-1, contact, title, null, null, null, null, null);
+        this("", contact, title, null, null, null, null, null);
     }
 
-    public PrayerRequest(@NonNull long id, @NonNull String contact, @NonNull String title ) {
+    public PrayerRequest(@NonNull String id, @NonNull String contact, @NonNull String title ) {
         this(id, contact, title, null, null, null, null, null);
     }
 
-    public PrayerRequest(@NonNull long id, @NonNull String contact, @Nullable Date answered ) {
+    public PrayerRequest(@NonNull String id, @NonNull String contact, @Nullable Date answered ) {
         this(id, contact, null, null, null, null, null, answered);
     }
 
     public PrayerRequest(@NonNull String contact, @NonNull String title,
                          @Nullable String description, @Nullable Date endDate ) {
-        this(-1, contact, title, description, endDate, null, null, null);
+        this("", contact, title, description, endDate, null, null, null);
     }
 
     public PrayerRequest(@NonNull String contact, @NonNull String title,
                          @Nullable String description, @Nullable Date endDate,
                          @Nullable List<BibleVerse> verses ) {
-        this(-1, contact, title, description, endDate, verses, null, null);
+        this("", contact, title, description, endDate, verses, null, null);
     }
 
-    public PrayerRequest(@NonNull long id, @NonNull String contact, @NonNull String title,
+    public PrayerRequest(@NonNull String id, @NonNull String contact, @NonNull String title,
                          @Nullable String description, @Nullable Date endDate,
                          @Nullable List<BibleVerse> verses, @Nullable List<String> prayedForOn,
                          @Nullable Date answered ) {
@@ -79,7 +81,7 @@ public class PrayerRequest {
     }
 
     @NonNull
-    public long getId() {
+    public String getId() {
         return id;
     }
 

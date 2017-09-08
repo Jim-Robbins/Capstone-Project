@@ -13,6 +13,7 @@ import com.copychrist.app.prayer.util.Utils;
 
 /**
  * Created by jim on 8/26/17.
+ *
  */
 
 public class DeleteDialogFragment extends AppCompatDialogFragment {
@@ -22,27 +23,27 @@ public class DeleteDialogFragment extends AppCompatDialogFragment {
     private static String ITEM_NAME = "itemName";
 
     private DeleteActionDialogListener listener;
-    private int itemId;
+    private String itemId;
 
     /**
      * Public interface to listen for Confirm button clicked
      */
     public interface DeleteActionDialogListener {
-        void onConfirmedDeleteDialog(int itemId);
+        void onConfirmedDeleteDialog(String itemId);
     }
 
     /**
      * New Instance creates the dialog fragment, and allows us to pass some values in.
-     * @param title
-     * @param itemId
-     * @param itemName
-     * @return
+     * @param title     Title of the dialog
+     * @param itemId    Item Id for the record being shown
+     * @param itemName  Name of the Item to delete
+     * @return DeleteDialogFragment
      */
-    public static DeleteDialogFragment newInstance(String title, int itemId, String itemName) {
+    public static DeleteDialogFragment newInstance(String title, String itemId, String itemName) {
         DeleteDialogFragment frag = new DeleteDialogFragment();
         Bundle args = new Bundle();
         args.putString(TITLE, title);
-        args.putInt(ITEM_ID, itemId);
+        args.putString(ITEM_ID, itemId);
         args.putString(ITEM_NAME, itemName);
         frag.setArguments(args);
         return frag;
@@ -53,7 +54,7 @@ public class DeleteDialogFragment extends AppCompatDialogFragment {
         // Get params we passed to newInstance
         String title = getArguments().getString(TITLE);
         String itemName = getArguments().getString(ITEM_NAME);
-        itemId = getArguments().getInt(ITEM_ID);
+        itemId = getArguments().getString(ITEM_ID);
 
         // Create alert dialog
         Resources res = getActivity().getResources();

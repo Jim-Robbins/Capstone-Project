@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.copychrist.app.prayer">
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name=".PrayingWithDedicationApplication"
         android:allowBackup="true"
@@ -11,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.contactgroups.ContactsActivity"
+            android:name=".ui.contactgroups.ContactGroupActivity"
             android:label="@string/title_activity_contacts"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -23,21 +28,21 @@
         <activity
             android:name=".ui.home.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.contact.ContactDetailActivity"
             android:label="@string/title_activity_contact_detail"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ui.contactgroups.ContactsActivity">
+            android:parentActivityName=".ui.contactgroups.ContactGroupActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.contactgroups.ContactsActivity" />
+                android:value=".ui.contactgroups.ContactGroupActivity" />
         </activity>
         <activity
             android:name=".ui.prayerrequest.AddPrayerRequestDetailActivity"
             android:label="@string/title_activity_prayer_request_detail"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ui.contact.ContactDetailActivity">
+            android:parentActivityName=".ui.contact.ContactDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.contact.ContactDetailActivity" />
@@ -45,11 +50,19 @@
         <activity
             android:name=".ui.prayerrequest.EditPrayerRequestDetailActivity"
             android:label="@string/title_activity_prayer_request_detail"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ui.contact.ContactDetailActivity">
+            android:parentActivityName=".ui.contact.ContactDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.contact.ContactDetailActivity" />
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName=".ui.home.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.copychrist.app.prayer.ui.home.MainActivity" />
         </activity>
     </application>
 

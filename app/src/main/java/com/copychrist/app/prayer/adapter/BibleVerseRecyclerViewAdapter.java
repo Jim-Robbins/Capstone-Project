@@ -10,48 +10,58 @@ import android.widget.TextView;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.BibleVerse;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.RealmList;
-import io.realm.RealmRecyclerViewAdapter;
 
 /**
  * Created by jim on 8/20/17.
+ *
  */
 
-public class BibleVerseRecyclerViewAdapter extends RealmRecyclerViewAdapter<BibleVerse, BibleVerseRecyclerViewAdapter.VerseViewHolder> {
+public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVerseRecyclerViewAdapter.VerseViewHolder> {
 
+    private List<BibleVerse> verses;
     private OnBibleVerseClickListener onBibleVerseClickListener;
 
-    public BibleVerseRecyclerViewAdapter(RealmList<BibleVerse> bibleVerses) {
-        super(bibleVerses, true);
-    }
+    public BibleVerseRecyclerViewAdapter() {}
 
     @Override
     public VerseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new VerseViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.item_bible_passage,
-                        parent,
-                        false
-                )
-        );
+        View view = LayoutInflater.from(parent.getContext()).inflate(
+                                                R.layout.item_bible_passage,
+                                                parent,
+                                                false);
+
+        return new VerseViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(VerseViewHolder holder, int position) {
         // get the verse
-        final BibleVerse bibleVerse = getItem(position);
+        final BibleVerse bibleVerse = verses.get(position);
         if(bibleVerse != null) {
             holder.bind(bibleVerse);
         }
+    }
+
+    @Override
+    public int getItemCount() {
+        return verses != null ? verses.size() : 0;
     }
 
     public void setBibleVerseClickListener(final OnBibleVerseClickListener onBibleVerseClickListener) {
         this.onBibleVerseClickListener = onBibleVerseClickListener;
     }
 
-    public class VerseViewHolder extends RecyclerView.ViewHolder {
+    public void setBibleVerses(final List<BibleVerse> verses) {
+        this.verses = verses;
+//        this.verses.addChangeListener(this);
+        notifyDataSetChanged();
+    }
+
+    class VerseViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.layout_item_container)
         LinearLayout layoutItem;
@@ -60,7 +70,7 @@ public class BibleVerseRecyclerViewAdapter extends RealmRecyclerViewAdapter<Bibl
         @BindView(R.id.text_verse_text)
         TextView verseText;
 
-        public VerseViewHolder(View itemView) {
+        VerseViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

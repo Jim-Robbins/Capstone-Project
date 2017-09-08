@@ -22,29 +22,29 @@ import com.copychrist.app.prayer.ui.contact.AddEditContactDialogFragment;
 import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
 import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.RealmList;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class ContactsActivity extends BaseActivity
-        implements ContactsView, ContactsListAdapter.OnContactClickListener, DeleteDialogFragment.DeleteActionDialogListener {
+public class ContactGroupActivity extends BaseActivity implements ContactGroupContract.View,
+        ContactsListAdapter.OnContactClickListener, DeleteDialogFragment.DeleteActionDialogListener {
 
-    private static final String TAG = "ContactsActivity";
+    private static final String TAG = "ContactGroupActivity";
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.tab_layout_groups) TabLayout tabLayoutGroups;
-    @Inject ContactsPresenter contactsPresenter;
+    @Inject ContactGroupContract.Presenter contactsPresenter;
 
     private ContactsListAdapter contactsListAdapter;
     private int selectedTabIndex = 0;
     public static String EXTRA_CONTACT_GROUP_ID = "extra_contact_id";
 
-    public static Intent getStartIntent(final Context context, final int contactGroupId) {
+    public static Intent getStartIntent(final Context context, final String contactGroupId) {
         Intent intent = new Intent(context, ContactDetailActivity.class);
         intent.putExtra(EXTRA_CONTACT_GROUP_ID, contactGroupId);
         return intent;
@@ -91,7 +91,7 @@ public class ContactsActivity extends BaseActivity
         if(getIntent().hasExtra(EXTRA_CONTACT_GROUP_ID)) {
             contactGroupId = getIntent().getExtras().getInt(EXTRA_CONTACT_GROUP_ID);
         }
-        return new ContactsModule(contactGroupId);
+        return new ContactGroupModule(contactGroupId);
     }
 
     private void initList() {
@@ -118,34 +118,30 @@ public class ContactsActivity extends BaseActivity
     }
 
     @Override
-    protected void closeRealm() {
-        contactsPresenter.closeRealm();
-    }
-
-
-    @Override
-    public void showContacts(RealmList<Contact> contacts) {
+    public void showContacts(List<Contact> contacts) {
         contactsListAdapter.setContacts(contacts);
     }
 
     @Override
-    public void showContactGroupsTabs(RealmResults<ContactGroup> contactGroups, ContactGroup selectedGroup) {
+    public void showContactGroupsTabs(List<ContactGroup> contactGroups, final ContactGroup selectedGroup) {
         tabLayoutGroups.clearOnTabSelectedListeners();
         tabLayoutGroups.removeAllTabs();
         for (ContactGroup contactGroup : contactGroups) {
             Tab tab = tabLayoutGroups.newTab();
             tab.setText(contactGroup.getName());
-            tab.setTag(contactGroup.getId());
+            tab.setTag(contactGroup);
             tabLayoutGroups.addTab(tab);
-            if(contactGroup.getId() == selectedGroup.getId()) {
+            if(selectedGroup != null && contactGroup.getName().equalsIgnoreCase(selectedGroup.getName())) {
                 selectedTabIndex = tab.getPosition();
             }
         }
         tabLayoutGroups.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Timber.d(TAG, tab.getText() +":"+tab.getTag().toString());
-                contactsPresenter.onContactGroupClicked(Integer.parseInt(tab.getTag().toString()));
+                if (tab.getTag() != null) {
+                    Timber.d(TAG, tab.getText() + ":" + tab.getTag().toString());
+                    contactsPresenter.onContactGroupClicked((ContactGroup) tab.getTag());
+                }
             }
 
             @Override
@@ -159,20 +155,24 @@ public class ContactsActivity extends BaseActivity
             }
         });
 
-        tabLayoutGroups.getTabAt(selectedTabIndex).select();
+        Tab selectedTab = tabLayoutGroups.getTabAt(selectedTabIndex);
+        if(selectedTab != null) {
+            tabLayoutGroups.getTabAt(selectedTabIndex).select();
+        }
     }
+
 
     @Override
     public void showAddContactGroupDialog() {
         AddContactGroupDialogFragment addContactGroupDialogFragment =
-                AddContactGroupDialogFragment.newInstance(null, contactsPresenter);
+                AddContactGroupDialogFragment.newInstance(null, contactsPresenter, tabLayoutGroups.getTabCount());
         addContactGroupDialogFragment.show(getSupportFragmentManager(), "AddContactGroupDialog");
     }
 
     @Override
     public void showEditContactGroupDialog(ContactGroup contactGroup) {
         AddContactGroupDialogFragment addContactGroupDialogFragment =
-                AddContactGroupDialogFragment.newInstance(contactGroup, contactsPresenter);
+                AddContactGroupDialogFragment.newInstance(contactGroup, contactsPresenter, tabLayoutGroups.getTabCount());
         addContactGroupDialogFragment.show(getSupportFragmentManager(), "EditContactGroupDialog");
     }
 
@@ -181,7 +181,7 @@ public class ContactsActivity extends BaseActivity
         if (tabLayoutGroups.getTabCount() > 1) {
             DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
                     getString(R.string.dialog_delete_group_title),
-                    contactGroup.getId(),
+                    contactGroup.getName(),
                     contactGroup.getName()
             );
             deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
@@ -195,7 +195,7 @@ public class ContactsActivity extends BaseActivity
     }
 
     @Override
-    public void onConfirmedDeleteDialog(int itemId) {
+    public void onConfirmedDeleteDialog(String itemId) {
         contactsPresenter.onDeleteContactGroupConfirmed();
     }
 
@@ -211,28 +211,28 @@ public class ContactsActivity extends BaseActivity
     }
 
     @Override
-    public void onContactClick(int id) {
+    public void onContactClick(String id) {
         contactsPresenter.onContactClick(id);
     }
 
 
     @Override
-    public void showContactDetailView(int id) {
+    public void showContactDetailView(String id) {
         startActivity(ContactDetailActivity.getStartIntent(this, id));
     }
 
     @Override
-    public void onPrayerRequestClick(int requestId) {
+    public void onPrayerRequestClick(String requestId) {
         contactsPresenter.onPrayerRequestClick(requestId);
     }
 
     @Override
-    public void showPrayerRequestDetailView(int requestId) {
+    public void showPrayerRequestDetailView(String requestId) {
         startActivity(EditPrayerRequestDetailActivity.getStartIntent(this, requestId));
     }
 
     @Override
-    public void showRealmResultMessage(String message) {
+    public void showDatabaseResultMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

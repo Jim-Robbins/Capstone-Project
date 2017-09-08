@@ -1,6 +1,5 @@
 package com.copychrist.app.prayer.model;
 
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -12,6 +11,8 @@ import java.util.List;
 
 @IgnoreExtraProperties
 public class PrayerList {
+    public static String DB_NAME = "prayerLists";
+
     @NonNull
     private String id;
 

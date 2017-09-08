@@ -4,6 +4,10 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 
 import com.copychrist.app.prayer.util.ReleaseTree;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.squareup.leakcanary.LeakCanary;
 
 import dagger.ObjectGraph;
@@ -20,6 +24,7 @@ public class PrayingWithDedicationApplication extends Application {
         instance = this;
         initMemoryLeakCheck();
         initLogger();
+        initDb();
         initApplicationGraph();
     }
 
@@ -46,6 +51,15 @@ public class PrayingWithDedicationApplication extends Application {
         } else {
             Timber.plant(new ReleaseTree());
         }
+    }
+
+    private void initDb() {
+        FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
+        if (!FirebaseApp.getApps(this).isEmpty()) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            FirebaseDatabase.getInstance().getReference().keepSynced(true);
+        }
+
     }
 
     private void initApplicationGraph() {

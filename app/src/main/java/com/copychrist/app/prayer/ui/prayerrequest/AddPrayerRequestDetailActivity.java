@@ -12,12 +12,15 @@ import android.widget.Spinner;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
+import com.copychrist.app.prayer.model.BibleVerse;
 import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
 import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,7 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class AddPrayerRequestDetailActivity extends BaseActivity implements AddPrayerRequestView {
+public class AddPrayerRequestDetailActivity extends BaseActivity implements PrayerRequestContract.View {
 
     @BindView(R.id.add_layout_container) LinearLayout layoutContainer;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -37,12 +40,12 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     @BindView(R.id.edit_end_date) EditText editEndDate;
     @BindView(R.id.spinner_prayer_lists) Spinner spinnerPrayerLists;
 
-    @Inject AddPrayerRequestPresenter addPrayerRequestPresenter;
+    @Inject PrayerRequestContract.AddPresenter addPrayerRequestPresenter;
 
     public static String EXTRA_CONTACT_ID = "extra_contact_id";
-    private int contactId = 0;
+    private String contactId;
 
-    public static Intent getStartIntent(final Context context, final int contactId) {
+    public static Intent getStartIntent(final Context context, final String contactId) {
         Intent intent = new Intent(context, AddPrayerRequestDetailActivity.class);
         intent.putExtra(EXTRA_CONTACT_ID, contactId);
         return intent;
@@ -74,9 +77,9 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     @Override
     protected Object getModule() {
         if (getIntent().hasExtra(EXTRA_CONTACT_ID)) {
-            contactId = getIntent().getExtras().getInt(EXTRA_CONTACT_ID);
+            contactId = getIntent().getExtras().getString(EXTRA_CONTACT_ID);
         }
-        return new AddPrayerRequestModule(contactId);
+        return new PrayerRequestModule(contactId);
     }
 
     @Override
@@ -92,12 +95,6 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     }
 
     @Override
-    protected void closeRealm() {
-        addPrayerRequestPresenter.closeRealm();
-    }
-
-
-    @Override
     public void showAddPrayerRequestDetails(Contact contact, PrayerListsListAdapter prayerListsListAdapter) {
         spinnerPrayerLists.setAdapter(prayerListsListAdapter);
         SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format));
@@ -106,7 +103,7 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     }
 
     @Override
-    public void showAddPrayerRequestError() {
+    public void showPrayerRequestError() {
         Snackbar.make(layoutContainer, R.string.add_new_prayer_request_error, Snackbar.LENGTH_SHORT).show();
     }
 
@@ -130,5 +127,20 @@ public class AddPrayerRequestDetailActivity extends BaseActivity implements AddP
     private void onNavUp() {
         startActivity(ContactDetailActivity.getStartIntent(this, contactId));
         finish();
+    }
+
+    @Override
+    public void showEditPrayerRequestDetails(PrayerRequest request, PrayerListsListAdapter prayerListsListAdapter) {
+
+    }
+
+    @Override
+    public void showBibleVerses(List<BibleVerse> bibleVerses) {
+
+    }
+
+    @Override
+    public void showBibleVerseDetails(String bibleVerse) {
+
     }
 }
