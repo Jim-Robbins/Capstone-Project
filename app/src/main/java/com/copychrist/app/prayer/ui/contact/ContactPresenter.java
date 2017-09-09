@@ -1,7 +1,6 @@
 package com.copychrist.app.prayer.ui.contact;
 
 import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.ui.contactgroups.ContactGroupService;
 
 /**
  * Created by jim on 8/19/17.
@@ -9,7 +8,7 @@ import com.copychrist.app.prayer.ui.contactgroups.ContactGroupService;
 
 public class ContactPresenter implements ContactContract.Presenter {
 
-    private final ContactGroupService dataService;
+    private final ContactService dataService;
     private final String contactId;
     private ContactContract.View myListView;
     private Contact myContact;
@@ -17,7 +16,7 @@ public class ContactPresenter implements ContactContract.Presenter {
     private boolean requestsShown = false;
     private boolean archivesShown = false;
 
-    public ContactPresenter(final ContactGroupService dataService, final String contactId) {
+    public ContactPresenter(final ContactService dataService, final String contactId) {
         this.dataService = dataService;
         this.contactId = contactId;
     }
