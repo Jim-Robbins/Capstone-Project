@@ -24,8 +24,8 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
 
     private EditText txtFirstName, txtLastName;
 
-    public static AddEditContactDialogFragment neEditInstance(Contact contact,
-                                                              ContactContract.Presenter contactPresenter) {
+    public static AddEditContactDialogFragment newEditInstance(Contact contact,
+                                                               ContactContract.Presenter contactPresenter) {
         AddEditContactDialogFragment frag = new AddEditContactDialogFragment();
         frag.contact = contact;
         frag.contactPresenter = contactPresenter;
@@ -102,7 +102,6 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
     private void editContact() {
         contact.setFirstName(txtFirstName.getText().toString());
         contact.setLastName(txtLastName.getText().toString());
-        contact.setGroupKey(groupName);
-        contactPresenter.onSaveClick(contact);
+        contactPresenter.onSaveContactClick(contact);
     }
 }

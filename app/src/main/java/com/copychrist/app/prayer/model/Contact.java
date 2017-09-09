@@ -7,9 +7,6 @@ import com.copychrist.app.prayer.util.Utils;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @IgnoreExtraProperties
 public class Contact  {
     public static final String DB_NAME = "contacts";
@@ -34,9 +31,6 @@ public class Contact  {
 
     @Nullable
     private String pictureUrl;
-
-    @Nullable
-    private List<PrayerRequest> prayerRequests = new ArrayList<>();
 
     public Contact() {
         // Default constructor required for calls to DataSnapshot.getValue()
@@ -100,19 +94,6 @@ public class Contact  {
     }
     public void setPictureUrl(@Nullable String pictureUrl) {
         this.pictureUrl = pictureUrl;
-    }
-
-    @Nullable
-    public List<PrayerRequest> getPrayerRequests() {
-        return prayerRequests;
-    }
-    public List<PrayerRequest> addPrayerRequest(PrayerRequest request) {
-        prayerRequests.add(request);
-        return prayerRequests;
-    }
-    public List<PrayerRequest> deletePrayerRequest(PrayerRequest request) {
-        prayerRequests.remove(request);
-        return prayerRequests;
     }
 
     @Exclude

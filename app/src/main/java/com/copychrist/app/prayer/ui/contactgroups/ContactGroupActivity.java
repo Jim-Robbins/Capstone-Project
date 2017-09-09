@@ -148,14 +148,9 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
+            public void onTabUnselected(TabLayout.Tab tab) {}
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
         Tab selectedTab = tabLayoutGroups.getTabAt(selectedTabIndex);
@@ -214,28 +209,17 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     }
 
     @Override
-    public void onContactClick(String id) {
-        contactsPresenter.onContactClick(id);
-    }
-
-
-    @Override
-    public void showContactDetailView(String id) {
-        startActivity(ContactDetailActivity.getStartIntent(this, id));
+    public void onContactClick(String contactKey) {
+        startActivity(ContactDetailActivity.getStartIntent(this, contactKey));
     }
 
     @Override
     public void onPrayerRequestClick(String requestId) {
-        contactsPresenter.onPrayerRequestClick(requestId);
-    }
-
-    @Override
-    public void showPrayerRequestDetailView(String requestId) {
         startActivity(EditPrayerRequestDetailActivity.getStartIntent(this, requestId));
     }
 
     @Override
     public void showDatabaseResultMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }

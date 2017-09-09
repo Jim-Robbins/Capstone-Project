@@ -7,12 +7,12 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 @IgnoreExtraProperties
 public class PrayerRequest {
+    public static final String CONTACT_KEY = "contact";
     public static String DB_NAME = "prayerRequests";
 
     @NonNull

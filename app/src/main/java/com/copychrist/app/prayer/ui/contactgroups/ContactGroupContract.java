@@ -19,8 +19,6 @@ public class ContactGroupContract {
         void showEditContactGroupDialog(ContactGroup contactGroup);
         void showDeleteContactGroupDialog(ContactGroup contactGroup);
         void showAddNewContactView(String contactGroupName);
-        void showContactDetailView(String contactId);
-        void showPrayerRequestDetailView(String contactId);
         void showDatabaseResultMessage(String message);
     }
 
@@ -33,8 +31,9 @@ public class ContactGroupContract {
         void onDeleteContactGroupConfirmed();
         void onAddNewContactClick();
         void onSaveContactClick(Contact contact);
-        void onContactClick(String contactId);
-        void onPrayerRequestClick(String prayerRequestId);
+        void onDataResultMessage(String message);
+        void onContactGroupResults(List<ContactGroup> results, ContactGroup selectedContactGroup);
+        void onContactResults(List<Contact> results);
     }
 
 }

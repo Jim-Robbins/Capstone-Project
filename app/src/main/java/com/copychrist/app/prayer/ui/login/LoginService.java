@@ -12,7 +12,7 @@ import com.google.firebase.database.ValueEventListener;
  * Created by jim on 9/8/17.
  */
 
-public class LoginService implements BaseService {
+public class LoginService implements BaseService<User, LoginContract.Presenter> {
     FirebaseDatabase database;
     DatabaseReference usersGroupsRef;
     Query queryRef;
@@ -26,17 +26,17 @@ public class LoginService implements BaseService {
     }
 
     @Override
-    public void getValues(Object view) {
+    public void getValues(LoginContract.Presenter presenter) {
 
     }
 
     @Override
-    public void saveValue(Object model) {
+    public void saveValue(User model) {
 
     }
 
     @Override
-    public void deleteValue(Object view, String id) {
+    public void deleteValue() {
 
     }
 

@@ -9,95 +9,72 @@ import com.copychrist.app.prayer.model.Contact;
 public class ContactPresenter implements ContactContract.Presenter {
 
     private final ContactService dataService;
-    private final String contactId;
-    private ContactContract.View myListView;
-    private Contact myContact;
+    private final String contactKey;
+    private ContactContract.View contactView;
+    private Contact selectedContact;
 
     private boolean requestsShown = false;
     private boolean archivesShown = false;
 
-    public ContactPresenter(final ContactService dataService, final String contactId) {
+    public ContactPresenter(final ContactService dataService, final String contactKey) {
         this.dataService = dataService;
-        this.contactId = contactId;
+        this.contactKey = contactKey;
     }
 
     @Override
     public void setView(ContactContract.View view) {
-        myListView = view;
-        //myContact = dataService.getContact(contactId);
-        myListView.showContactDetail(myContact);
-        showActivePrayerRequests();
+        contactView = view;
+        dataService.getValue(this, contactKey);
     }
 
-    private void showActivePrayerRequests() {
+    @Override
+    public void onGetContactResult(Contact contact) {
+        selectedContact = contact;
+        contactView.showContactDetail(selectedContact);
+        //showActivePrayerRequests();
+    }
+
+    @Override
+    public void clearView() {
+        contactView = null;
+        dataService.destroy();
+    }
+
+    @Override
+    public void onSaveContactClick(Contact contact) {
+        dataService.saveValue(contact);
+    }
+
+    @Override
+    public void onDeleteConfirm() {
+        dataService.deleteValue();
+    }
+
+    @Override
+    public void onDeleteCompleted() {
+        contactView.finish();
+    }
+
+    @Override
+    public void onActiveRequestsClick() {
         if(!requestsShown) {
-            //myListView.showPrayerRequests(dataService.getActiveRequestsByContact(myContact));
+            //contactView.showPrayerRequests(dataService.getActiveRequestsByContact(selectedContact));
             requestsShown = true;
             archivesShown = false;
         }
     }
 
-    private void showArchivedPrayerRequests() {
+    @Override
+    public void onArchiveClick() {
         if(!archivesShown) {
-           // myListView.showPrayerRequests(dataService.getArchivedRequestsByContact(myContact));
+            // contactView.showPrayerRequests(dataService.getArchivedRequestsByContact(selectedContact));
             archivesShown = true;
             requestsShown = false;
         }
     }
 
     @Override
-    public void clearView() {
-        myListView = null;
+    public void onDataResultMessage(String message) {
+        contactView.showDatabaseResultMessage(message);
     }
-
-    @Override
-    public void onPrayerRequestClick(String requestId) {
-        myListView.showPrayerRequestDetailView(requestId);
-    }
-
-    @Override
-    public void onAddNewRequestClick() {
-        myListView.showAddNewPrayerRequestView(contactId);
-    }
-
-    @Override
-    public void onContactEditClick(String contactId) {
-        myListView.showContactDetailEditView(contactId);
-    }
-
-    @Override
-    public void onSaveClick(Contact contact) {
-        //dataService.editContact(contactId, firstName, lastName, pictureUrl, myContact.getGroupKey().getName(), this);
-    }
-
-    @Override
-    public void onContactDeleteClick(String id) {
-        myListView.showDeleteContactDialog(myContact);
-    }
-
-    @Override
-    public void onDeleteConfirm(String id) {
-        //dataService.deleteContact(id);
-        myListView.finish();
-    }
-
-    @Override
-    public void onActiveRequestsClick() {
-        showActivePrayerRequests();
-    }
-
-    @Override
-    public void onArchiveClick() {
-        showArchivedPrayerRequests();
-    }
-
-//    @Override
-//    public void onRealmSuccess() {
-//        myListView.showRealmResultMessage("Contact Added");
-//    }
-//
-//    @Override
-//    public void onRealmError(Throwable e) {
-//        myListView.showRealmResultMessage("Failed to add contact");
-//    }
 }

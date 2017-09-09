@@ -15,34 +15,38 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Created by jim on 9/7/17.
  *
  */
 
-public class ContactGroupService implements BaseService<ContactGroup, ContactGroupContract.View> {
+public class ContactGroupService implements BaseService<ContactGroup, ContactGroupContract.Presenter> {
     private static final String TAG = "ContactGroupService";
 
-    FirebaseDatabase database;
-    DatabaseReference contactGroupsRef;
-    DatabaseReference contactsRef;
-    Query queryRef;
-    ValueEventListener cgValueEventListener;
-    ValueEventListener cgDeleteValueEventListener;
-    ChildEventListener cgChildEventListener;
-    ChildEventListener qryChildEventListener;
+    private final DatabaseReference contactGroupsRef;
+    private final DatabaseReference contactsRef;
+    private Query contactGroupsQuery;
+    private Query contactsQuery;
+    private final ValueEventListener contactGroupDataListener;
+    private final ValueEventListener contactGroupDeleteSingleEventListener;
+    private final ChildEventListener contactGroupEditDeleteChildEventListener;
+    private final ChildEventListener queryAddContactGroupChildEventListener;
 
-    public ContactGroup selectedContactGroup;
+    private final ValueEventListener contactValueEventListener;
+    private final ChildEventListener contactChildEventListener;
+
+    private ContactGroup selectedContactGroup;
+    private ContactGroupContract.Presenter presenter;
 
     public ContactGroupService(FirebaseDatabase database) {
-        this.database = database;
+        Timber.d("ContactGroupService() called with: database = [" + database + "]");
         contactGroupsRef = database.getReference(ContactGroup.DB_NAME);
         contactsRef = database.getReference(Contact.DB_NAME);
-    }
 
-    @Override
-    public void getValues(final ContactGroupContract.View contactGroupView) {
-        cgValueEventListener = new ValueEventListener() {
+        // initialize Contact Group event listeners
+        contactGroupDataListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<ContactGroup> results = new ArrayList<>();
@@ -55,49 +59,91 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
                         selectedContactGroup = tabContactGroup;
                     }
                 }
-                contactGroupView.showContactGroupsTabs(results, selectedContactGroup);
+                sendContactGroupResults(results);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                contactGroupView.showDatabaseResultMessage(databaseError.getMessage());
+                sendDataResultMessage(databaseError.getMessage());
             }
         };
 
-        //Todo:extract strings
-        cgChildEventListener = new ChildEventListener() {
+        contactGroupDeleteSingleEventListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                contactGroupView.showDatabaseResultMessage("Value successfully changed");
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                contactGroupView.showDatabaseResultMessage("Value successfully deleted");
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null) {
+                    deleteConfirmed(selectedContactGroup.getKey());
+                    selectedContactGroup = null;
+                } else {
+                    sendDataResultMessage("Cannot delete a group that has contacts assigned to it");
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                contactGroupView.showDatabaseResultMessage(databaseError.getMessage());
+
             }
         };
 
-        qryChildEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                contactGroupView.showDatabaseResultMessage("Value successfully added");
+        contactGroupEditDeleteChildEventListener = new ChildEventListener() {
+            @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                sendDataResultMessage("Value successfully changed");
+            }
+
+            @Override public void onChildRemoved(DataSnapshot dataSnapshot) {
+                sendDataResultMessage("Value successfully deleted");
+            }
+
+            @Override public void onCancelled(DatabaseError databaseError) {
+                sendDataResultMessage(databaseError.getMessage());
+            }
+
+            @Override public void onChildAdded(DataSnapshot dataSnapshot, String s) {}
+            @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+        };
+
+        queryAddContactGroupChildEventListener = new ChildEventListener() {
+            @Override public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                sendDataResultMessage("Contact Group successfully added");
                 selectedContactGroup = dataSnapshot.getValue(ContactGroup.class);
                 selectedContactGroup.setKey(dataSnapshot.getKey());
             }
 
+            @Override public void onCancelled(DatabaseError databaseError) {
+                sendDataResultMessage(databaseError.getMessage());
+            }
+
+            @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            @Override public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+        };
+
+        // initialize Contact event listeners
+        contactValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Contact> results = new ArrayList<>();
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    Contact contact = snapshot.getValue(Contact.class);
+                    contact.setKey(snapshot.getKey());
+                    results.add(contact);
+                }
+                sendContactResults(results);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                sendDataResultMessage(databaseError.getMessage());
+            }
+        };
+
+        contactChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Timber.d(dataSnapshot.toString());
+                sendDataResultMessage("Contact successfully added");
+            }
+
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
             }
@@ -112,15 +158,22 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                contactGroupView.showDatabaseResultMessage(databaseError.getMessage());
+                sendDataResultMessage(databaseError.getMessage());
             }
         };
+    }
 
-        contactGroupsRef.orderByChild(ContactGroup.ORDER_BY).addValueEventListener(cgValueEventListener);
-        contactGroupsRef.orderByChild(ContactGroup.ORDER_BY).addChildEventListener(cgChildEventListener);
+    @Override
+    public void getValues(ContactGroupContract.Presenter presenter) {
+        Timber.d("getValues()");
 
-        queryRef = contactGroupsRef.orderByChild(ContactGroup.CREATED).startAt(Utils.getCurrentTime());
-        queryRef.addChildEventListener(qryChildEventListener);
+        this.presenter = presenter;
+
+        contactGroupsRef.orderByChild(ContactGroup.ORDER_BY).addValueEventListener(contactGroupDataListener);
+        contactGroupsRef.orderByChild(ContactGroup.ORDER_BY).addChildEventListener(contactGroupEditDeleteChildEventListener);
+
+        contactGroupsQuery = contactGroupsRef.orderByChild(ContactGroup.CREATED).startAt(Utils.getCurrentTime());
+        contactGroupsQuery.addChildEventListener(queryAddContactGroupChildEventListener);
     }
 
     @Override
@@ -135,26 +188,11 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
     }
 
     @Override
-    public void deleteValue(final ContactGroupContract.View contactGroupView,
-                            final String contactGroupKey) {
+    public void deleteValue() {
         Query qry = contactGroupsRef.orderByChild(Contact.CONTACT_GROUP)
-                                    .startAt(contactGroupKey).endAt(contactGroupKey);
-        qry.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() == null) {
-                    selectedContactGroup = null;
-                    deleteConfirmed(contactGroupKey);
-                } else {
-                    contactGroupView.showDatabaseResultMessage("Cannot delete a group that has contacts assigned to it");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+                                    .startAt(selectedContactGroup.getName())
+                                    .endAt(selectedContactGroup.getName());
+        qry.addListenerForSingleValueEvent(contactGroupDeleteSingleEventListener);
     }
 
     protected void deleteConfirmed(String contactGroupKey) {
@@ -162,14 +200,52 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
         //Todo: update the sort orders
     }
 
-    public void getContactValues(String contactGroupKey) {
 
+    public void getContactValues(ContactGroup contactGroup) {
+        Timber.d("getContactValues() called with: contactGroup = [" + contactGroup + "]");
+        selectedContactGroup = contactGroup;
+        contactsRef.orderByChild(Contact.CONTACT_GROUP)
+                .startAt(contactGroup.getName())
+                .endAt(contactGroup.getName())
+                .addValueEventListener(contactValueEventListener);
+
+    }
+
+    public void saveContactValue(Contact contact) {
+        Timber.d("saveContactValue() called with: contact = [" + contact + "]");
+        contactsRef.removeEventListener(contactChildEventListener);
+        contactsRef.orderByChild(Contact.CREATED)
+                .startAt(Utils.getCurrentTime())
+                .addChildEventListener(contactChildEventListener);
+
+        if(contact.getKey() == null) {
+            // Add Contact Group
+            contactsRef.push().setValue(contact);
+        } else {
+            // Edit Contact Group
+            contactsRef.child(contact.getKey()).setValue(contact);
+        }
+    }
+
+    private void sendDataResultMessage(String message) {
+        presenter.onDataResultMessage(message);
+    }
+
+    private void sendContactGroupResults(List<ContactGroup> results) {
+        presenter.onContactGroupResults(results, selectedContactGroup);
+    }
+
+    private void sendContactResults(List<Contact> results) {
+        presenter.onContactResults(results);
     }
 
     @Override
     public void destroy() {
-        contactGroupsRef.removeEventListener(cgValueEventListener);
-        contactGroupsRef.removeEventListener(cgChildEventListener);
-        contactGroupsRef = null;
+        contactGroupsRef.removeEventListener(contactGroupDataListener);
+        contactGroupsRef.removeEventListener(contactGroupEditDeleteChildEventListener);
+        contactGroupsQuery.removeEventListener(queryAddContactGroupChildEventListener);
+        contactsRef.removeEventListener(contactValueEventListener);
+        contactsRef.removeEventListener(contactChildEventListener);
     }
+
 }

@@ -12,7 +12,7 @@ import com.google.firebase.database.ValueEventListener;
  * Created by jim on 9/8/17.
  */
 
-public class PrayerRequestService implements BaseService<PrayerRequest, PrayerRequestContract.View> {
+public class PrayerRequestService implements BaseService<PrayerRequest, PrayerRequestContract.AddPresenter> {
     private static final String TAG = "PrayerRequestService";
 
     FirebaseDatabase database;
@@ -28,7 +28,7 @@ public class PrayerRequestService implements BaseService<PrayerRequest, PrayerRe
     }
 
     @Override
-    public void getValues(PrayerRequestContract.View view) {
+    public void getValues(PrayerRequestContract.AddPresenter presenter) {
 
     }
 
@@ -38,8 +38,7 @@ public class PrayerRequestService implements BaseService<PrayerRequest, PrayerRe
     }
 
     @Override
-    public void deleteValue(PrayerRequestContract.View view, String id) {
-
+    public void deleteValue() {
     }
 
     @Override

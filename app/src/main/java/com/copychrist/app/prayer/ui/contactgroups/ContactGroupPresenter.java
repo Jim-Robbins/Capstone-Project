@@ -3,6 +3,10 @@ package com.copychrist.app.prayer.ui.contactgroups;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
 
+import java.util.List;
+
+import timber.log.Timber;
+
 /**
  * Created by jim on 8/14/17.
  */
@@ -22,7 +26,7 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
     @Override
     public void setView(final ContactGroupContract.View view) {
         contactGroupView = view;
-        contactGroupService.getValues(contactGroupView);
+        contactGroupService.getValues(this);
     }
 
     @Override
@@ -32,18 +36,14 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
 
     @Override
     public void onDeleteContactGroupConfirmed() {
-        contactGroupService.deleteValue(contactGroupView, selectedContactGroup.getKey());
-    }
-
-    private void getContactValues() {
-        contactGroupService.getContactValues(selectedContactGroup.getKey());
+        contactGroupService.deleteValue();
     }
 
     @Override
     public void onContactGroupClicked(ContactGroup contactGroup) {
+        Timber.d("onContactGroupClicked() called with: contactGroup = [" + contactGroup.toString() + "]");
         selectedContactGroup = contactGroup;
-        contactGroupService.selectedContactGroup = contactGroup;
-        getContactValues();
+        contactGroupService.getContactValues(contactGroup);
     }
 
     @Override
@@ -68,19 +68,24 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
 
     @Override
     public void onSaveContactClick(Contact contact) {
-//        databaseService.addContact(firstName, lastName, pictureUrl, groupName, this);
+        contactGroupService.saveContactValue(contact);
     }
 
     @Override
-    public void onContactClick(String id) {
-        contactGroupView.showContactDetailView(id);
+    public void onDataResultMessage(String message) {
+        contactGroupView.showDatabaseResultMessage(message);
     }
 
     @Override
-    public void onPrayerRequestClick(String requestId) {
-        contactGroupView.showPrayerRequestDetailView(requestId);
+    public void onContactGroupResults(List<ContactGroup> results, ContactGroup selectedContactGroup) {
+        this.selectedContactGroup = selectedContactGroup;
+        contactGroupView.showContactGroupsTabs(results, selectedContactGroup);
     }
 
+    @Override
+    public void onContactResults(List<Contact> results) {
+        contactGroupView.showContacts(results);
+    }
 
     @Override
     public void clearView() {

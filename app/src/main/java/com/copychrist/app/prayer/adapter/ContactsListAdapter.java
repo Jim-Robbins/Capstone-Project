@@ -39,7 +39,6 @@ public class ContactsListAdapter
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Contact contact = contacts.get(position);
         holder.setItem(contact);
-
 //        List<PrayerRequest> prayerRequests = contact.getPrayerRequests();
 //        if(prayerRequests != null && !prayerRequests.isEmpty()) {
 //            final PrayerRequest request1 = prayerRequests.get(0);
@@ -136,14 +135,14 @@ public class ContactsListAdapter
         }
 
         public void setItem(final Contact contact) {
-            itemView.setTag(contact);
+            layoutItem.setTag(contact);
             textFirstName.setText(contact.getFirstName());
             textLastName.setText(contact.getLastName());
         }
     }
 
     public interface OnContactClickListener {
-        void onContactClick(String id);
-        void onPrayerRequestClick(String id);
+        void onContactClick(String contactKey);
+        void onPrayerRequestClick(String prayerRequestKey);
     }
 }

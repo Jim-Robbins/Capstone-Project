@@ -43,12 +43,12 @@ public class ContactDetailActivity extends BaseActivity
     PrayerRequestsListAdapter prayerRequestsListAdapter;
     @Inject ContactContract.Presenter contactPresenter;
 
-    public static String EXTRA_CONTACT_ID = "extra_contact_id";
+    public static String EXTRA_CONTACT_KEY = "extra_contact_key";
     private Contact contact;
 
-    public static Intent getStartIntent(final Context context, final String contactId) {
+    public static Intent getStartIntent(final Context context, final String contactKey) {
         Intent intent = new Intent(context, ContactDetailActivity.class);
-        intent.putExtra(EXTRA_CONTACT_ID, contactId);
+        intent.putExtra(EXTRA_CONTACT_KEY, contactKey);
         return intent;
     }
 
@@ -64,8 +64,8 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     protected Object getModule() {
-        String contactId = getIntent().getExtras().getString(EXTRA_CONTACT_ID);
-        return new ContactModule(contactId);
+        String contactKey = getIntent().getExtras().getString(EXTRA_CONTACT_KEY);
+        return new ContactModule(contactKey);
     }
 
     @Override
@@ -82,55 +82,29 @@ public class ContactDetailActivity extends BaseActivity
                 onSupportNavigateUp();
                 return true;
             case R.id.action_edit_contact:
-                contactPresenter.onContactEditClick(contact.getKey());
+                showContactDetailEditView();
                 return true;
             case R.id.action_delete_contact:
-                contactPresenter.onContactDeleteClick(contact.getKey());
+                showDeleteContactDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void initToolbar() {
-        this.setSupportActionBar(toolbar);
-
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        this.getSupportActionBar().setDisplayShowHomeEnabled(true);
-        this.getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 1:
-                        contactPresenter.onArchiveClick();
-                        break;
-                    case 0:
-                    default:
-                        contactPresenter.onActiveRequestsClick();
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+    @Override
+    public void onPrayerRequestClick(String requestId) {
+        showPrayerRequestDetailView(requestId);
     }
 
-    private void initList() {
-        prayerRequestsListAdapter = new PrayerRequestsListAdapter();
-        prayerRequestsListAdapter.setPrayerRequestClickListener(this);
+    @OnClick(R.id.fab)
+    public void onAddNewPrayerRequestClick() {
+        showAddNewPrayerRequestView();
+    }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(prayerRequestsListAdapter);
+    @Override
+    public void onConfirmedDeleteDialog(String contactKey) {
+        contactPresenter.onDeleteConfirm();
     }
 
     @Override
@@ -159,51 +133,69 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onPrayerRequestClick(String requestId) {
-        contactPresenter.onPrayerRequestClick(requestId);
+    public void showDatabaseResultMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.fab)
-    public void onAddNewPrayerRequestClick() {
-        contactPresenter.onAddNewRequestClick();
+    private void initToolbar() {
+        this.setSupportActionBar(toolbar);
+
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        this.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 1:
+                        contactPresenter.onArchiveClick();
+                        break;
+                    case 0:
+                    default:
+                        contactPresenter.onActiveRequestsClick();
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
     }
 
-    @Override
-    public void showPrayerRequestDetailView(String requestId) {
+    private void initList() {
+        prayerRequestsListAdapter = new PrayerRequestsListAdapter();
+        prayerRequestsListAdapter.setPrayerRequestClickListener(this);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(prayerRequestsListAdapter);
+    }
+
+    private void showPrayerRequestDetailView(String requestId) {
         startActivity(EditPrayerRequestDetailActivity.getStartIntent(this, requestId));
     }
 
-    @Override
-    public void showAddNewPrayerRequestView(String contactId) {
-        startActivity(AddPrayerRequestDetailActivity.getStartIntent(this, contactId));
+    private void showAddNewPrayerRequestView() {
+        startActivity(AddPrayerRequestDetailActivity.getStartIntent(this, contact.getKey()));
         if(tabLayout != null && tabLayout.getTabAt(0) != null) {
             tabLayout.getTabAt(0).select();
         }
     }
 
-    @Override
-    public void showContactDetailEditView(String contactId) {
-        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.neEditInstance(contact, contactPresenter);
+    private void showContactDetailEditView() {
+        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newEditInstance(contact, contactPresenter);
         addEditContactDialogFragment.show(getSupportFragmentManager(), "EditContactDialogFragment");
     }
 
-    @Override
-    public void showDeleteContactDialog(Contact myContact) {
+    private void showDeleteContactDialog() {
             DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
                     getString(R.string.dialog_delete_contact_title),
-                    myContact.getKey(),
-                    myContact.getFirstName() + " " + myContact.getLastName()
+                    contact.getKey(),
+                    contact.getFirstName() + " " + contact.getLastName()
             );
             deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
     }
 
-    @Override
-    public void onConfirmedDeleteDialog(String contactId) {
-        contactPresenter.onDeleteConfirm(contactId);
-    }
-
-    @Override
-    public void showRealmResultMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 }
