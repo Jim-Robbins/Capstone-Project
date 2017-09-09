@@ -32,7 +32,7 @@ public class ContactGroupContract {
         void onDeleteContactGroupClick();
         void onDeleteContactGroupConfirmed();
         void onAddNewContactClick();
-        void onSaveContactClick(String firstName, String lastName, String groupName, String pictureUrl);
+        void onSaveContactClick(Contact contact);
         void onContactClick(String contactId);
         void onPrayerRequestClick(String prayerRequestId);
     }

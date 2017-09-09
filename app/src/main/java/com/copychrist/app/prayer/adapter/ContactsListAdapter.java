@@ -9,13 +9,11 @@ import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.model.PrayerRequest;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 /**
  * Created by Jim Robbins on 8/17/17.
@@ -42,7 +40,7 @@ public class ContactsListAdapter
         final Contact contact = contacts.get(position);
         holder.setItem(contact);
 
-//        List<PrayerRequest> prayerRequests = contact.getRequestList();
+//        List<PrayerRequest> prayerRequests = contact.getPrayerRequests();
 //        if(prayerRequests != null && !prayerRequests.isEmpty()) {
 //            final PrayerRequest request1 = prayerRequests.get(0);
 //            Timber.d("0:"+request1.getTitle());
@@ -51,7 +49,7 @@ public class ContactsListAdapter
 //                @Override
 //                public void onClick(View view) {
 //                    if (contactClickListener != null) {
-//                        contactClickListener.onPrayerRequestClick(request1.getId());
+//                        contactClickListener.onPrayerRequestClick(request1.getKey());
 //                    }
 //                }
 //            });
@@ -63,7 +61,7 @@ public class ContactsListAdapter
 //                    @Override
 //                    public void onClick(View view) {
 //                        if (contactClickListener != null) {
-//                            contactClickListener.onPrayerRequestClick(request2.getId());
+//                            contactClickListener.onPrayerRequestClick(request2.getKey());
 //                        }
 //                    }
 //                });
@@ -75,7 +73,7 @@ public class ContactsListAdapter
 //                        @Override
 //                        public void onClick(View view) {
 //                            if (contactClickListener != null) {
-//                                contactClickListener.onPrayerRequestClick(request3.getId());
+//                                contactClickListener.onPrayerRequestClick(request3.getKey());
 //                            }
 //                        }
 //                    });
@@ -93,7 +91,7 @@ public class ContactsListAdapter
 //            @Override
 //            public void onClick(View view) {
 //                if (contactClickListener != null) {
-//                    contactClickListener.onContactClick(contact.getId());
+//                    contactClickListener.onContactClick(contact.getKey());
 //                }
 //            }
 //        });
@@ -133,7 +131,7 @@ public class ContactsListAdapter
         public void onClick(View view) {
             if (contactClickListener != null) {
                 Contact contact = (Contact) view.getTag();
-                contactClickListener.onContactClick(contact.getId());
+                contactClickListener.onContactClick(contact.getKey());
             }
         }
 

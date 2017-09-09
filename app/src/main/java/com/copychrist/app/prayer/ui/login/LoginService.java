@@ -26,7 +26,7 @@ public class LoginService implements BaseService {
     }
 
     @Override
-    public void getValue(Object view, Object model) {
+    public void getValues(Object view) {
 
     }
 
@@ -36,7 +36,7 @@ public class LoginService implements BaseService {
     }
 
     @Override
-    public void deleteValue(String id) {
+    public void deleteValue(Object view, String id) {
 
     }
 

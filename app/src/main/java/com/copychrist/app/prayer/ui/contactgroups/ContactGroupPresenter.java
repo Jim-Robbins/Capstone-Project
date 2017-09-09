@@ -1,5 +1,6 @@
 package com.copychrist.app.prayer.ui.contactgroups;
 
+import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
 
 /**
@@ -7,25 +8,21 @@ import com.copychrist.app.prayer.model.ContactGroup;
  */
 
 public class ContactGroupPresenter implements ContactGroupContract.Presenter {
-    private final int contactGroupId;
-    private ContactGroup myContactGroup;
+    private final String selectedContactGroupKey;
+    private ContactGroup selectedContactGroup;
 
-    private ContactGroupContract.View myListView;
+    private ContactGroupContract.View contactGroupView;
     private ContactGroupService contactGroupService;
 
-    private boolean contactsShown = false;
-
-    public ContactGroupPresenter(ContactGroupService contactGroupService, int contactGroupId) {
-        this.contactGroupId = contactGroupId;
+    public ContactGroupPresenter(ContactGroupService contactGroupService, String contactGroupKey) {
+        this.selectedContactGroupKey = contactGroupKey;
         this.contactGroupService = contactGroupService;
     }
 
     @Override
     public void setView(final ContactGroupContract.View view) {
-        myListView = view;
-        myContactGroup = getContactGroup(contactGroupId);
-        contactGroupService.getValue(myListView, myContactGroup);
-        showContacts();
+        contactGroupView = view;
+        contactGroupService.getValues(contactGroupView);
     }
 
     @Override
@@ -35,69 +32,59 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
 
     @Override
     public void onDeleteContactGroupConfirmed() {
-        contactGroupService.deleteValue(myContactGroup.getId());
+        contactGroupService.deleteValue(contactGroupView, selectedContactGroup.getKey());
     }
 
-    private ContactGroup getContactGroup(int contactGroupId) {
-        return null;
-    }
-
-    private void showContacts() {
-        if(!contactsShown) {
-           // myListView.showContacts(myContactGroup.getContacts());
-            contactsShown = true;
-        }
+    private void getContactValues() {
+        contactGroupService.getContactValues(selectedContactGroup.getKey());
     }
 
     @Override
     public void onContactGroupClicked(ContactGroup contactGroup) {
-        if(myContactGroup == null || contactGroup.getName() != myContactGroup.getName()) {
-            contactsShown = false;
-            myContactGroup = contactGroup;
-//            myContactGroup = databaseService.getContactGroup(contactGroupId);
-//            showContacts();
-        }
+        selectedContactGroup = contactGroup;
+        contactGroupService.selectedContactGroup = contactGroup;
+        getContactValues();
     }
 
     @Override
     public void onAddNewContactGroupClick() {
-        myListView.showAddContactGroupDialog();
+        contactGroupView.showAddContactGroupDialog();
     }
 
     @Override
     public void onEditContactGroupClick() {
-        myListView.showEditContactGroupDialog(myContactGroup);
+        contactGroupView.showEditContactGroupDialog(selectedContactGroup);
     }
 
     @Override
     public void onDeleteContactGroupClick() {
-        myListView.showDeleteContactGroupDialog(myContactGroup);
+        contactGroupView.showDeleteContactGroupDialog(selectedContactGroup);
     }
 
     @Override
     public void onAddNewContactClick() {
-        myListView.showAddNewContactContract.View(myContactGroup.getName());
+        contactGroupView.showAddNewContactView(selectedContactGroup.getName());
     }
 
     @Override
-    public void onSaveContactClick(String firstName, String lastName, String groupName, String pictureUrl) {
+    public void onSaveContactClick(Contact contact) {
 //        databaseService.addContact(firstName, lastName, pictureUrl, groupName, this);
     }
 
     @Override
     public void onContactClick(String id) {
-        myListView.showContactDetailView(id);
+        contactGroupView.showContactDetailView(id);
     }
 
     @Override
     public void onPrayerRequestClick(String requestId) {
-        myListView.showPrayerRequestDetailView(requestId);
+        contactGroupView.showPrayerRequestDetailView(requestId);
     }
 
 
     @Override
     public void clearView() {
-        myListView = null;
+        contactGroupView = null;
         contactGroupService.destroy();
     }
 }

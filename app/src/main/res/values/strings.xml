@@ -34,7 +34,7 @@
     <string name="dialog_add_contact_title">Add New Contact</string>
     <string name="delete_warning"><![CDATA[Are you sure you want to delete this item?<br/><br/> <b>%s</b>]]></string>
     <string name="dialog_delete_group_title">Delete Contact Group</string>
-    <string name="dialog_delete_group_denied">You must have at least one contact groupId. You cannot delete this one.</string>
+    <string name="dialog_delete_group_denied">You must have at least one contact group. You cannot delete this one.</string>
     <string name="dialog_add_contact_group_title">Add Contact Group</string>
     <string name="dialog_edit_contact_group_title">Edit Contact Group</string>
     <string name="dialog_contact_first_name_hint">First Name *</string>

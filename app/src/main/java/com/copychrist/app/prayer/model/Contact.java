@@ -3,20 +3,28 @@ package com.copychrist.app.prayer.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.copychrist.app.prayer.util.Utils;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 
 @IgnoreExtraProperties
 public class Contact  {
-    public static String DB_NAME = "contacts";
+    public static final String DB_NAME = "contacts";
+    public static final String CREATED = "dateCreated";
+    public static final String ORDER_BY = CREATED;
+    public static final String CONTACT_GROUP = "groupKey";
+
+    @Exclude
+    private String key;
 
     @NonNull
-    private String id;
+    private Long dateCreated;
+
+    @NonNull
+    private String groupKey;
 
     @NonNull
     private String firstName;
@@ -27,100 +35,95 @@ public class Contact  {
     @Nullable
     private String pictureUrl;
 
-    @NonNull
-    private String groupId;
-
     @Nullable
-    private List<PrayerRequest> requestList = new ArrayList<>();
+    private List<PrayerRequest> prayerRequests = new ArrayList<>();
 
     public Contact() {
         // Default constructor required for calls to DataSnapshot.getValue()
     }
 
+    /**
+     * Auto-generated Firebase key
+     * @return key [String] - Used to reference data value set for this group
+     */
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+    /**
+     * Not editable by user, stores reference to Firebase key
+     * @param key
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    /**
+     * System generated timestamp when contact group is created
+     * @return
+     */
     @NonNull
-    public String getId() {
-        return id;
+    public Long getDateCreated() {
+        if(dateCreated == null) {
+            dateCreated = Utils.getCurrentTime();
+        }
+        return dateCreated;
     }
 
     @NonNull
-    public String getGroupId() {
-        return groupId;
+    public String getGroupKey() {
+        return groupKey;
     }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGroupKey(String groupKey) {
+        this.groupKey = groupKey;
     }
 
     @NonNull
     public String getFirstName() {
         return firstName;
     }
+    public void setFirstName(@NonNull String firstName) {
+        this.firstName = firstName;
+    }
 
     @Nullable
     public String getLastName() {
         return lastName;
+    }
+    public void setLastName(@Nullable String lastName) {
+        this.lastName = lastName;
     }
 
     @Nullable
     public String getPictureUrl() {
         return pictureUrl;
     }
+    public void setPictureUrl(@Nullable String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
 
     @Nullable
-    public List<PrayerRequest> getRequestList() {
-        return requestList;
+    public List<PrayerRequest> getPrayerRequests() {
+        return prayerRequests;
     }
-
-    @Exclude
     public List<PrayerRequest> addPrayerRequest(PrayerRequest request) {
-        requestList.add(request);
-        return requestList;
+        prayerRequests.add(request);
+        return prayerRequests;
     }
-
-    @Exclude
     public List<PrayerRequest> deletePrayerRequest(PrayerRequest request) {
-        requestList.remove(request);
-        return requestList;
-    }
-
-    @Exclude
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, groupId, firstName);
+        prayerRequests.remove(request);
+        return prayerRequests;
     }
 
     @Exclude
     @Override
     public String toString() {
         return "ContactEntry {"+
-                "id='" + id + '\'' +
-                ", groupId='" + groupId + '\'' +
+                "key='" + key + '\'' +
+                ", groupKey='" + groupKey + '\'' +
                 ", firstName='" + firstName + '\'' +
-                " ,lastName='" + lastName + '\'' +
-                " ,pictureUrl=" + pictureUrl + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", pictureUrl=" + pictureUrl + '\'' +
                 "}";
-    }
-
-    private String createContactId() {
-        Random rnd = new Random();
-        return firstName.replaceAll("\\s","").toLowerCase() + "_" +
-                lastName.replaceAll("\\s","").toLowerCase() + "_" +
-                rnd.nextInt();
-    }
-
-    public void setId(@NonNull String id) {
-        this.id = id;
-    }
-
-    public void setFirstName(@NonNull String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(@Nullable String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setPictureUrl(@Nullable String pictureUrl) {
-        this.pictureUrl = pictureUrl;
     }
 }

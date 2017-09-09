@@ -42,11 +42,11 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     private ContactsListAdapter contactsListAdapter;
     private int selectedTabIndex = 0;
-    public static String EXTRA_CONTACT_GROUP_ID = "extra_contact_id";
+    public static String EXTRA_CONTACT_GROUP_KEY = "extra_contact_group_key";
 
-    public static Intent getStartIntent(final Context context, final String contactGroupId) {
+    public static Intent getStartIntent(final Context context, final String contactGroupKey) {
         Intent intent = new Intent(context, ContactDetailActivity.class);
-        intent.putExtra(EXTRA_CONTACT_GROUP_ID, contactGroupId);
+        intent.putExtra(EXTRA_CONTACT_GROUP_KEY, contactGroupKey);
         return intent;
     }
 
@@ -55,8 +55,7 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         ButterKnife.bind(this);
-
-        initList();
+        initContactList();
     }
 
     @Override
@@ -78,7 +77,10 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
                 contactsPresenter.onEditContactGroupClick();
                 return true;
             case R.id.action_delete_group:
-                contactsPresenter.onDeleteContactGroupClick();
+                if(tabLayoutGroups.getTabCount() > 1)
+                    contactsPresenter.onDeleteContactGroupClick();
+                else
+                    showDatabaseResultMessage(getString(R.string.dialog_delete_group_denied));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -87,14 +89,14 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     @Override
     protected Object getModule() {
-        int contactGroupId = 1;
-        if(getIntent().hasExtra(EXTRA_CONTACT_GROUP_ID)) {
-            contactGroupId = getIntent().getExtras().getInt(EXTRA_CONTACT_GROUP_ID);
+        String contactGroupKey = "";
+        if(getIntent().hasExtra(EXTRA_CONTACT_GROUP_KEY)) {
+            contactGroupKey = getIntent().getExtras().getString(EXTRA_CONTACT_GROUP_KEY);
         }
-        return new ContactGroupModule(contactGroupId);
+        return new ContactGroupModule(contactGroupKey);
     }
 
-    private void initList() {
+    private void initContactList() {
         contactsListAdapter = new ContactsListAdapter();
         contactsListAdapter.setContactClickListener(this);
 
@@ -131,8 +133,9 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
             tab.setText(contactGroup.getName());
             tab.setTag(contactGroup);
             tabLayoutGroups.addTab(tab);
-            if(selectedGroup != null && contactGroup.getName().equalsIgnoreCase(selectedGroup.getName())) {
+            if(selectedGroup != null && contactGroup.getKey().equalsIgnoreCase(selectedGroup.getKey())) {
                 selectedTabIndex = tab.getPosition();
+                contactsPresenter.onContactGroupClicked(selectedGroup);
             }
         }
         tabLayoutGroups.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

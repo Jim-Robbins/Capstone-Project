@@ -82,10 +82,10 @@ public class ContactDetailActivity extends BaseActivity
                 onSupportNavigateUp();
                 return true;
             case R.id.action_edit_contact:
-                contactPresenter.onContactEditClick(contact.getId());
+                contactPresenter.onContactEditClick(contact.getKey());
                 return true;
             case R.id.action_delete_contact:
-                contactPresenter.onContactDeleteClick(contact.getId());
+                contactPresenter.onContactDeleteClick(contact.getKey());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -191,7 +191,7 @@ public class ContactDetailActivity extends BaseActivity
     public void showDeleteContactDialog(Contact myContact) {
             DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
                     getString(R.string.dialog_delete_contact_title),
-                    myContact.getId(),
+                    myContact.getKey(),
                     myContact.getFirstName() + " " + myContact.getLastName()
             );
             deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");

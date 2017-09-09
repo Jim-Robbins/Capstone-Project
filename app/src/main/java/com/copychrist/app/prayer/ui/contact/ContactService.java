@@ -29,7 +29,7 @@ public class ContactService implements BaseService<Contact, ContactContract.View
     }
 
     @Override
-    public void getValue(ContactContract.View view, Contact model) {
+    public void getValues(ContactContract.View view) {
 
     }
 
@@ -39,7 +39,7 @@ public class ContactService implements BaseService<Contact, ContactContract.View
     }
 
     @Override
-    public void deleteValue(String id) {
+    public void deleteValue(ContactContract.View view, String id) {
 
     }
 

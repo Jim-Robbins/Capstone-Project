@@ -67,7 +67,7 @@ public class ContactPresenter implements ContactContract.Presenter {
 
     @Override
     public void onSaveClick(Contact contact) {
-        //dataService.editContact(contactId, firstName, lastName, pictureUrl, myContact.getGroupId().getName(), this);
+        //dataService.editContact(contactId, firstName, lastName, pictureUrl, myContact.getGroupKey().getName(), this);
     }
 
     @Override

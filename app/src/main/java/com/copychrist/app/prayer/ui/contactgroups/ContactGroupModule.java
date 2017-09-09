@@ -13,10 +13,10 @@ import dagger.Provides;
 @Module(injects = ContactGroupActivity.class, addsTo = ApplicationModule.class)
 public class ContactGroupModule {
 
-    private final int contactGroupId;
+    private final String contactGroupKey;
 
-    public ContactGroupModule(final int contactGroupId) {
-        this.contactGroupId = contactGroupId;
+    public ContactGroupModule(final String contactGroupKey) {
+        this.contactGroupKey = contactGroupKey;
     }
 
     @Provides
@@ -26,6 +26,6 @@ public class ContactGroupModule {
 
     @Provides
     ContactGroupContract.Presenter provideMyListPresenter(ContactGroupService contactGroupService) {
-        return new ContactGroupPresenter(contactGroupService, contactGroupId);
+        return new ContactGroupPresenter(contactGroupService, contactGroupKey);
     }
 }

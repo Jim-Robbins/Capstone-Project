@@ -64,7 +64,11 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                saveContact();
+                if (contact == null) {
+                    addContact();
+                } else  {
+                    editContact();
+                }
 
                 if (dialog != null) {
                     dialog.dismiss();
@@ -87,10 +91,18 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         return alertDialogBuilder.create();
     }
 
-    private void saveContact() {
+    private void addContact() {
+        contact = new Contact();
         contact.setFirstName(txtFirstName.getText().toString());
         contact.setLastName(txtLastName.getText().toString());
-        contact.setGroupId(groupName);
+        contact.setGroupKey(groupName);
+        contactsPresenter.onSaveContactClick(contact);
+    }
+
+    private void editContact() {
+        contact.setFirstName(txtFirstName.getText().toString());
+        contact.setLastName(txtLastName.getText().toString());
+        contact.setGroupKey(groupName);
         contactPresenter.onSaveClick(contact);
     }
 }

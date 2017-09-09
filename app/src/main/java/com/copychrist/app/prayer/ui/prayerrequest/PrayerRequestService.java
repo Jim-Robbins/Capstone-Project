@@ -28,7 +28,7 @@ public class PrayerRequestService implements BaseService<PrayerRequest, PrayerRe
     }
 
     @Override
-    public void getValue(PrayerRequestContract.View view, PrayerRequest model) {
+    public void getValues(PrayerRequestContract.View view) {
 
     }
 
@@ -38,7 +38,7 @@ public class PrayerRequestService implements BaseService<PrayerRequest, PrayerRe
     }
 
     @Override
-    public void deleteValue(String id) {
+    public void deleteValue(PrayerRequestContract.View view, String id) {
 
     }
 

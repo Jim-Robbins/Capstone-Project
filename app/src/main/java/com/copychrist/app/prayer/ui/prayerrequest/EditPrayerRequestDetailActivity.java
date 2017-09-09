@@ -146,7 +146,7 @@ public class EditPrayerRequestDetailActivity extends BaseActivity
         // If wa already have a contact, hide the contact entry view
         if(prayerRequest != null) {
             Contact contact = new Contact(); //DatabaseService.getContact(prayerRequest.getContact());
-            contactId = contact.getId();
+            contactId = contact.getKey();
             txtFirstName.setText(contact.getFirstName());
             txtLastName.setText(contact.getLastName());
             editRequestTitle.setText(prayerRequest.getTitle());

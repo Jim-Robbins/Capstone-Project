@@ -5,8 +5,8 @@ package com.copychrist.app.prayer.ui;
  */
 
 public interface BaseService<M, V> {
-    void getValue(final V view, final M model);
+    void getValues(final V view);
     void saveValue(final M model);
-    void deleteValue(String id);
+    void deleteValue(final V view, final String id);
     void destroy();
 }

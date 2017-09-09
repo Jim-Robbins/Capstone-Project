@@ -3,6 +3,8 @@ package com.copychrist.app.prayer.ui.prayerrequest;
 import com.copychrist.app.prayer.ApplicationModule;
 import com.google.firebase.database.FirebaseDatabase;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -10,10 +12,7 @@ import dagger.Provides;
  * Created by jim on 8/19/17.
  */
 @Module(
-        injects = {
-                EditPrayerRequestDetailActivity.class,
-                AddPrayerRequestDetailActivity.class
-        },
+        injects = AddPrayerRequestDetailActivity.class,
         addsTo = ApplicationModule.class
 )
 public class PrayerRequestModule {
@@ -25,14 +24,15 @@ public class PrayerRequestModule {
     }
 
     @Provides
+    @Singleton
     PrayerRequestService providePrayerRequestService(FirebaseDatabase database) {
         return new PrayerRequestService(database);
     }
 
-    @Provides
-    PrayerRequestContract.EditPresenter provideEditPrayerRequestPresenter(final PrayerRequestService dataService) {
-        return new EditPrayerRequestPresenter(dataService, itemId);
-    }
+//    @Provides
+//    PrayerRequestContract.EditPresenter provideEditPrayerRequestPresenter(final PrayerRequestService dataService) {
+//        return new EditPrayerRequestPresenter(dataService, itemId);
+//    }
 
     @Provides
     PrayerRequestContract.AddPresenter provideAddPrayerRequestPresenter(final PrayerRequestService dataService) {
