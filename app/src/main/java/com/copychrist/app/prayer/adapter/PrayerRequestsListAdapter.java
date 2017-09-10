@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.BibleVerse;
 import com.copychrist.app.prayer.model.PrayerRequest;
 
 import java.util.List;
@@ -44,15 +43,15 @@ public class PrayerRequestsListAdapter
         // Todo: Check if end date is < today
         holder.textRequestTitle.setText(prayerRequest.getTitle());
         holder.textRequestDesc.setText(prayerRequest.getDescription());
-        List<BibleVerse> verses = prayerRequest.getVerses();
+        List<String> verses = prayerRequest.getPassages();
         if (verses != null && verses.size() > 0) {
-            holder.textVerse.setText(prayerRequest.getVerses().get(0).getPassage());
+            holder.textVerse.setText(prayerRequest.getPassages().get(0));
         }
         holder.layoutItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (prayerRequestClickListener != null) {
-                    prayerRequestClickListener.onPrayerRequestClick(prayerRequest.getId());
+                    prayerRequestClickListener.onPrayerRequestClick(prayerRequest.getKey());
                 }
             }
         });
@@ -67,9 +66,8 @@ public class PrayerRequestsListAdapter
         prayerRequestClickListener = onPrayerRequestClickListener;
     }
 
-    public void setPrayerRequests(final List<PrayerRequest> prayerRequests) {
+    public void setPrayerRequests(List<PrayerRequest> prayerRequests) {
         this.prayerRequests = prayerRequests;
-//        this.prayerRequests.addChangeListener(this);
         notifyDataSetChanged();
     }
 

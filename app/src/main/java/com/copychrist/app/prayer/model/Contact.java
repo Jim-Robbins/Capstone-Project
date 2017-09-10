@@ -33,7 +33,7 @@ public class Contact  {
     private String pictureUrl;
 
     public Contact() {
-        // Default constructor required for calls to DataSnapshot.getValue()
+        // Default constructor required for calls to DataSnapshot.getContact()
     }
 
     /**

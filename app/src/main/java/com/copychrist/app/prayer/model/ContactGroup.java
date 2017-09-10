@@ -29,7 +29,7 @@ public class ContactGroup {
     private int order;
 
     public ContactGroup() {
-        // Default constructor required for calls to DataSnapshot.getValue()
+        // Default constructor required for calls to DataSnapshot.getContact()
     }
 
     /**

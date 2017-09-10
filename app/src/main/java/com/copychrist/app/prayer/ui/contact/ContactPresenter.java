@@ -1,6 +1,11 @@
 package com.copychrist.app.prayer.ui.contact;
 
 import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.PrayerRequest;
+
+import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Created by jim on 8/19/17.
@@ -13,9 +18,6 @@ public class ContactPresenter implements ContactContract.Presenter {
     private ContactContract.View contactView;
     private Contact selectedContact;
 
-    private boolean requestsShown = false;
-    private boolean archivesShown = false;
-
     public ContactPresenter(final ContactService dataService, final String contactKey) {
         this.dataService = dataService;
         this.contactKey = contactKey;
@@ -24,14 +26,13 @@ public class ContactPresenter implements ContactContract.Presenter {
     @Override
     public void setView(ContactContract.View view) {
         contactView = view;
-        dataService.getValue(this, contactKey);
+        onPrayerRequestGetActiveClick();
     }
 
     @Override
-    public void onGetContactResult(Contact contact) {
+    public void onContactResults(Contact contact) {
         selectedContact = contact;
         contactView.showContactDetail(selectedContact);
-        //showActivePrayerRequests();
     }
 
     @Override
@@ -41,40 +42,44 @@ public class ContactPresenter implements ContactContract.Presenter {
     }
 
     @Override
-    public void onSaveContactClick(Contact contact) {
-        dataService.saveValue(contact);
+    public void onContactSaveClick(Contact contact) {
+        dataService.saveContact(contact);
     }
 
     @Override
-    public void onDeleteConfirm() {
-        dataService.deleteValue();
+    public void onContactDeleteConfirm() {
+        dataService.deleteContact();
     }
 
     @Override
-    public void onDeleteCompleted() {
+    public void onContactDeleteCompleted() {
         contactView.finish();
     }
 
     @Override
-    public void onActiveRequestsClick() {
-        if(!requestsShown) {
-            //contactView.showPrayerRequests(dataService.getActiveRequestsByContact(selectedContact));
-            requestsShown = true;
-            archivesShown = false;
-        }
+    public void onPrayerRequestGetActiveClick() {
+        dataService.getContact(this, contactKey, true);
     }
 
     @Override
-    public void onArchiveClick() {
-        if(!archivesShown) {
-            // contactView.showPrayerRequests(dataService.getArchivedRequestsByContact(selectedContact));
-            archivesShown = true;
-            requestsShown = false;
-        }
+    public void onPrayerRequestGetArchivedClick() {
+        dataService.getContact(this, contactKey, false);
+    }
+
+    @Override
+    public void onPrayerRequestResults(List<PrayerRequest> prayerRequests) {
+        if(prayerRequests == null) return;
+        Timber.d("onPrayerRequestResults() called with: prayerRequests = [" + prayerRequests + "]");
+        contactView.showPrayerRequests(prayerRequests);
     }
 
     @Override
     public void onDataResultMessage(String message) {
         contactView.showDatabaseResultMessage(message);
+    }
+
+    @Override
+    public void onDataResultMessage(int messageResId) {
+        contactView.showDatabaseResultMessage(messageResId);
     }
 }

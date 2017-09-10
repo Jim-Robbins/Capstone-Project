@@ -83,6 +83,6 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
         }
         contactGroup.setName(textGroupName.getText().toString());
         contactGroup.setDescription(textGroupDesc.getText().toString());
-        presenter.onSaveContactGroupClick(contactGroup);
+        presenter.onContactGroupSaveClick(contactGroup);
     }
 }

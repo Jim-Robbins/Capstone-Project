@@ -1,8 +1,8 @@
 package com.copychrist.app.prayer.ui.contactgroups;
 
+import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
-import com.copychrist.app.prayer.ui.BaseService;
 import com.copychrist.app.prayer.util.Utils;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -22,13 +22,12 @@ import timber.log.Timber;
  *
  */
 
-public class ContactGroupService implements BaseService<ContactGroup, ContactGroupContract.Presenter> {
+public class ContactGroupService {
     private static final String TAG = "ContactGroupService";
 
     private final DatabaseReference contactGroupsRef;
     private final DatabaseReference contactsRef;
     private Query contactGroupsQuery;
-    private Query contactsQuery;
     private final ValueEventListener contactGroupDataListener;
     private final ValueEventListener contactGroupDeleteSingleEventListener;
     private final ChildEventListener contactGroupEditDeleteChildEventListener;
@@ -72,7 +71,7 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) {
-                    deleteConfirmed(selectedContactGroup.getKey());
+                    deleteContactGroupConfirmed(selectedContactGroup.getKey());
                     selectedContactGroup = null;
                 } else {
                     sendDataResultMessage("Cannot delete a group that has contacts assigned to it");
@@ -87,11 +86,11 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
 
         contactGroupEditDeleteChildEventListener = new ChildEventListener() {
             @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                sendDataResultMessage("Value successfully changed");
+                sendDataResultMessage(R.string.data_value_changed);
             }
 
             @Override public void onChildRemoved(DataSnapshot dataSnapshot) {
-                sendDataResultMessage("Value successfully deleted");
+                sendDataResultMessage(R.string.data_value_deleted);
             }
 
             @Override public void onCancelled(DatabaseError databaseError) {
@@ -163,9 +162,8 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
         };
     }
 
-    @Override
-    public void getValues(ContactGroupContract.Presenter presenter) {
-        Timber.d("getValues()");
+    public void getContactGroupValues(ContactGroupContract.Presenter presenter) {
+        Timber.d("getContactGroupValues()");
 
         this.presenter = presenter;
 
@@ -176,8 +174,7 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
         contactGroupsQuery.addChildEventListener(queryAddContactGroupChildEventListener);
     }
 
-    @Override
-    public void saveValue(final ContactGroup contactGroup) {
+    public void saveContactGroupValue(final ContactGroup contactGroup) {
         if(contactGroup.getKey() == null) {
             // Add Contact Group
             contactGroupsRef.push().setValue(contactGroup);
@@ -187,15 +184,14 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
         }
     }
 
-    @Override
-    public void deleteValue() {
+    public void deleteContactGroup() {
         Query qry = contactGroupsRef.orderByChild(Contact.CONTACT_GROUP)
                                     .startAt(selectedContactGroup.getName())
                                     .endAt(selectedContactGroup.getName());
         qry.addListenerForSingleValueEvent(contactGroupDeleteSingleEventListener);
     }
 
-    protected void deleteConfirmed(String contactGroupKey) {
+    protected void deleteContactGroupConfirmed(String contactGroupKey) {
         contactGroupsRef.child(contactGroupKey).removeValue();
         //Todo: update the sort orders
     }
@@ -227,6 +223,10 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
         }
     }
 
+    private void sendDataResultMessage(int messageResId) {
+        presenter.onDataResultMessage(messageResId);
+    }
+
     private void sendDataResultMessage(String message) {
         presenter.onDataResultMessage(message);
     }
@@ -239,7 +239,6 @@ public class ContactGroupService implements BaseService<ContactGroup, ContactGro
         presenter.onContactResults(results);
     }
 
-    @Override
     public void destroy() {
         contactGroupsRef.removeEventListener(contactGroupDataListener);
         contactGroupsRef.removeEventListener(contactGroupEditDeleteChildEventListener);

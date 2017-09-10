@@ -96,12 +96,12 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         contact.setFirstName(txtFirstName.getText().toString());
         contact.setLastName(txtLastName.getText().toString());
         contact.setGroupKey(groupName);
-        contactsPresenter.onSaveContactClick(contact);
+        contactsPresenter.onContactSaveClick(contact);
     }
 
     private void editContact() {
         contact.setFirstName(txtFirstName.getText().toString());
         contact.setLastName(txtLastName.getText().toString());
-        contactPresenter.onSaveContactClick(contact);
+        contactPresenter.onContactSaveClick(contact);
     }
 }

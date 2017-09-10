@@ -13,27 +13,29 @@ import java.util.List;
 
 public class ContactGroupContract {
     public interface View {
+        void showContactGroupDialogAdd();
+        void showContactGroupDialogDelete(ContactGroup contactGroup);
+        void showContactGroupDialogEdit(ContactGroup contactGroup);
         void showContactGroupsTabs(List<ContactGroup> contactGroups, final ContactGroup selectedGroup);
+        void showContactAddDialog(String contactGroupName);
         void showContacts(List<Contact> contacts);
-        void showAddContactGroupDialog();
-        void showEditContactGroupDialog(ContactGroup contactGroup);
-        void showDeleteContactGroupDialog(ContactGroup contactGroup);
-        void showAddNewContactView(String contactGroupName);
         void showDatabaseResultMessage(String message);
+        void showDatabaseResultMessage(int messageResId);
     }
 
     public interface Presenter extends BasePresenter<ContactGroupContract.View> {
+        void onContactGroupAddClick();
         void onContactGroupClicked(ContactGroup contactGroup);
-        void onAddNewContactGroupClick();
-        void onEditContactGroupClick();
-        void onSaveContactGroupClick(ContactGroup contactGroup);
-        void onDeleteContactGroupClick();
-        void onDeleteContactGroupConfirmed();
-        void onAddNewContactClick();
-        void onSaveContactClick(Contact contact);
-        void onDataResultMessage(String message);
+        void onContactGroupDeleteClick();
+        void onContactGroupDeleteConfirmed();
+        void onContactGroupEditClick();
         void onContactGroupResults(List<ContactGroup> results, ContactGroup selectedContactGroup);
+        void onContactGroupSaveClick(ContactGroup contactGroup);
+        void onContactAddClick();
         void onContactResults(List<Contact> results);
+        void onContactSaveClick(Contact contact);
+        void onDataResultMessage(String message);
+        void onDataResultMessage(int messageResId);
     }
 
 }

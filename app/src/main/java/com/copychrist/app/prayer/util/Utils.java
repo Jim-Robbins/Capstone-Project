@@ -4,10 +4,13 @@ import android.content.Context;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 
 import com.copychrist.app.prayer.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -39,6 +42,20 @@ public class Utils {
 
     public static SimpleDateFormat getDateFormat(Context context) {
         return new SimpleDateFormat(context.getString(R.string.date_format), getCurrentLocale(context));
+    }
+
+    public static Date stringToDate(String dateString, Context context) {
+        if (TextUtils.isEmpty(dateString))
+            return null;
+
+        SimpleDateFormat format = getDateFormat(context);
+        Date newDate = new Date();
+        try {
+            newDate = format.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return newDate;
     }
 
     public static long getCurrentTime() {

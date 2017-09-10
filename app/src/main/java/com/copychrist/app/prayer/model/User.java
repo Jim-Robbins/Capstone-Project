@@ -14,7 +14,7 @@ public class User {
     public String email;
 
     public User() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        // Default constructor required for calls to DataSnapshot.getContact(User.class)
     }
 
     public User(String username, String email) {

@@ -18,8 +18,7 @@ import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
-import com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity;
-import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
+import com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestDetailActivity;
 
 import java.util.List;
 
@@ -28,6 +27,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class ContactDetailActivity extends BaseActivity
         implements ContactContract.View, PrayerRequestsListAdapter.OnPrayerRequestClickListener,
@@ -104,7 +104,7 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     public void onConfirmedDeleteDialog(String contactKey) {
-        contactPresenter.onDeleteConfirm();
+        contactPresenter.onContactDeleteConfirm();
     }
 
     @Override
@@ -127,14 +127,21 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showPrayerRequests(List<PrayerRequest> requests) {
+    public void showPrayerRequests(List<PrayerRequest> prayerRequests) {
+        if(prayerRequests == null) return;
+        Timber.d("showPrayerRequests() called with: prayerRequests = [" + prayerRequests + "]");
         recyclerView.removeAllViews();
-        prayerRequestsListAdapter.setPrayerRequests(requests);
+        prayerRequestsListAdapter.setPrayerRequests(prayerRequests);
     }
 
     @Override
     public void showDatabaseResultMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showDatabaseResultMessage(int messageResId) {
+        Toast.makeText(this, getBaseContext().getString(messageResId), Toast.LENGTH_SHORT).show();
     }
 
     private void initToolbar() {
@@ -149,11 +156,11 @@ public class ContactDetailActivity extends BaseActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 1:
-                        contactPresenter.onArchiveClick();
+                        contactPresenter.onPrayerRequestGetArchivedClick();
                         break;
                     case 0:
                     default:
-                        contactPresenter.onActiveRequestsClick();
+                        contactPresenter.onPrayerRequestGetActiveClick();
                         break;
                 }
             }
@@ -173,12 +180,12 @@ public class ContactDetailActivity extends BaseActivity
         recyclerView.setAdapter(prayerRequestsListAdapter);
     }
 
-    private void showPrayerRequestDetailView(String requestId) {
-        startActivity(EditPrayerRequestDetailActivity.getStartIntent(this, requestId));
+    private void showPrayerRequestDetailView(String prayerRequestKey) {
+        startActivity(PrayerRequestDetailActivity.getStartEditIntent(this, prayerRequestKey));
     }
 
     private void showAddNewPrayerRequestView() {
-        startActivity(AddPrayerRequestDetailActivity.getStartIntent(this, contact.getKey()));
+        startActivity(PrayerRequestDetailActivity.getStartAddIntent(this, contact.getKey()));
         if(tabLayout != null && tabLayout.getTabAt(0) != null) {
             tabLayout.getTabAt(0).select();
         }

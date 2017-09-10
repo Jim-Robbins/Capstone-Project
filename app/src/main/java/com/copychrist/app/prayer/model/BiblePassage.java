@@ -11,8 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @IgnoreExtraProperties
-public class BibleVerse {
-    public static String DB_NAME = "bibleVerses";
+public class BiblePassage {
+    public static String DB_NAME = "biblePassages";
 
     @NonNull
     private String book;
@@ -32,11 +32,11 @@ public class BibleVerse {
     @Nullable
     private String apiUrl;
 
-    public BibleVerse() {
-        // Default constructor required for calls to DataSnapshot.getValue(BibleVerse.class)
+    public BiblePassage() {
+        // Default constructor required for calls to DataSnapshot.getContact(BiblePassage.class)
     }
 
-    public BibleVerse(String book, int chapter, String verse) {
+    public BiblePassage(String book, int chapter, String verse) {
         this.book = book;
         this.chapter = chapter;
         this.verse = verse;
@@ -66,7 +66,7 @@ public class BibleVerse {
         return apiUrl;
     }
 
-    public String getPassage() {
+    public String getPassageReference() {
         return book + " " + chapter + ":" + verse;
     }
 
@@ -75,26 +75,26 @@ public class BibleVerse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BibleVerse bibleVerse = (BibleVerse) o;
-        return Objects.equals(getPassage(), bibleVerse.getPassage());
+        BiblePassage biblePassage = (BiblePassage) o;
+        return Objects.equals(getPassageReference(), biblePassage.getPassageReference());
     }
 
     @Exclude
     @Override
     public String toString() {
-        return "BibleVerse {" +
+        return "BiblePassage {" +
                 "book='" + book + '\'' +
                 ", chapter='" + chapter + '\'' +
                 ", verse='" + verse + '\'' +
                 " ,text='" + text + '\'' +
                 " ,version='" + version + '\'' +
                 " ,apiUrl='" + apiUrl + '\'' +
-                " ,passage='" + getPassage() + '\'' +
+                " ,passage='" + getPassageReference() + '\'' +
                 "}";
     }
 
     @Exclude
-    public static BibleVerse getBibleVerseFromPassage(@NonNull String passage) {
+    public static BiblePassage getBiblePassageFromReference(@NonNull String passage) {
         Pattern pattern = Pattern.compile("([^\\s:]+)");
         Matcher matcher = pattern.matcher(passage);
         String book = "";
@@ -108,7 +108,7 @@ public class BibleVerse {
             verse = pattern.matcher(passage).group(2);
         }
 
-        return new BibleVerse(book, chapter, verse);
+        return new BiblePassage(book, chapter, verse);
     }
 
     public void setBook(@NonNull String book) {

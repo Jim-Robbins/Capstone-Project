@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="?attr/actionBarSize"
     android:orientation="vertical"
-    tools:context="com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity"
-    tools:showIn="@layout/activity_add_prayer_request_detail">
+    tools:context="com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestDetailActivity"
+    tools:showIn="@layout/activity_prayer_request_detail">
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"

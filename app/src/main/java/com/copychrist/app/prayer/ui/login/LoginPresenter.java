@@ -18,4 +18,14 @@ public class LoginPresenter implements LoginContract.Presenter {
     public void clearView() {
 
     }
+
+    @Override
+    public void onDataResultMessage(String message) {
+
+    }
+
+    @Override
+    public void onDataResultMessage(int messageResId) {
+
+    }
 }

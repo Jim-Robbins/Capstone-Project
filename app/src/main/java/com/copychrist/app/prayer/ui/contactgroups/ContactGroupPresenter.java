@@ -26,17 +26,17 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
     @Override
     public void setView(final ContactGroupContract.View view) {
         contactGroupView = view;
-        contactGroupService.getValues(this);
+        contactGroupService.getContactGroupValues(this);
     }
 
     @Override
-    public void onSaveContactGroupClick(ContactGroup contactGroup) {
-        contactGroupService.saveValue(contactGroup);
+    public void onContactGroupSaveClick(ContactGroup contactGroup) {
+        contactGroupService.saveContactGroupValue(contactGroup);
     }
 
     @Override
-    public void onDeleteContactGroupConfirmed() {
-        contactGroupService.deleteValue();
+    public void onContactGroupDeleteConfirmed() {
+        contactGroupService.deleteContactGroup();
     }
 
     @Override
@@ -47,33 +47,38 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
     }
 
     @Override
-    public void onAddNewContactGroupClick() {
-        contactGroupView.showAddContactGroupDialog();
+    public void onContactGroupAddClick() {
+        contactGroupView.showContactGroupDialogAdd();
     }
 
     @Override
-    public void onEditContactGroupClick() {
-        contactGroupView.showEditContactGroupDialog(selectedContactGroup);
+    public void onContactGroupEditClick() {
+        contactGroupView.showContactGroupDialogEdit(selectedContactGroup);
     }
 
     @Override
-    public void onDeleteContactGroupClick() {
-        contactGroupView.showDeleteContactGroupDialog(selectedContactGroup);
+    public void onContactGroupDeleteClick() {
+        contactGroupView.showContactGroupDialogDelete(selectedContactGroup);
     }
 
     @Override
-    public void onAddNewContactClick() {
-        contactGroupView.showAddNewContactView(selectedContactGroup.getName());
+    public void onContactAddClick() {
+        contactGroupView.showContactAddDialog(selectedContactGroup.getName());
     }
 
     @Override
-    public void onSaveContactClick(Contact contact) {
+    public void onContactSaveClick(Contact contact) {
         contactGroupService.saveContactValue(contact);
     }
 
     @Override
     public void onDataResultMessage(String message) {
         contactGroupView.showDatabaseResultMessage(message);
+    }
+
+    @Override
+    public void onDataResultMessage(int messageResId) {
+        contactGroupView.showDatabaseResultMessage(messageResId);
     }
 
     @Override

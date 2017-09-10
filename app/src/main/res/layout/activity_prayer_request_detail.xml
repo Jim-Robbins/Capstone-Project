@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.copychrist.app.prayer.ui.prayerrequest.AddPrayerRequestDetailActivity">
+    tools:context="com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -54,7 +54,7 @@
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_add_prayer_request_detail"/>
+    <include layout="@layout/content_prayer_request_detail"/>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"

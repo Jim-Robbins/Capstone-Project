@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.BibleVerse;
+import com.copychrist.app.prayer.model.BiblePassage;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 
 public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVerseRecyclerViewAdapter.VerseViewHolder> {
 
-    private List<BibleVerse> verses;
+    private List<BiblePassage> verses;
     private OnBibleVerseClickListener onBibleVerseClickListener;
 
     public BibleVerseRecyclerViewAdapter() {}
@@ -40,9 +40,9 @@ public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVer
     @Override
     public void onBindViewHolder(VerseViewHolder holder, int position) {
         // get the verse
-        final BibleVerse bibleVerse = verses.get(position);
-        if(bibleVerse != null) {
-            holder.bind(bibleVerse);
+        final BiblePassage biblePassage = verses.get(position);
+        if(biblePassage != null) {
+            holder.bind(biblePassage);
         }
     }
 
@@ -55,7 +55,7 @@ public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVer
         this.onBibleVerseClickListener = onBibleVerseClickListener;
     }
 
-    public void setBibleVerses(final List<BibleVerse> verses) {
+    public void setBibleVerses(final List<BiblePassage> verses) {
         this.verses = verses;
 //        this.verses.addChangeListener(this);
         notifyDataSetChanged();
@@ -75,14 +75,14 @@ public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVer
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(final BibleVerse bibleVerse) {
-            biblePassage.setText(bibleVerse.getPassage());
-            verseText.setText(bibleVerse.getText());
+        public void bind(final BiblePassage biblePassage) {
+            this.biblePassage.setText(biblePassage.getPassageReference());
+            verseText.setText(biblePassage.getText());
             layoutItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (onBibleVerseClickListener != null) {
-                        onBibleVerseClickListener.onBibleVerseClick(bibleVerse.getPassage());
+                        onBibleVerseClickListener.onBibleVerseClick(biblePassage.getPassageReference());
                     }
                 }
             });

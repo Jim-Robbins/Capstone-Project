@@ -72,4 +72,6 @@
     <string name="login_sign_in_failed">Sign In Failed</string>
     <string name="login_error_required">Required</string>
     <string name="data_success_add">Value added successfully</string>
+    <string name="data_value_changed">Value successfully changed</string>
+    <string name="data_value_deleted">Value successfully deleted</string>
 </resources>

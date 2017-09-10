@@ -12,19 +12,22 @@ import java.util.List;
 
 public class ContactContract {
     public interface View {
-        void showPrayerRequests(List<PrayerRequest> requests);
         void showContactDetail(Contact contact);
         void showDatabaseResultMessage(String message);
+        void showDatabaseResultMessage(int messageResId);
+        void showPrayerRequests(List<PrayerRequest> prayerRequests);
         void finish();
     }
 
     public interface Presenter extends BasePresenter<ContactContract.View> {
-        void onGetContactResult(Contact contact);
-        void onActiveRequestsClick();
-        void onArchiveClick();
-        void onSaveContactClick(Contact contact);
-        void onDeleteConfirm();
-        void onDeleteCompleted();
+        void onContactDeleteCompleted();
+        void onContactDeleteConfirm();
+        void onContactResults(Contact contact);
+        void onContactSaveClick(Contact contact);
         void onDataResultMessage(String message);
+        void onDataResultMessage(int messageResId);
+        void onPrayerRequestGetActiveClick();
+        void onPrayerRequestGetArchivedClick();
+        void onPrayerRequestResults(List<PrayerRequest> prayerRequests);
     }
 }

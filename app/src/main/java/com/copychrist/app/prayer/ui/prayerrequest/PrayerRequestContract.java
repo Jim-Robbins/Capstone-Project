@@ -1,7 +1,7 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
-import com.copychrist.app.prayer.model.BibleVerse;
+import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BasePresenter;
@@ -15,36 +15,30 @@ import java.util.List;
 public class PrayerRequestContract {
     public interface View {
         void finish();
-        void showPrayerRequestError();
-        void showAddPrayerRequestDetails(Contact contact, PrayerListsListAdapter prayerListsListAdapter);
-        void showEditPrayerRequestDetails(PrayerRequest request, PrayerListsListAdapter prayerListsListAdapter);
-        void showBibleVerses(List<BibleVerse> bibleVerses);
         void showBibleVerseDetails(String bibleVerse);
+        void showBibleVerses(List<String> biblePassages);
+        void showContactDetail(Contact selectedContact);
+        void showPrayerRequestDetails(PrayerRequest prayerRequest, PrayerListsListAdapter prayerListsListAdapter);
+        void showDatabaseResultMessage(String message);
+        void showDatabaseResultMessage(int messageResId);
     }
 
-    public interface AddPresenter extends BasePresenter<View> {
-        void onSaveNewClick(String title, String desc, String verse, String endDate, String prayerList);
-        PrayerRequest onUpdateClick(String title, String desc, String verse, String endDate, String prayerList);
-        void onBibleVerseItemlick(String bibleVerse);
-        void onScheduleReminderClick();
-        void onArchiveRequest();
-        void onDeleteRequest();
-        void onCancelClick();
-        void onContactIconClick();
-        void onBibleIconClick();
-        void onDateIconClick();
-    }
+    public interface Presenter extends BasePresenter<View> {
+        void onBibleVerseResults(List<BiblePassage> results);
+        void onBibleVerseItemClick(String bibleVerse);
+        void onContactResults(Contact selectedContact);
+        void onDataResultMessage(String message);
+        void onDataResultMessage(int messageResId);
+        void onPrayerRequestDelete();
+        void onPrayerRequestDeleteCompleted();
+        void onPrayerRequestResults(PrayerRequest selectedPrayerRequest);
+        void onPrayerRequestArchive();
+        void onPrayerRequestSaveClick(PrayerRequest request);
+        void onPrayerRequestScheduleReminderClick();
 
-    public interface EditPresenter extends BasePresenter<View> {
-        void onSaveNewClick(String title, String desc, String verse, String endDate, String prayerList);
-        PrayerRequest onUpdateClick(String title, String desc, String verse, String endDate, String prayerList);
-        void onBibleVerseItemlick(String bibleVerse);
-        void onScheduleReminderClick();
-        void onArchiveRequest();
-        void onDeleteRequest();
-        void onCancelClick();
-        void onContactIconClick();
-        void onBibleIconClick();
-        void onDateIconClick();
+
+//        void onContactIconClick();
+//        void onBibleIconClick();
+//        void onDateIconClick();
     }
 }

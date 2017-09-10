@@ -20,7 +20,7 @@ import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
 import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
 import com.copychrist.app.prayer.ui.contact.AddEditContactDialogFragment;
 import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
-import com.copychrist.app.prayer.ui.prayerrequest.EditPrayerRequestDetailActivity;
+import com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestDetailActivity;
 
 import java.util.List;
 
@@ -71,14 +71,14 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
             case android.R.id.home:
                 return true;
             case R.id.action_add_group:
-                contactsPresenter.onAddNewContactGroupClick();
+                contactsPresenter.onContactGroupAddClick();
                 return true;
             case R.id.action_edit_group:
-                contactsPresenter.onEditContactGroupClick();
+                contactsPresenter.onContactGroupEditClick();
                 return true;
             case R.id.action_delete_group:
                 if(tabLayoutGroups.getTabCount() > 1)
-                    contactsPresenter.onDeleteContactGroupClick();
+                    contactsPresenter.onContactGroupDeleteClick();
                 else
                     showDatabaseResultMessage(getString(R.string.dialog_delete_group_denied));
                 return true;
@@ -161,21 +161,21 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
 
     @Override
-    public void showAddContactGroupDialog() {
+    public void showContactGroupDialogAdd() {
         AddContactGroupDialogFragment addContactGroupDialogFragment =
                 AddContactGroupDialogFragment.newInstance(null, contactsPresenter, tabLayoutGroups.getTabCount());
         addContactGroupDialogFragment.show(getSupportFragmentManager(), "AddContactGroupDialog");
     }
 
     @Override
-    public void showEditContactGroupDialog(ContactGroup contactGroup) {
+    public void showContactGroupDialogEdit(ContactGroup contactGroup) {
         AddContactGroupDialogFragment addContactGroupDialogFragment =
                 AddContactGroupDialogFragment.newInstance(contactGroup, contactsPresenter, tabLayoutGroups.getTabCount());
         addContactGroupDialogFragment.show(getSupportFragmentManager(), "EditContactGroupDialog");
     }
 
     @Override
-    public void showDeleteContactGroupDialog(ContactGroup contactGroup) {
+    public void showContactGroupDialogDelete(ContactGroup contactGroup) {
         if (tabLayoutGroups.getTabCount() > 1) {
             DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
                     getString(R.string.dialog_delete_group_title),
@@ -194,16 +194,16 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     @Override
     public void onConfirmedDeleteDialog(String itemId) {
-        contactsPresenter.onDeleteContactGroupConfirmed();
+        contactsPresenter.onContactGroupDeleteConfirmed();
     }
 
     @OnClick(R.id.fab)
     public void onAddNewContactClick() {
-        contactsPresenter.onAddNewContactClick();
+        contactsPresenter.onContactAddClick();
     }
 
     @Override
-    public void showAddNewContactView(String groupName) {
+    public void showContactAddDialog(String groupName) {
         AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newAddInstance(groupName, contactsPresenter);
         addEditContactDialogFragment.show(getSupportFragmentManager(), "AddContactDialogFragment");
     }
@@ -214,12 +214,17 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     }
 
     @Override
-    public void onPrayerRequestClick(String requestId) {
-        startActivity(EditPrayerRequestDetailActivity.getStartIntent(this, requestId));
+    public void onPrayerRequestClick(String prayerRequestKey) {
+        startActivity(PrayerRequestDetailActivity.getStartEditIntent(this, prayerRequestKey));
     }
 
     @Override
     public void showDatabaseResultMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showDatabaseResultMessage(int messageResId) {
+        Toast.makeText(this, getBaseContext().getString(messageResId), Toast.LENGTH_LONG).show();
     }
 }

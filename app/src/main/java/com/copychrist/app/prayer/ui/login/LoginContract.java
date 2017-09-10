@@ -12,6 +12,7 @@ public class LoginContract {
     }
 
     public interface Presenter extends BasePresenter<LoginContract.View> {
-
+        void onDataResultMessage(String message);
+        void onDataResultMessage(int messageResId);
     }
 }
