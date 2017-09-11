@@ -3,6 +3,7 @@ package com.copychrist.app.prayer.ui.prayerrequest;
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
 import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BasePresenter;
 
@@ -26,19 +27,14 @@ public class PrayerRequestContract {
     public interface Presenter extends BasePresenter<View> {
         void onBibleVerseResults(List<BiblePassage> results);
         void onBibleVerseItemClick(String bibleVerse);
-        void onContactResults(Contact selectedContact);
         void onDataResultMessage(String message);
         void onDataResultMessage(int messageResId);
+        void onPrayerListResults(List<PrayerList> prayerLists);
         void onPrayerRequestDelete();
         void onPrayerRequestDeleteCompleted();
-        void onPrayerRequestResults(PrayerRequest selectedPrayerRequest);
         void onPrayerRequestArchive();
+        void onPrayerRequestUnarchive();
         void onPrayerRequestSaveClick(PrayerRequest request);
         void onPrayerRequestScheduleReminderClick();
-
-
-//        void onContactIconClick();
-//        void onBibleIconClick();
-//        void onDateIconClick();
     }
 }

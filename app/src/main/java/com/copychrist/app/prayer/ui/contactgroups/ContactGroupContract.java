@@ -17,7 +17,7 @@ public class ContactGroupContract {
         void showContactGroupDialogDelete(ContactGroup contactGroup);
         void showContactGroupDialogEdit(ContactGroup contactGroup);
         void showContactGroupsTabs(List<ContactGroup> contactGroups, final ContactGroup selectedGroup);
-        void showContactAddDialog(String contactGroupName);
+        void showContactAddDialog(ContactGroup contactGroup);
         void showContacts(List<Contact> contacts);
         void showDatabaseResultMessage(String message);
         void showDatabaseResultMessage(int messageResId);

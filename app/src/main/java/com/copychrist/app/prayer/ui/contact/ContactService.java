@@ -18,49 +18,31 @@ import timber.log.Timber;
 
 /**
  * Created by jim on 9/8/17.
+ *
  */
 
 public class ContactService {
-    private static final String TAG = "ContactService";
+    private DatabaseReference contactsRef;
+    private ValueEventListener contactDeleteSingleEventListener;
+    private ChildEventListener contactChildEventListener;
 
-    FirebaseDatabase database;
-
-    DatabaseReference contactsRef;
-    ValueEventListener contactValueEventListener;
-    ValueEventListener contactDeleteSingleEventListener;
-    ChildEventListener contactChildEventListener;
-
-    DatabaseReference prayerRequestsRef;
-    ValueEventListener prayerRequestsValueEventListener;
+    private DatabaseReference prayerRequestsRef;
+    private ValueEventListener prayerRequestsValueEventListener;
 
     private ContactContract.Presenter presenter;
     private Contact selectedContact;
     private boolean showActiveRequests;
 
     public ContactService(FirebaseDatabase database) {
-        this.database = database;
         contactsRef = database.getReference(Contact.DB_NAME);
         prayerRequestsRef = database.getReference(PrayerRequest.DB_NAME);
-
-        contactValueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Contact contact = dataSnapshot.getValue(Contact.class);
-                if(contact != null) {
-                    contact.setKey(dataSnapshot.getKey());
-                    sendContactResults(contact);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                sendDataResultMessage(databaseError.getMessage());
-            }
-        };
 
         contactChildEventListener = new ChildEventListener() {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                if(selectedContact != null) {
+                    sendContactUpdate(selectedContact);
+                }
                 sendDataResultMessage(R.string.data_value_changed);
             }
 
@@ -100,13 +82,15 @@ public class ContactService {
                 List<PrayerRequest> results = new ArrayList<>();
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     PrayerRequest prayerRequest = snapshot.getValue(PrayerRequest.class);
-                    prayerRequest.setKey(snapshot.getKey());
-                    if(showActiveRequests && prayerRequest.getAnswered() == null) {
-                        // Create a list of active requests
-                        results.add(prayerRequest);
-                    } else if (!showActiveRequests && prayerRequest.getAnswered() != null) {
-                        // Create a list of archived requests
-                        results.add(prayerRequest);
+                    if (prayerRequest != null) {
+                        prayerRequest.setKey(snapshot.getKey());
+                        if(showActiveRequests && prayerRequest.getAnswered() == null) {
+                            // Create a list of active requests
+                            results.add(prayerRequest);
+                        } else if (!showActiveRequests && prayerRequest.getAnswered() != null) {
+                            // Create a list of archived requests
+                            results.add(prayerRequest);
+                        }
                     }
                 }
                 sendPrayerRequestResults(results);
@@ -120,24 +104,19 @@ public class ContactService {
     }
 
     public void getContact(ContactContract.Presenter presenter,
-                           String contactKey,
+                           Contact contact,
                            boolean showActiveRequests) {
 
-        Timber.d("getContact() called with: contactKey = [" + contactKey + "]");
+        Timber.d("getContact() called with: contactKey = [" + contact.getKey() + "]");
         this.showActiveRequests = showActiveRequests;
         this.presenter = presenter;
-        contactsRef.child(contactKey).addValueEventListener(contactValueEventListener);
-        contactsRef.child(contactKey).addChildEventListener(contactChildEventListener);
+        this.selectedContact = contact;
+        contactsRef.child(contact.getKey()).addChildEventListener(contactChildEventListener);
 
-        prayerRequestsRef.orderByChild(PrayerRequest.CONTACT_KEY)
-                .startAt(contactKey)
-                .endAt(contactKey)
+        prayerRequestsRef.orderByChild(PrayerRequest.CHILD_CONTACT_KEY)
+                .startAt(contact.getKey())
+                .endAt(contact.getKey())
                 .addValueEventListener(prayerRequestsValueEventListener);
-    }
-
-    private void sendContactResults(Contact result) {
-        selectedContact = result;
-        presenter.onContactResults(selectedContact);
     }
 
     private void sendPrayerRequestResults(List<PrayerRequest> prayerRequests) {
@@ -147,22 +126,23 @@ public class ContactService {
         presenter.onPrayerRequestResults(prayerRequests);
     }
 
-    public void saveContact(Contact contact) {
-        if (contact == null) {
+    void saveContact(Contact contact) {
+        if (contact != null && contact.getKey() == null) {
             contactsRef.push().setValue(contact);
         } else {
             contactsRef.child(contact.getKey()).setValue(contact);
         }
     }
 
-    public void deleteContact() {
-        prayerRequestsRef.orderByChild(PrayerRequest.CONTACT_KEY)
-                .startAt(selectedContact.getKey())
-                .endAt(selectedContact.getKey())
+    void deleteContact(Contact contact) {
+        this.selectedContact = contact;
+        contactsRef.orderByChild(PrayerRequest.CHILD_CONTACT)
+                .startAt(contact.getKey())
+                .endAt(contact.getKey())
                 .addListenerForSingleValueEvent(contactDeleteSingleEventListener);
     }
 
-    protected void deleteContactConfirmed(String contactKey) {
+    private void deleteContactConfirmed(String contactKey) {
         contactsRef.child(contactKey).removeValue();
         //Todo: update the sort orders
     }
@@ -175,8 +155,11 @@ public class ContactService {
         presenter.onDataResultMessage(messageResId);
     }
 
-    public void destroy() {
-        contactsRef.removeEventListener(contactValueEventListener);
+    private void sendContactUpdate(Contact contact) {
+        presenter.onContactUpdated(contact);
+    }
+
+    void destroy() {
         contactsRef.removeEventListener(contactChildEventListener);
         prayerRequestsRef.removeEventListener(prayerRequestsValueEventListener);
         prayerRequestsRef.removeEventListener(contactDeleteSingleEventListener);

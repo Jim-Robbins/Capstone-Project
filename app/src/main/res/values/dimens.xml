@@ -3,4 +3,16 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="dialog_horizontal_margin">24dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- https://www.androidhive.info/2017/02/android-creating-gmail-like-inbox-using-recyclerview/ -->
+    <dimen name="padding_list_row">16dp</dimen>
+    <dimen name="messages_padding_left">72dp</dimen>
+    <dimen name="item_icon_width_height">40dp</dimen>
+    <dimen name="msg_text_primary">16sp</dimen>
+    <dimen name="msg_text_secondary">14sp</dimen>
+    <dimen name="icon_star">25dp</dimen>
+    <dimen name="icon_text">22dp</dimen>
+    <dimen name="timestamp_font_size">12dp</dimen>
+    <dimen name="item_done_icon_width">25dp</dimen>
+    <dimen name="padding_list_row_start">72dp</dimen>
 </resources>

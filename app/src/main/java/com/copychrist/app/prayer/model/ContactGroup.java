@@ -1,5 +1,7 @@
 package com.copychrist.app.prayer.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -8,25 +10,27 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
-public class ContactGroup {
+public class ContactGroup implements Parcelable {
     public static final String DB_NAME = "contactGroups";
-    public static final String CREATED = "dateCreated";
-    public static final String ORDER_BY = "order";
 
     @Exclude
     private String key;
 
     @NonNull
     private Long dateCreated;
+    public static final String CHILD_DATE_CREATED = "dateCreated";
 
     @Nullable
     private String description;
+    public static final String CHILD_DESCRIPTION = "description";
 
     @NonNull
     private String name;
+    public static final String CHILD_NAME = "name";
 
     @NonNull
-    private int order;
+    private int sortOrder;
+    public static final String CHILD_SORT_ORDER = "sortOrder";
 
     public ContactGroup() {
         // Default constructor required for calls to DataSnapshot.getContact()
@@ -75,14 +79,14 @@ public class ContactGroup {
     /**
      * Auto value set when group is pushed to Firebase, used to aid in sorting.
      * User is not currently able to resort the data, but plan to add that later.
-     * @return sort order [int]
+     * @return sort sortOrder [int]
      */
     @NonNull
-    public int getOrder() {
-        return order;
+    public int getSortOrder() {
+        return sortOrder;
     }
-    public void setOrder(@NonNull int order) {
-        this.order = order;
+    public void setSortOrder(@NonNull int sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     /**
@@ -105,14 +109,50 @@ public class ContactGroup {
                 "   dateCreated = " + getDateCreated() + ",\n " +
                 "   description = " + getDescription() + ",\n " +
                 "   name = " + getName() + ",\n " +
-                "   order = " + getOrder() +
+                "   sortOrder = " + getSortOrder() +
                 "\n}";
     }
 
-    public void clone(ContactGroup contactGroup) {
-        setKey(contactGroup.key);
-        setName(contactGroup.name);
-        setDescription(contactGroup.description);
-        setOrder(contactGroup.order);
+
+    //-------------- Create Parcel----------------
+
+    protected ContactGroup(Parcel in) {
+        key = in.readString();
+        dateCreated = in.readByte() == 0x00 ? null : in.readLong();
+        description = in.readString();
+        name = in.readString();
+        sortOrder = in.readInt();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
+        if (dateCreated == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeLong(dateCreated);
+        }
+        dest.writeString(description);
+        dest.writeString(name);
+        dest.writeInt(sortOrder);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ContactGroup> CREATOR = new Parcelable.Creator<ContactGroup>() {
+        @Override
+        public ContactGroup createFromParcel(Parcel in) {
+            return new ContactGroup(in);
+        }
+
+        @Override
+        public ContactGroup[] newArray(int size) {
+            return new ContactGroup[size];
+        }
+    };
 }

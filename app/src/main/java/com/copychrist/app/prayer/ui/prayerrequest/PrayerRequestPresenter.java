@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.ViewMode;
 
@@ -20,47 +21,35 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     private final PrayerRequestService dataService;
     private final ViewMode viewMode;
 
-    private String contactKey;
-    private String prayerRequestKey;
-
     private Contact selectedContact;
     private PrayerRequest selectedPrayerRequest;
     private PrayerRequestContract.View prayerRequestView;
 
 
-    public PrayerRequestPresenter(final PrayerRequestService dataService, String key, ViewMode viewMode) {
+    public PrayerRequestPresenter(final PrayerRequestService dataService, Contact contact, PrayerRequest prayerRequest) {
         this.dataService = dataService;
-        this.viewMode = viewMode;
-
-        if (viewMode.equals(ViewMode.EDIT_MODE)) {
-            this.prayerRequestKey = key;
+        if (prayerRequest == null) {
+            this.viewMode = new ViewMode(ViewMode.ADD_MODE);
+            this.selectedContact = contact;
         } else {
-            this.contactKey = key;
+            this.viewMode = new ViewMode(ViewMode.EDIT_MODE);
+            this.selectedPrayerRequest = prayerRequest;
         }
     }
 
     @Override
     public void setView(PrayerRequestContract.View view) {
         prayerRequestView = view;
-        if(contactKey != null) {
-           dataService.getContact(this, contactKey);
-        } else if (prayerRequestKey != null) {
-            dataService.getPrayerRequest(this, prayerRequestKey);
+        if(selectedContact != null) {
+            prayerRequestView.showContactDetail(selectedContact);
+        } else if (selectedPrayerRequest != null) {
+            prayerRequestView.showPrayerRequestDetails(selectedPrayerRequest, null);
         }
-        //PrayerListsListAdapter prayerListsListAdapter = new PrayerListsListAdapter(dataService.getAllPrayerLists());
-       // prayerRequestView.showPrayerRequestDetails(selectedContact, prayerListsListAdapter);
     }
 
     @Override
-    public void onContactResults(Contact contact) {
-        selectedContact = contact;
-        prayerRequestView.showContactDetail(selectedContact);
-    }
-
-    @Override
-    public void onPrayerRequestResults(PrayerRequest selectedPrayerRequest) {
-        this.selectedPrayerRequest = selectedPrayerRequest;
-        prayerRequestView.showPrayerRequestDetails(selectedPrayerRequest, null);
+    public void onPrayerListResults(List<PrayerList> prayerLists) {
+        //PrayerListsListAdapter prayerListsListAdapter = new PrayerListsListAdapter(this);
     }
 
     @Override
@@ -93,13 +82,19 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     @Override
     public void onPrayerRequestArchive() {
         Timber.d("onPrayerRequestArchive");
-        dataService.archivePrayerRequest();
+        dataService.archivePrayerRequest(this, selectedPrayerRequest);
+    }
+
+    @Override
+    public void onPrayerRequestUnarchive() {
+        Timber.d("onPrayerRequestUnarchive");
+        dataService.unarchivePrayerRequest(this, selectedPrayerRequest);
     }
 
     @Override
     public void onPrayerRequestDelete() {
         Timber.d(TAG, "onPrayerRequestDelete");
-        dataService.deletePrayerRequest();
+        dataService.deletePrayerRequest(this, selectedPrayerRequest);
     }
 
     @Override
@@ -117,20 +112,5 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     public void onDataResultMessage(int messageResId) {
         prayerRequestView.showDatabaseResultMessage(messageResId);
     }
-
-    //    @Override
-//    public void onContactIconClick() {
-//
-//    }
-//
-//    @Override
-//    public void onBibleIconClick() {
-//
-//    }
-//
-//    @Override
-//    public void onDateIconClick() {
-//
-//    }
 
 }

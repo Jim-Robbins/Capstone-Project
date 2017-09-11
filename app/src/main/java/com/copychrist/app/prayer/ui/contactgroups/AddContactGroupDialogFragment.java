@@ -13,6 +13,7 @@ import com.copychrist.app.prayer.model.ContactGroup;
 
 /**
  * Created by jim on 8/16/17.
+ *
  */
 
 public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
@@ -33,7 +34,6 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         // Inflate custom view
         View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_save_contact_group, null);
@@ -79,7 +79,7 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
     private void saveContactGroup() {
         if(contactGroup == null) {
             contactGroup = new ContactGroup();
-            contactGroup.setOrder(groupCounter);
+            contactGroup.setSortOrder(groupCounter);
         }
         contactGroup.setName(textGroupName.getText().toString());
         contactGroup.setDescription(textGroupDesc.getText().toString());

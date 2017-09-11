@@ -1,5 +1,7 @@
 package com.copychrist.app.prayer.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -12,34 +14,40 @@ import java.util.Date;
 import java.util.List;
 
 @IgnoreExtraProperties
-public class PrayerRequest {
+public class PrayerRequest implements Parcelable {
     public static final String DB_NAME = "prayerRequests";
 
     @NonNull private String key;
 
     @NonNull private String contactKey;
-    public static final String CONTACT_KEY = "contactKey";
+    public static final String CHILD_CONTACT_KEY = "contactKey";
+
+    @NonNull private Contact contact;
+    public static final String CHILD_CONTACT = "contact";
 
     @NonNull private String title;
-    public static final String TITLE = "title";
+    public static final String CHILD_TITLE = "title";
 
     @Nullable private String description;
-    public static final String DESCRIPTION = "description";
+    public static final String CHILD_DESCRIPTION = "description";
 
     @Nullable private Date endDate;
-    public static final String END_DATE = "description";
+    public static final String CHILD_END_DATE = "endDate";
 
     @Nullable private List<String> passages = new ArrayList<>();
-    public static final String PASSAGES = "passages";
+    public static final String CHILD_PASSAGES = "passages";
 
-    @Nullable private List<String> prayedForOn;
-    public static final String PRAYED_FOR_ON = "prayedForOn";
+    @Nullable private List<String> prayedForOn = new ArrayList<>();
+    public static final String CHILD_PRAYED_FOR_ON = "prayedForOn";
 
     @Nullable private Date answered;
-    public static final String ANSWERED = "answered";
+    public static final String CHILD_ANSWERED = "answered";
 
     @NonNull private Long dateCreated;
-    public static final String DATE_CREATED = "dateCreated";
+    public static final String CHILD_DATE_CREATED = "dateCreated";
+
+    @Nullable private List<String> prayerLists = new ArrayList<>();
+    public static final String CHILD_PRAYER_LISTS = "prayerLists";
 
     public PrayerRequest() {
         // Default constructor required for calls to DataSnapshot.getContact()
@@ -68,12 +76,23 @@ public class PrayerRequest {
         return dateCreated;
     }
 
-    @NonNull
-    public String getContactKey() {
+    @NonNull public String getContactKey() {
         return contactKey;
     }
-    public void setContactKey(@NonNull String contactKey) {
+    public void setContactKey(String contactKey) {
         this.contactKey = contactKey;
+    }
+
+    @NonNull
+    public Contact getContact() {
+        return contact;
+    }
+    public void setContact(@NonNull Contact contact) {
+        this.contact = contact;
+    }
+
+    public ContactGroup getContactGroup() {
+        return contact.getContactGroup();
     }
 
     @NonNull
@@ -97,7 +116,8 @@ public class PrayerRequest {
         return passages;
     }
     @Exclude
-    public List<String> addPassages(List<String> passages) {
+    public List<String> setPassages(List<String> passages) {
+        this.passages.clear();
         this.passages.addAll(passages);
         return this.passages;
     }
@@ -146,16 +166,117 @@ public class PrayerRequest {
         return this.prayedForOn;
     }
 
+    @Nullable
+    public List<String> getPrayerLists() {
+        return prayerLists;
+    }
+    public void setPrayerLists(@Nullable List<String> prayerLists) {
+        this.prayerLists = prayerLists;
+    }
+    @Exclude
+    public List<String> addPrayerLists(String prayerLists) {
+        this.prayerLists.add(prayerLists);
+        return this.prayerLists;
+    }
+    @Exclude
+    public List<String> removePrayerLists(String prayerLists) {
+        this.prayerLists.remove(prayerLists);
+        return this.prayerLists;
+    }
+
     @Exclude
     @Override
     public String toString() {
-        return "ContactEntry {"+
+        return "PrayerRequestEntry {"+
                 "key='" + key + '\'' +
-                ", contactKeyKey ='" + contactKey + '\'' +
+                ", contactKey ='" + contactKey + '\'' +
+                ", contact ='" + contact.toString() + '\'' +
                 ", title ='" + title + '\'' +
                 ", description ='" + description + '\'' +
                 "}";
     }
 
+    protected PrayerRequest(Parcel in) {
+        key = in.readString();
+        contactKey = in.readString();
+        contact = (Contact) in.readValue(Contact.class.getClassLoader());
+        title = in.readString();
+        description = in.readString();
+        long tmpEndDate = in.readLong();
+        endDate = tmpEndDate != -1 ? new Date(tmpEndDate) : null;
+        if (in.readByte() == 0x01) {
+            passages = new ArrayList<String>();
+            in.readList(passages, String.class.getClassLoader());
+        } else {
+            passages = null;
+        }
+        if (in.readByte() == 0x01) {
+            prayedForOn = new ArrayList<String>();
+            in.readList(prayedForOn, String.class.getClassLoader());
+        } else {
+            prayedForOn = null;
+        }
+        long tmpAnswered = in.readLong();
+        answered = tmpAnswered != -1 ? new Date(tmpAnswered) : null;
+        dateCreated = in.readByte() == 0x00 ? null : in.readLong();
+        if (in.readByte() == 0x01) {
+            prayerLists = new ArrayList<String>();
+            in.readList(prayerLists, String.class.getClassLoader());
+        } else {
+            prayerLists = null;
+        }
+    }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
+        dest.writeString(contactKey);
+        dest.writeValue(contact);
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeLong(endDate != null ? endDate.getTime() : -1L);
+        if (passages == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(passages);
+        }
+        if (prayedForOn == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(prayedForOn);
+        }
+        dest.writeLong(answered != null ? answered.getTime() : -1L);
+        if (dateCreated == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeLong(dateCreated);
+        }
+        if (prayerLists == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(prayerLists);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<PrayerRequest> CREATOR = new Parcelable.Creator<PrayerRequest>() {
+        @Override
+        public PrayerRequest createFromParcel(Parcel in) {
+            return new PrayerRequest(in);
+        }
+
+        @Override
+        public PrayerRequest[] newArray(int size) {
+            return new PrayerRequest[size];
+        }
+    };
 }

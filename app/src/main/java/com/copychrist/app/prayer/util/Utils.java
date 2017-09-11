@@ -1,6 +1,8 @@
 package com.copychrist.app.prayer.util;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
@@ -60,5 +62,24 @@ public class Utils {
 
     public static long getCurrentTime() {
         return System.currentTimeMillis()/1000;
+    }
+
+    /**
+     * https://www.androidhive.info/2017/02/android-creating-gmail-like-inbox-using-recyclerview/
+     * @param context
+     * @param typeColor
+     * @return
+     */
+    private int getRandomMaterialColor(Context context, String typeColor) {
+        int returnColor = Color.GRAY;
+        int arrayId = context.getResources().getIdentifier("mdcolor_" + typeColor, "array", context.getPackageName());
+
+        if (arrayId != 0) {
+            TypedArray colors = context.getResources().obtainTypedArray(arrayId);
+            int index = (int) (Math.random() * colors.length());
+            returnColor = colors.getColor(index, Color.GRAY);
+            colors.recycle();
+        }
+        return returnColor;
     }
 }

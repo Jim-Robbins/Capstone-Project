@@ -1,6 +1,7 @@
 package com.copychrist.app.prayer.ui.contact;
 
 import com.copychrist.app.prayer.ApplicationModule;
+import com.copychrist.app.prayer.model.Contact;
 import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Module;
@@ -12,10 +13,10 @@ import dagger.Provides;
 @Module(injects = ContactDetailActivity.class, addsTo = ApplicationModule.class)
 public class ContactModule {
 
-    private final String contactKey;
+    private final Contact contact;
 
-    public ContactModule(final String contactId) {
-        this.contactKey = contactId;
+    public ContactModule(final Contact contact) {
+        this.contact = contact;
     }
 
     @Provides
@@ -25,6 +26,6 @@ public class ContactModule {
 
     @Provides
     ContactContract.Presenter provideContactPresenter(final ContactService contactService) {
-        return new ContactPresenter(contactService, contactKey);
+        return new ContactPresenter(contactService, contact);
     }
 }

@@ -1,7 +1,8 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.ApplicationModule;
-import com.copychrist.app.prayer.ui.ViewMode;
+import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.PrayerRequest;
 import com.google.firebase.database.FirebaseDatabase;
 
 import javax.inject.Singleton;
@@ -18,12 +19,12 @@ import dagger.Provides;
 )
 public class PrayerRequestModule {
 
-    private final String itemId;
-    private final ViewMode viewMode;
+    private final Contact contact;
+    private final PrayerRequest prayerRequest;
 
-    public PrayerRequestModule(final String itemId, final ViewMode viewMode) {
-        this.itemId = itemId;
-        this.viewMode = viewMode;
+    public PrayerRequestModule(final Contact contact, final PrayerRequest prayerRequest) {
+        this.contact = contact;
+        this.prayerRequest = prayerRequest;
     }
 
     @Provides
@@ -34,6 +35,6 @@ public class PrayerRequestModule {
 
     @Provides
     PrayerRequestContract.Presenter providePrayerRequestPresenter(final PrayerRequestService dataService) {
-        return new PrayerRequestPresenter(dataService, itemId, viewMode);
+        return new PrayerRequestPresenter(dataService, contact, prayerRequest);
     }
 }

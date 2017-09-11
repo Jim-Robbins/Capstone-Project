@@ -83,7 +83,7 @@ dependencies {
     compile deps.support.constraintLayout
 
     compile deps.gson
-    compile deps.picasso
+    compile deps.glide
 
     compile deps.okhttp
     compile deps.okdownloader

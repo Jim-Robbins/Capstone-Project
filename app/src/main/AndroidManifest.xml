@@ -19,11 +19,7 @@
             android:name=".ui.contactgroups.ContactGroupActivity"
             android:label="@string/title_activity_contacts"
             android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.home.MainActivity"
@@ -48,21 +44,26 @@
                 android:value=".ui.contact.ContactDetailActivity" />
         </activity>
         <activity
-            android:name=".ui.prayerrequest.EditPrayerRequestDetailActivity"
-            android:label="@string/title_activity_prayer_request_detail"
-            android:parentActivityName=".ui.contact.ContactDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.contact.ContactDetailActivity" />
-        </activity>
-        <activity
-            android:name=".LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".ui.home.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.copychrist.app.prayer.ui.home.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.prayerlist.PrayerListActivity"
+            android:label="@string/title_activity_prayer_list"
+            android:parentActivityName=".ui.contactgroups.ContactGroupActivity"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.copychrist.app.prayer.ui.contactgroups.ContactGroupActivity" />
         </activity>
     </application>
 

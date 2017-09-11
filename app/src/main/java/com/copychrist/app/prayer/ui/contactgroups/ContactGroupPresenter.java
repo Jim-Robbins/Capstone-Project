@@ -9,17 +9,17 @@ import timber.log.Timber;
 
 /**
  * Created by jim on 8/14/17.
+ *
  */
 
 public class ContactGroupPresenter implements ContactGroupContract.Presenter {
-    private final String selectedContactGroupKey;
     private ContactGroup selectedContactGroup;
 
     private ContactGroupContract.View contactGroupView;
     private ContactGroupService contactGroupService;
 
-    public ContactGroupPresenter(ContactGroupService contactGroupService, String contactGroupKey) {
-        this.selectedContactGroupKey = contactGroupKey;
+    public ContactGroupPresenter(ContactGroupService contactGroupService, ContactGroup contactGroup) {
+        this.selectedContactGroup = contactGroup;
         this.contactGroupService = contactGroupService;
     }
 
@@ -63,7 +63,7 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
 
     @Override
     public void onContactAddClick() {
-        contactGroupView.showContactAddDialog(selectedContactGroup.getName());
+        contactGroupView.showContactAddDialog(selectedContactGroup);
     }
 
     @Override

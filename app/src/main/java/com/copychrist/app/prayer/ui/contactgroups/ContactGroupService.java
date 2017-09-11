@@ -23,8 +23,6 @@ import timber.log.Timber;
  */
 
 public class ContactGroupService {
-    private static final String TAG = "ContactGroupService";
-
     private final DatabaseReference contactGroupsRef;
     private final DatabaseReference contactsRef;
     private Query contactGroupsQuery;
@@ -51,11 +49,13 @@ public class ContactGroupService {
                 List<ContactGroup> results = new ArrayList<>();
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     ContactGroup tabContactGroup = snapshot.getValue(ContactGroup.class);
-                    tabContactGroup.setKey(snapshot.getKey());
-                    results.add(tabContactGroup);
-                    if(selectedContactGroup == null) {
-                        // If select group is not set, default to first entry
-                        selectedContactGroup = tabContactGroup;
+                    if (tabContactGroup != null) {
+                        tabContactGroup.setKey(snapshot.getKey());
+                        results.add(tabContactGroup);
+                        if (selectedContactGroup == null) {
+                            // If select group is not set, default to first entry
+                            selectedContactGroup = tabContactGroup;
+                        }
                     }
                 }
                 sendContactGroupResults(results);
@@ -124,8 +124,10 @@ public class ContactGroupService {
                 List<Contact> results = new ArrayList<>();
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     Contact contact = snapshot.getValue(Contact.class);
-                    contact.setKey(snapshot.getKey());
-                    results.add(contact);
+                    if (contact != null) {
+                        contact.setKey(snapshot.getKey());
+                        results.add(contact);
+                    }
                 }
                 sendContactResults(results);
             }
@@ -162,19 +164,19 @@ public class ContactGroupService {
         };
     }
 
-    public void getContactGroupValues(ContactGroupContract.Presenter presenter) {
+    void getContactGroupValues(ContactGroupContract.Presenter presenter) {
         Timber.d("getContactGroupValues()");
 
         this.presenter = presenter;
 
-        contactGroupsRef.orderByChild(ContactGroup.ORDER_BY).addValueEventListener(contactGroupDataListener);
-        contactGroupsRef.orderByChild(ContactGroup.ORDER_BY).addChildEventListener(contactGroupEditDeleteChildEventListener);
+        contactGroupsRef.orderByChild(ContactGroup.CHILD_SORT_ORDER).addValueEventListener(contactGroupDataListener);
+        contactGroupsRef.orderByChild(ContactGroup.CHILD_SORT_ORDER).addChildEventListener(contactGroupEditDeleteChildEventListener);
 
-        contactGroupsQuery = contactGroupsRef.orderByChild(ContactGroup.CREATED).startAt(Utils.getCurrentTime());
+        contactGroupsQuery = contactGroupsRef.orderByChild(ContactGroup.CHILD_DATE_CREATED).startAt(Utils.getCurrentTime());
         contactGroupsQuery.addChildEventListener(queryAddContactGroupChildEventListener);
     }
 
-    public void saveContactGroupValue(final ContactGroup contactGroup) {
+    void saveContactGroupValue(final ContactGroup contactGroup) {
         if(contactGroup.getKey() == null) {
             // Add Contact Group
             contactGroupsRef.push().setValue(contactGroup);
@@ -184,33 +186,34 @@ public class ContactGroupService {
         }
     }
 
-    public void deleteContactGroup() {
-        Query qry = contactGroupsRef.orderByChild(Contact.CONTACT_GROUP)
-                                    .startAt(selectedContactGroup.getName())
-                                    .endAt(selectedContactGroup.getName());
+    void deleteContactGroup() {
+        Query qry = contactGroupsRef.child(Contact.CHILD_CONTACT_GROUP)
+                                    .orderByChild(Contact.CHILD_CONTACT_GROUP)
+                                    .startAt(selectedContactGroup.getKey())
+                                    .endAt(selectedContactGroup.getKey());
         qry.addListenerForSingleValueEvent(contactGroupDeleteSingleEventListener);
     }
 
-    protected void deleteContactGroupConfirmed(String contactGroupKey) {
+    private void deleteContactGroupConfirmed(String contactGroupKey) {
         contactGroupsRef.child(contactGroupKey).removeValue();
         //Todo: update the sort orders
     }
 
 
-    public void getContactValues(ContactGroup contactGroup) {
+    void getContactValues(ContactGroup contactGroup) {
         Timber.d("getContactValues() called with: contactGroup = [" + contactGroup + "]");
         selectedContactGroup = contactGroup;
-        contactsRef.orderByChild(Contact.CONTACT_GROUP)
-                .startAt(contactGroup.getName())
-                .endAt(contactGroup.getName())
+        contactsRef.orderByChild(Contact.CHILD_CONTACT_GROUP_KEY)
+                .startAt(contactGroup.getKey())
+                .endAt(contactGroup.getKey())
                 .addValueEventListener(contactValueEventListener);
 
     }
 
-    public void saveContactValue(Contact contact) {
+    void saveContactValue(Contact contact) {
         Timber.d("saveContactValue() called with: contact = [" + contact + "]");
         contactsRef.removeEventListener(contactChildEventListener);
-        contactsRef.orderByChild(Contact.CREATED)
+        contactsRef.orderByChild(Contact.CHILD_DATE_CREATED)
                 .startAt(Utils.getCurrentTime())
                 .addChildEventListener(contactChildEventListener);
 
@@ -239,7 +242,7 @@ public class ContactGroupService {
         presenter.onContactResults(results);
     }
 
-    public void destroy() {
+    void destroy() {
         contactGroupsRef.removeEventListener(contactGroupDataListener);
         contactGroupsRef.removeEventListener(contactGroupEditDeleteChildEventListener);
         contactGroupsQuery.removeEventListener(queryAddContactGroupChildEventListener);

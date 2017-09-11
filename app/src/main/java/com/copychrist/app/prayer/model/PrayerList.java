@@ -1,89 +1,119 @@
 package com.copychrist.app.prayer.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import com.copychrist.app.prayer.util.Utils;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @IgnoreExtraProperties
-public class PrayerList {
+public class PrayerList implements Parcelable {
     public static String DB_NAME = "prayerLists";
 
-    @NonNull
-    private String id;
+    @Exclude
+    private String key;
 
     @NonNull
     private String name;
+    public static final String CHILD_NAME = "name";
 
     @NonNull
-    private int order;
+    private int sortOrder;
+    public static final String CHILD_ORDER = "sortOrder";
 
-    @Nullable
-    private List<PrayerRequest> requests;
+    @NonNull private Long dateCreated;
+    public static final String CHILD_DATE_CREATED = "dateCreated";
 
     public PrayerList() {}
 
-    public PrayerList(@NonNull String name) {
-        this(name, -1, null);
+    /**
+     * Auto-generated Firebase key
+     * @return key [String] - Used to reference data value set for this list
+     */
+    @Exclude @NonNull public String getKey() {
+        return key;
+    }
+    public void setKey(@NonNull String key) {
+        this.key = key;
     }
 
-    public PrayerList(@NonNull String name, @NonNull int order) {
-        this(name, order, null);
-    }
-
-    public PrayerList(@NonNull String name, @NonNull int order,
-                      @Nullable List<PrayerRequest> requests) {
-        this.id = createPrayerListId(name);
-        this.name = name;
-        this.order = order;
-        this.requests = new ArrayList<>(requests);
-    }
-
+    /**
+     * System generated timestamp when prayer request is created
+     * @return
+     */
     @NonNull
-    public String getId() {
-        return id;
+    public Long getDateCreated() {
+        if(dateCreated == null) {
+            dateCreated = Utils.getCurrentTime();
+        }
+        return dateCreated;
     }
 
     @NonNull
     public String getName() {
         return name;
     }
-
-    @Nullable
-    public List<PrayerRequest> getRequests() {
-        return requests;
-    }
-
-    @Exclude
-    public List<PrayerRequest> addRequests(List<PrayerRequest> requests) {
-        this.requests.addAll(requests);
-        return requests;
-    }
-
-    @Exclude
-    public List<PrayerRequest> addRequest(PrayerRequest request) {
-        this.requests.add(request);
-        return requests;
-    }
-
-    @Exclude
-    public List<PrayerRequest> deleteRequest(PrayerRequest request) {
-        this.requests.remove(request);
-        return requests;
+    public void setName(@NonNull String name) {
+        this.name = name;
     }
 
     @NonNull
-    public int getOrder() {
-        return order;
+    public int getSortOrder() {
+        return sortOrder;
+    }
+    public void setSortOrder(@NonNull int sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     @Exclude
-    private String createPrayerListId(String name) {
-        return name.replaceAll("\\s","").toLowerCase();
+    @Override
+    public String toString() {
+        return "ContactEntry {"+
+                "key='" + key + '\'' +
+                ", name ='" + name + '\'' +
+                ", order ='" + sortOrder + '\'' +
+                "}";
     }
 
+    //-------------- Create Parcel----------------
+
+    protected PrayerList(Parcel in) {
+        key = in.readString();
+        name = in.readString();
+        sortOrder = in.readInt();
+        dateCreated = in.readByte() == 0x00 ? null : in.readLong();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
+        dest.writeString(name);
+        dest.writeInt(sortOrder);
+        if (dateCreated == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeLong(dateCreated);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<PrayerList> CREATOR = new Parcelable.Creator<PrayerList>() {
+        @Override
+        public PrayerList createFromParcel(Parcel in) {
+            return new PrayerList(in);
+        }
+
+        @Override
+        public PrayerList[] newArray(int size) {
+            return new PrayerList[size];
+        }
+    };
 }

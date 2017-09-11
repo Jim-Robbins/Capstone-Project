@@ -22,8 +22,8 @@ public class ContactContract {
     public interface Presenter extends BasePresenter<ContactContract.View> {
         void onContactDeleteCompleted();
         void onContactDeleteConfirm();
-        void onContactResults(Contact contact);
         void onContactSaveClick(Contact contact);
+        void onContactUpdated(Contact contact);
         void onDataResultMessage(String message);
         void onDataResultMessage(int messageResId);
         void onPrayerRequestGetActiveClick();

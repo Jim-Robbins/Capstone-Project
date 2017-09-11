@@ -42,7 +42,9 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
          PrayerRequestContract.View, BibleVerseRecyclerViewAdapter.OnBibleVerseClickListener {
 
     public static String EXTRA_CONTACT_KEY = "extra_contact_key";
+    public static String EXTRA_CONTACT = "extra_contact";
     public static String EXTRA_REQUEST_KEY = "extra_request_key";
+    public static String EXTRA_REQUEST = "extra_request";
 
     @BindView(R.id.add_layout_container) LinearLayout layoutContainer;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -60,21 +62,20 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
 
     BibleVerseRecyclerViewAdapter bibleVerseAdapter;
 
-    private String contactKey;
-    private String prayerRequestKey;
+    private Contact contact;
     private PrayerRequest selectedPrayerRequest;
 
     private ViewMode viewMode;
 
-    public static Intent getStartAddIntent(final Context context, final String contactKey) {
+    public static Intent getStartAddIntent(final Context context, final Contact contact) {
         Intent intent = new Intent(context, PrayerRequestDetailActivity.class);
-        intent.putExtra(EXTRA_CONTACT_KEY, contactKey);
+        intent.putExtra(EXTRA_CONTACT, contact);
         return intent;
     }
 
-    public static Intent getStartEditIntent(final Context context, final String prayerRequestKey) {
+    public static Intent getStartEditIntent(final Context context, final PrayerRequest prayerRequest) {
         Intent intent = new Intent(context, PrayerRequestDetailActivity.class);
-        intent.putExtra(EXTRA_REQUEST_KEY, prayerRequestKey);
+        intent.putExtra(EXTRA_REQUEST, prayerRequest);
         return intent;
     }
 
@@ -91,6 +92,8 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         if(viewMode.equals(ViewMode.EDIT_MODE)) {
             getMenuInflater().inflate(R.menu.edit_request_navigation_items, menu);
+        } else if(viewMode.equals(ViewMode.ARCHIVE_MODE)) {
+            getMenuInflater().inflate(R.menu.edit_request_navigation_archive_items, menu);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -107,6 +110,10 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
                 return true;
             case R.id.action_archive:
                 addPrayerRequestPresenter.onPrayerRequestArchive();
+                onNavUp();
+                return true;
+            case R.id.action_unarchive:
+                addPrayerRequestPresenter.onPrayerRequestUnarchive();
                 onNavUp();
                 return true;
             case R.id.action_delete:
@@ -129,24 +136,30 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
 
     @Override
     protected Object getModule() {
-        String key;
-        if (getIntent().hasExtra(EXTRA_CONTACT_KEY)) {
+        if (getIntent().hasExtra(EXTRA_CONTACT)) {
             viewMode = new ViewMode(ViewMode.ADD_MODE);
-            key = contactKey = getIntent().getExtras().getString(EXTRA_CONTACT_KEY);
-        } else if (getIntent().hasExtra(EXTRA_REQUEST_KEY)) {
-            viewMode = new ViewMode(ViewMode.EDIT_MODE);
-            key = prayerRequestKey = getIntent().getExtras().getString(EXTRA_REQUEST_KEY);
-        } else {
-            onNavUp();
-            return null;
+            contact = getIntent().getParcelableExtra(EXTRA_CONTACT);
+        } else if (getIntent().hasExtra(EXTRA_REQUEST)) {
+            selectedPrayerRequest = getIntent().getParcelableExtra(EXTRA_REQUEST);
+            if(selectedPrayerRequest.getAnswered() == null) {
+                viewMode = new ViewMode(ViewMode.EDIT_MODE);
+            } else {
+                viewMode = new ViewMode(ViewMode.ARCHIVE_MODE);
+            }
         }
-        return new PrayerRequestModule(key, viewMode);
+
+        return new PrayerRequestModule(contact, selectedPrayerRequest);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         addPrayerRequestPresenter.setView(this);
+        if (viewMode.equals(ViewMode.ADD_MODE)) {
+            showContactDetail(contact);
+        } else {
+            showPrayerRequestDetails(selectedPrayerRequest, null);
+        }
     }
 
     @Override
@@ -157,7 +170,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
 
     @Override
     public void showContactDetail(Contact selectedContact) {
-        contactKey = selectedContact.getKey();
+        contact = selectedContact;
         txtFirstName.setText(selectedContact.getFirstName());
         txtLastName.setText(selectedContact.getLastName());
     }
@@ -176,15 +189,14 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
     public void onSaveClick() {
         if (selectedPrayerRequest == null) {
             selectedPrayerRequest = new PrayerRequest();
-            selectedPrayerRequest.setContactKey(contactKey);
-        } else {
-            selectedPrayerRequest.setKey(prayerRequestKey);
+            selectedPrayerRequest.setContact(contact);
+            selectedPrayerRequest.setContactKey(contact.getKey());
         }
 
         String passagesEntry = editPassage.getText().toString();
         if (!TextUtils.isEmpty(passagesEntry)) {
             String[] passages = passagesEntry.split("(\\s*,\\s*)(\\s*|\\s*)");
-            selectedPrayerRequest.addPassages(Arrays.asList(passages));
+            selectedPrayerRequest.setPassages(Arrays.asList(passages));
         }
 
         String endDate = editEndDate.getText().toString();
@@ -207,31 +219,35 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
     }
 
     private void onNavUp() {
-        startActivity(ContactDetailActivity.getStartIntent(this, contactKey));
+        startActivity(ContactDetailActivity.getStartIntent(this, contact));
         finish();
     }
 
     @Override
     public void showPrayerRequestDetails(PrayerRequest prayerRequest, PrayerListsListAdapter prayerListsListAdapter) {
-        spinnerPrayerLists.setAdapter(prayerListsListAdapter);
-        // If wa already have a contact, hide the contact entry view
-        if(prayerRequest != null) {
-            selectedPrayerRequest = prayerRequest;
-            contactKey = prayerRequest.getContactKey();
-            editRequestTitle.setText(prayerRequest.getTitle());
-            editRequestDesc.setText(prayerRequest.getDescription());
+        SimpleDateFormat dateFormat = Utils.getDateFormat(this);
 
-            if(prayerRequest.getPassages() != null && prayerRequest.getPassages().size() > 0) {
-                String passageList = TextUtils.join(", ", prayerRequest.getPassages());
+        spinnerPrayerLists.setAdapter(prayerListsListAdapter);
+        selectedPrayerRequest = prayerRequest;
+
+        if(selectedPrayerRequest != null) {
+
+            contact = selectedPrayerRequest.getContact();
+            contact.setKey(selectedPrayerRequest.getContactKey());
+            showContactDetail(contact);
+
+            editRequestTitle.setText(selectedPrayerRequest.getTitle());
+            editRequestDesc.setText(selectedPrayerRequest.getDescription());
+
+            if(selectedPrayerRequest.getPassages() != null && selectedPrayerRequest.getPassages().size() > 0) {
+                String passageList = TextUtils.join(", ", selectedPrayerRequest.getPassages());
                 editPassage.setText(passageList);
             }
-            SimpleDateFormat dateFormat = Utils.getDateFormat(this);
-            if(prayerRequest.getEndDate() != null)
-                editEndDate.setText(dateFormat.format(prayerRequest.getEndDate()));
-
-            editEndDate.setFocusable(false);
-            editEndDate.setOnClickListener(new DatePickerOnClickListener(dateFormat));
+            if(selectedPrayerRequest.getEndDate() != null)
+                editEndDate.setText(dateFormat.format(selectedPrayerRequest.getEndDate()));
         }
+        editEndDate.setFocusable(false);
+        editEndDate.setOnClickListener(new DatePickerOnClickListener(dateFormat));
     }
 
     @Override

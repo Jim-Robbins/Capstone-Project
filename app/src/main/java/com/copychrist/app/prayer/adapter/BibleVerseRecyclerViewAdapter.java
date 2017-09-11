@@ -57,7 +57,6 @@ public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVer
 
     public void setBibleVerses(final List<BiblePassage> verses) {
         this.verses = verses;
-//        this.verses.addChangeListener(this);
         notifyDataSetChanged();
     }
 

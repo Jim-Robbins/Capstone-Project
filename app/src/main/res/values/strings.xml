@@ -37,11 +37,18 @@
     <string name="dialog_delete_group_denied">You must have at least one contact group. You cannot delete this one.</string>
     <string name="dialog_add_contact_group_title">Add Contact Group</string>
     <string name="dialog_edit_contact_group_title">Edit Contact Group</string>
+
     <string name="dialog_contact_first_name_hint">First Name *</string>
     <string name="dialog_contact_last_name_hint">Last Name</string>
     <string name="dialog_contact_group_name_hint">Group Name *</string>
     <string name="dialog_contact_group_desc_hint">Group Desc</string>
     <string name="dialog_delete_contact_title">Delete Contact</string>
+
+    <string name="dialog_prayer_list_title_add">Add Prayer List</string>
+    <string name="dialog_prayer_list_title_edit">Edit Prayer List</string>
+    <string name="dialog_prayer_list_title_delete">Delete Prayer Request</string>
+    <string name="dialog_prayer_list_name_hint">Prayer List Name *</string>
+
     <string name="progress_loading">Loading...</string>
     <string name="title_activity_login">Sign in</string>
 
@@ -74,4 +81,9 @@
     <string name="data_success_add">Value added successfully</string>
     <string name="data_value_changed">Value successfully changed</string>
     <string name="data_value_deleted">Value successfully deleted</string>
+    <string name="title_activity_prayer_list">Prayer Lists</string>
+    <string name="data_prayer_list_delete_denied">Cannot delete the prayer list</string>
+    <string name="menu_prayer_list_add">Add Prayer List</string>
+    <string name="menu_prayer_list_edit">Edit Prayer List</string>
+    <string name="menu_prayer_list_delete">Delete Prayer List</string>
 </resources>

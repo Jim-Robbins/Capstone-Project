@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.PrayerRequest;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class ContactsListAdapter
 //                @Override
 //                public void onClick(View view) {
 //                    if (contactClickListener != null) {
-//                        contactClickListener.onPrayerRequestClick(request1.getKey());
+//                        contactClickListener.onPrayerRequestClick(request1);
 //                    }
 //                }
 //            });
@@ -60,7 +61,7 @@ public class ContactsListAdapter
 //                    @Override
 //                    public void onClick(View view) {
 //                        if (contactClickListener != null) {
-//                            contactClickListener.onPrayerRequestClick(request2.getKey());
+//                            contactClickListener.onPrayerRequestClick(request2);
 //                        }
 //                    }
 //                });
@@ -72,28 +73,28 @@ public class ContactsListAdapter
 //                        @Override
 //                        public void onClick(View view) {
 //                            if (contactClickListener != null) {
-//                                contactClickListener.onPrayerRequestClick(request3.getKey());
+//                                contactClickListener.onPrayerRequestClick(request3);
 //                            }
 //                        }
 //                    });
 //                } else {
-//                    holder.textItem3.setVisibility(View.GONE);
+                    holder.textItem3.setVisibility(View.GONE);
 //                }
 //            } else {
-//                holder.textItem2.setVisibility(View.GONE);
+                holder.textItem2.setVisibility(View.GONE);
 //            }
 //        } else {
-//            holder.textItem1.setVisibility(View.GONE);
+            holder.textItem1.setVisibility(View.GONE);
 //        }
 //
-//        holder.textMoreItems.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (contactClickListener != null) {
-//                    contactClickListener.onContactClick(contact.getKey());
-//                }
-//            }
-//        });
+        holder.textMoreItems.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (contactClickListener != null) {
+                    contactClickListener.onContactClick(contact);
+                }
+            }
+        });
     }
 
     @Override
@@ -130,7 +131,7 @@ public class ContactsListAdapter
         public void onClick(View view) {
             if (contactClickListener != null) {
                 Contact contact = (Contact) view.getTag();
-                contactClickListener.onContactClick(contact.getKey());
+                contactClickListener.onContactClick(contact);
             }
         }
 
@@ -142,7 +143,7 @@ public class ContactsListAdapter
     }
 
     public interface OnContactClickListener {
-        void onContactClick(String contactKey);
-        void onPrayerRequestClick(String prayerRequestKey);
+        void onContactClick(Contact contact);
+        void onPrayerRequestClick(PrayerRequest prayerRequest);
     }
 }

@@ -3,6 +3,7 @@ package com.copychrist.app.prayer.ui.contact;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,18 +38,18 @@ public class ContactDetailActivity extends BaseActivity
     @BindView(R.id.text_contact_first_name) TextView txtFirstName;
     @BindView(R.id.text_contact_last_name) TextView txtLastName;
     @BindView(R.id.toolbar) Toolbar toolbar;
-
+    @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.tabLayout) TabLayout tabLayout;
 
     PrayerRequestsListAdapter prayerRequestsListAdapter;
     @Inject ContactContract.Presenter contactPresenter;
 
-    public static String EXTRA_CONTACT_KEY = "extra_contact_key";
+    public static String EXTRA_CONTACT = "extra_contact";
     private Contact contact;
 
-    public static Intent getStartIntent(final Context context, final String contactKey) {
+    public static Intent getStartIntent(final Context context, final Contact contact) {
         Intent intent = new Intent(context, ContactDetailActivity.class);
-        intent.putExtra(EXTRA_CONTACT_KEY, contactKey);
+        intent.putExtra(EXTRA_CONTACT, contact);
         return intent;
     }
 
@@ -64,8 +65,13 @@ public class ContactDetailActivity extends BaseActivity
 
     @Override
     protected Object getModule() {
-        String contactKey = getIntent().getExtras().getString(EXTRA_CONTACT_KEY);
-        return new ContactModule(contactKey);
+        if (getIntent().hasExtra(EXTRA_CONTACT)) {
+            contact = getIntent().getParcelableExtra(EXTRA_CONTACT);
+            if (contact == null) {
+                Timber.e("ContactGroup Parcel not properly sent.");
+            }
+        }
+        return new ContactModule(contact);
     }
 
     @Override
@@ -93,8 +99,8 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onPrayerRequestClick(String requestId) {
-        showPrayerRequestDetailView(requestId);
+    public void onPrayerRequestClick(PrayerRequest request) {
+        showPrayerRequestDetailView(request);
     }
 
     @OnClick(R.id.fab)
@@ -103,7 +109,7 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onConfirmedDeleteDialog(String contactKey) {
+    public void onConfirmedDeleteDialog() {
         contactPresenter.onContactDeleteConfirm();
     }
 
@@ -157,10 +163,12 @@ public class ContactDetailActivity extends BaseActivity
                 switch (tab.getPosition()) {
                     case 1:
                         contactPresenter.onPrayerRequestGetArchivedClick();
+                        fab.setEnabled(false);
                         break;
                     case 0:
                     default:
                         contactPresenter.onPrayerRequestGetActiveClick();
+                        fab.setEnabled(true);
                         break;
                 }
             }
@@ -180,12 +188,12 @@ public class ContactDetailActivity extends BaseActivity
         recyclerView.setAdapter(prayerRequestsListAdapter);
     }
 
-    private void showPrayerRequestDetailView(String prayerRequestKey) {
-        startActivity(PrayerRequestDetailActivity.getStartEditIntent(this, prayerRequestKey));
+    private void showPrayerRequestDetailView(PrayerRequest prayerRequest) {
+        startActivity(PrayerRequestDetailActivity.getStartEditIntent(this, prayerRequest));
     }
 
     private void showAddNewPrayerRequestView() {
-        startActivity(PrayerRequestDetailActivity.getStartAddIntent(this, contact.getKey()));
+        startActivity(PrayerRequestDetailActivity.getStartAddIntent(this, contact));
         if(tabLayout != null && tabLayout.getTabAt(0) != null) {
             tabLayout.getTabAt(0).select();
         }
@@ -199,7 +207,6 @@ public class ContactDetailActivity extends BaseActivity
     private void showDeleteContactDialog() {
             DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
                     getString(R.string.dialog_delete_contact_title),
-                    contact.getKey(),
                     contact.getFirstName() + " " + contact.getLastName()
             );
             deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");

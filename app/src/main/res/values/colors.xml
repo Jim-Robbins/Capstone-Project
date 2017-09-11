@@ -4,4 +4,15 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorIcons">#FFffffff</color>
+
+    <!-- https://www.androidhive.info/2017/02/android-creating-gmail-like-inbox-using-recyclerview/ -->
+    <color name="color_item_main">#000000</color>
+    <color name="color_item_primary">#111111</color>
+    <color name="color_timestamp">#4285f4</color>
+    <color name="color_item_secondary">#7a7a7a</color>
+    <color name="icon_tint_normal">#7a7a7a</color>
+    <color name="icon_tint_selected">#fed776</color>
+    <color name="row_activated">#e0e0e0</color>
+    <color name="bg_action_mode">#757575</color>
+    <color name="bg_circle_default">#666666</color>
 </resources>

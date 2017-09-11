@@ -5,8 +5,6 @@ import com.copychrist.app.prayer.model.PrayerRequest;
 
 import java.util.List;
 
-import timber.log.Timber;
-
 /**
  * Created by jim on 8/19/17.
  */
@@ -14,25 +12,19 @@ import timber.log.Timber;
 public class ContactPresenter implements ContactContract.Presenter {
 
     private final ContactService dataService;
-    private final String contactKey;
     private ContactContract.View contactView;
     private Contact selectedContact;
 
-    public ContactPresenter(final ContactService dataService, final String contactKey) {
+    public ContactPresenter(final ContactService dataService, final Contact contact) {
         this.dataService = dataService;
-        this.contactKey = contactKey;
+        this.selectedContact = contact;
     }
 
     @Override
     public void setView(ContactContract.View view) {
         contactView = view;
-        onPrayerRequestGetActiveClick();
-    }
-
-    @Override
-    public void onContactResults(Contact contact) {
-        selectedContact = contact;
         contactView.showContactDetail(selectedContact);
+        onPrayerRequestGetActiveClick();
     }
 
     @Override
@@ -42,13 +34,19 @@ public class ContactPresenter implements ContactContract.Presenter {
     }
 
     @Override
+    public void onContactUpdated(Contact contact) {
+        if(contactView != null)
+            contactView.showContactDetail(contact);
+    }
+
+    @Override
     public void onContactSaveClick(Contact contact) {
         dataService.saveContact(contact);
     }
 
     @Override
     public void onContactDeleteConfirm() {
-        dataService.deleteContact();
+        dataService.deleteContact(selectedContact);
     }
 
     @Override
@@ -58,28 +56,30 @@ public class ContactPresenter implements ContactContract.Presenter {
 
     @Override
     public void onPrayerRequestGetActiveClick() {
-        dataService.getContact(this, contactKey, true);
+        dataService.getContact(this, selectedContact, true);
     }
 
     @Override
     public void onPrayerRequestGetArchivedClick() {
-        dataService.getContact(this, contactKey, false);
+        dataService.getContact(this, selectedContact, false);
     }
 
     @Override
     public void onPrayerRequestResults(List<PrayerRequest> prayerRequests) {
-        if(prayerRequests == null) return;
-        Timber.d("onPrayerRequestResults() called with: prayerRequests = [" + prayerRequests + "]");
-        contactView.showPrayerRequests(prayerRequests);
+        if(prayerRequests != null && contactView != null) {
+            contactView.showPrayerRequests(prayerRequests);
+        }
     }
 
     @Override
     public void onDataResultMessage(String message) {
-        contactView.showDatabaseResultMessage(message);
+        if(contactView != null)
+            contactView.showDatabaseResultMessage(message);
     }
 
     @Override
     public void onDataResultMessage(int messageResId) {
-        contactView.showDatabaseResultMessage(messageResId);
+        if(contactView != null)
+            contactView.showDatabaseResultMessage(messageResId);
     }
 }

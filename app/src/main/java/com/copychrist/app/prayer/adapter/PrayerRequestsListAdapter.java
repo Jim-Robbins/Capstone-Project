@@ -51,7 +51,7 @@ public class PrayerRequestsListAdapter
             @Override
             public void onClick(View view) {
                 if (prayerRequestClickListener != null) {
-                    prayerRequestClickListener.onPrayerRequestClick(prayerRequest.getKey());
+                    prayerRequestClickListener.onPrayerRequestClick(prayerRequest);
                 }
             }
         });
@@ -85,6 +85,6 @@ public class PrayerRequestsListAdapter
     }
 
     public interface OnPrayerRequestClickListener {
-        void onPrayerRequestClick(String requestId);
+        void onPrayerRequestClick(PrayerRequest request);
     }
 }
