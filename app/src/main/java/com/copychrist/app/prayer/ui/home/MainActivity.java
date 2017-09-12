@@ -6,7 +6,10 @@ import android.widget.RelativeLayout;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.contactgroups.ContactGroupActivity;
+import com.copychrist.app.prayer.ui.login.LoginActivity;
 import com.copychrist.app.prayer.ui.prayerlist.PrayerListActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import javax.inject.Inject;
 
@@ -21,6 +24,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     @BindView(R.id.icon_container_prayer_requests) RelativeLayout iconPrayerRequests;
     @BindView(R.id.icon_container_contacts) RelativeLayout iconContacts;
     @BindView(R.id.icon_container_bible_verses) RelativeLayout iconBibleVerses;
+    @BindView(R.id.icon_container_logout) RelativeLayout iconLogout;
 
     @Inject MainContract.Presenter mainPresenter;
 
@@ -76,5 +80,12 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     @OnClick(R.id.icon_container_bible_verses)
     public void onBibleVersesClick() {
         //startActivity(BibleVerseActivity.getStartIntent(this, null));
+    }
+
+    @OnClick(R.id.icon_container_logout)
+    public void setIconLogoutClick() {
+        FirebaseDatabase.getInstance().goOffline();
+        FirebaseAuth.getInstance().signOut();
+        startActivity(LoginActivity.getStartIntent(this));
     }
 }

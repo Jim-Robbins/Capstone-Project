@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 
 import com.copychrist.app.prayer.util.ReleaseTree;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Logger;
 import com.squareup.leakcanary.LeakCanary;
@@ -54,7 +53,7 @@ public class PrayingWithDedicationApplication extends Application {
     }
 
     private void initDb() {
-        FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
+        FirebaseDatabase.getInstance().setLogLevel(Logger.Level.INFO);
         if (!FirebaseApp.getApps(this).isEmpty()) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             FirebaseDatabase.getInstance().getReference().keepSynced(true);

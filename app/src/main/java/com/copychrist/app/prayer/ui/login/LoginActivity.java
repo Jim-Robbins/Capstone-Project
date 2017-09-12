@@ -1,5 +1,6 @@
 package com.copychrist.app.prayer.ui.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,6 +40,11 @@ public class LoginActivity extends BaseActivity {
     @Inject
     LoginContract.Presenter loginPresenter;
 
+    public static Intent getStartIntent(final Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        return intent;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +63,14 @@ public class LoginActivity extends BaseActivity {
         if (firebaseAuth.getCurrentUser() != null) {
             onAuthSuccess(firebaseAuth.getCurrentUser());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override
