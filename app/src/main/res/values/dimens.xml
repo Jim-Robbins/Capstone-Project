@@ -15,4 +15,6 @@
     <dimen name="timestamp_font_size">12dp</dimen>
     <dimen name="item_done_icon_width">25dp</dimen>
     <dimen name="padding_list_row_start">72dp</dimen>
+    <dimen name="home_icon_width_height">100dp</dimen>
+    <dimen name="home_icon_width_height_plus">135dp</dimen>
 </resources>

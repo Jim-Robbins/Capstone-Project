@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.ui.contact;
 
 import com.copychrist.app.prayer.ApplicationModule;
 import com.copychrist.app.prayer.model.Contact;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Module;
@@ -20,8 +21,8 @@ public class ContactModule {
     }
 
     @Provides
-    ContactService provideContactService(FirebaseDatabase database) {
-        return new ContactService(database);
+    ContactService provideContactService(FirebaseDatabase database, FirebaseUser user) {
+        return new ContactService(database, user);
     }
 
     @Provides

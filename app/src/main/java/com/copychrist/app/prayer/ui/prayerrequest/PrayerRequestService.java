@@ -4,6 +4,7 @@ import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.util.Utils;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,9 +26,9 @@ public class PrayerRequestService {
 
     private PrayerRequestContract.Presenter presenter;
 
-    public PrayerRequestService(FirebaseDatabase database) {
-        prayerRequestsRef = database.getReference(PrayerRequest.DB_NAME);
-        bibleVersesRef = database.getReference(BiblePassage.DB_NAME);
+    public PrayerRequestService(FirebaseDatabase database, FirebaseUser currentUser) {
+        prayerRequestsRef = database.getReference(PrayerRequest.DB_NAME).child(currentUser.getUid());
+        bibleVersesRef = database.getReference(BiblePassage.DB_NAME).child(currentUser.getUid());
 
         prayerRequestDeleteChildEventListener = new ChildEventListener() {
             @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {

@@ -4,6 +4,7 @@ package com.copychrist.app.prayer.ui.contact;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,9 +34,9 @@ public class ContactService {
     private Contact selectedContact;
     private boolean showActiveRequests;
 
-    public ContactService(FirebaseDatabase database) {
-        contactsRef = database.getReference(Contact.DB_NAME);
-        prayerRequestsRef = database.getReference(PrayerRequest.DB_NAME);
+    public ContactService(FirebaseDatabase database, FirebaseUser currentUser) {
+        contactsRef = database.getReference(Contact.DB_NAME).child(currentUser.getUid());
+        prayerRequestsRef = database.getReference(PrayerRequest.DB_NAME).child(currentUser.getUid());
 
         contactChildEventListener = new ChildEventListener() {
             @Override

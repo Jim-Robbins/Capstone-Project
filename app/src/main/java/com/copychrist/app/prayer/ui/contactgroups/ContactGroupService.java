@@ -4,6 +4,7 @@ import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
 import com.copychrist.app.prayer.util.Utils;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,10 +38,10 @@ public class ContactGroupService {
     private ContactGroup selectedContactGroup;
     private ContactGroupContract.Presenter presenter;
 
-    public ContactGroupService(FirebaseDatabase database) {
+    public ContactGroupService(FirebaseDatabase database, FirebaseUser currentUser) {
         Timber.d("ContactGroupService() called with: database = [" + database + "]");
-        contactGroupsRef = database.getReference(ContactGroup.DB_NAME);
-        contactsRef = database.getReference(Contact.DB_NAME);
+        contactGroupsRef = database.getReference(ContactGroup.DB_NAME).child(currentUser.getUid());
+        contactsRef = database.getReference(Contact.DB_NAME).child(currentUser.getUid());
 
         // initialize Contact Group event listeners
         contactGroupDataListener = new ValueEventListener() {

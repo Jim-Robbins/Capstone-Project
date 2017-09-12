@@ -71,6 +71,7 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
         // Handle item selection
         switch (item.getItemId()) {
             case android.R.id.home:
+                onSupportNavigateUp();
                 return true;
             case R.id.action_add_group:
                 contactsPresenter.onContactGroupAddClick();

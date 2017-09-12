@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/dialog_horizontal_margin"
+    android:paddingStart="@dimen/dialog_horizontal_margin"
+    >
+
+    <TextView
+        android:id="@+id/txt_group_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Family"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorAccent">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/profile_icon"
+            android:src="@drawable/ic_account_circle_24dp"
+            android:paddingEnd="8dp"
+            android:layout_alignParentStart="true"/>
+        <TextView
+            android:id="@+id/txt_contact_first_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="4dp"
+            android:layout_toEndOf="@+id/profile_icon"
+            android:textSize="@dimen/msg_text_primary"
+            android:textStyle="bold"
+            tools:text="Jill"
+            />
+
+        <TextView
+            android:id="@+id/txt_contact_last_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/profile_icon"
+            android:textSize="@dimen/msg_text_primary"
+            android:textStyle="bold"
+            android:layout_below="@+id/txt_contact_first_name"
+            tools:text="Jackson"
+            />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_request_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_item_primary"
+        android:textSize="@dimen/msg_text_secondary"
+        android:textStyle="bold"
+        android:hint="Title" />
+
+    <TextView
+        android:id="@+id/txt_request_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top|start"
+        android:hint="Request Details"
+        android:scrollbars="vertical"
+        android:textColor="@color/color_item_secondary"
+        android:textSize="@dimen/msg_text_secondary"/>
+
+
+    <TextView
+        android:id="@+id/txt_passage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Passage"
+        android:textStyle="italic"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/txt_end_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="End Date" />
+</LinearLayout>

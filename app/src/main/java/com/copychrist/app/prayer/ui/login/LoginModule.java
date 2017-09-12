@@ -1,6 +1,7 @@
 package com.copychrist.app.prayer.ui.login;
 
 import com.copychrist.app.prayer.ApplicationModule;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Module;
@@ -14,8 +15,8 @@ import dagger.Provides;
 public class LoginModule {
 
     @Provides
-    LoginService provideLoginService(FirebaseDatabase database) {
-        return new LoginService(database);
+    LoginService provideLoginService(FirebaseDatabase database, FirebaseUser user) {
+        return new LoginService(database, user);
     }
 
     @Provides

@@ -1,31 +1,80 @@
 package com.copychrist.app.prayer.ui.home;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.copychrist.app.prayer.R;
+import com.copychrist.app.prayer.ui.BaseActivity;
+import com.copychrist.app.prayer.ui.contactgroups.ContactGroupActivity;
+import com.copychrist.app.prayer.ui.prayerlist.PrayerListActivity;
 
-public class MainActivity extends AppCompatActivity {
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class MainActivity extends BaseActivity implements MainContract.View {
+
+    @BindView(R.id.icon_container_prayer_lists) RelativeLayout iconPrayerLists;
+    @BindView(R.id.icon_container_contact_groups) RelativeLayout iconContactGroups;
+    @BindView(R.id.icon_container_prayer_requests) RelativeLayout iconPrayerRequests;
+    @BindView(R.id.icon_container_contacts) RelativeLayout iconContacts;
+    @BindView(R.id.icon_container_bible_verses) RelativeLayout iconBibleVerses;
+
+    @Inject MainContract.Presenter mainPresenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        ButterKnife.bind(this);
     }
 
+    @Override
+    protected Object getModule() {
+        return new MainModule();
+    }
+
+    @Override
+    public void showLogin() {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mainPresenter.setView(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mainPresenter.clearView();
+    }
+
+    @OnClick(R.id.icon_container_prayer_lists)
+    public void onPrayerListsClick() {
+        startActivity(PrayerListActivity.getStartIntent(this, null));
+    }
+
+    @OnClick(R.id.icon_container_prayer_requests)
+    public void onPrayerRequestsClick() {
+        //startActivity(BibleVerseActivity.getStartIntent(this, null));
+    }
+
+    @OnClick(R.id.icon_container_contact_groups)
+    public void onContactGroupsClick() {
+        startActivity(ContactGroupActivity.getStartIntent(this, null));
+    }
+
+    @OnClick(R.id.icon_container_contacts)
+    public void onContactsClick() {
+        //startActivity(BibleVerseActivity.getStartIntent(this, null));
+    }
+
+    @OnClick(R.id.icon_container_bible_verses)
+    public void onBibleVersesClick() {
+        //startActivity(BibleVerseActivity.getStartIntent(this, null));
+    }
 }

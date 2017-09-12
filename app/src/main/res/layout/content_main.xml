@@ -4,8 +4,231 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.copychrist.app.prayer.ui.home.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_main"
+    android:clipToPadding="false">
+
+    <RelativeLayout
+        android:id="@+id/icon_container_prayer_lists"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/icon_back_prayer_lists"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height_plus"
+                android:layout_height="@dimen/home_icon_width_height_plus"
+                android:src="@drawable/bg_circle"
+                android:tint="#03a9f4" />
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height_plus"
+                android:layout_height="@dimen/home_icon_width_height_plus"
+                android:layout_centerInParent="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_storage_24dp" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/icon_container_prayer_requests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/icon_container_prayer_lists"
+        app:layout_constraintStart_toEndOf="@+id/icon_container_prayer_lists">
+
+        <RelativeLayout
+            android:id="@+id/icon_back_prayer_requests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:src="@drawable/bg_circle"
+                 />
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:layout_centerInParent="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_question_answer_24dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/icon_front_prayer_requests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/icon_profile_prayer_requests"
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height" />
+
+            <TextView
+                android:id="@+id/txt_icon_text_prayer_requests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/icon_text" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/icon_container_contact_groups"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/icon_container_prayer_lists"
+        app:layout_constraintEnd_toStartOf="@+id/icon_container_prayer_lists">
+
+        <RelativeLayout
+            android:id="@+id/icon_back_contact_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:src="@drawable/bg_circle"
+                android:tint="@color/colorAccent" />
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:layout_centerInParent="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_group_24dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/icon_front_contact_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/icon_profile_contact_groups"
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height" />
+
+            <TextView
+                android:id="@+id/txt_icon_text_contact_groups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/icon_text" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/icon_container_bible_verses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/icon_container_prayer_lists"
+        app:layout_constraintTop_toBottomOf="@+id/icon_container_prayer_lists">
+
+        <RelativeLayout
+            android:id="@+id/icon_back_bible_verses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:src="@drawable/bg_circle"
+                 />
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:layout_centerInParent="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_import_contacts_24dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/icon_front_bible_verses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/icon_profile_bible_verses"
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height" />
+
+            <TextView
+                android:id="@+id/txt_icon_text_bible_verses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/icon_text" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/icon_container_contacts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@+id/icon_container_prayer_lists"
+        app:layout_constraintTop_toBottomOf="@+id/icon_container_prayer_lists">
+
+        <RelativeLayout
+            android:id="@+id/icon_back_contacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:src="@drawable/bg_circle"
+                 />
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:layout_centerInParent="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_account_circle_24dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/icon_front_contacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/icon_profile_contacts"
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height" />
+
+            <TextView
+                android:id="@+id/txt_icon_text_contacts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/icon_text" />
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

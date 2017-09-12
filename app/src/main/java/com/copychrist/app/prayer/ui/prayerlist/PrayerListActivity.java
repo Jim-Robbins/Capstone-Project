@@ -20,7 +20,6 @@ import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
 import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
-import com.copychrist.app.prayer.ui.contactgroups.ContactGroupActivity;
 import com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestDetailActivity;
 
 import java.util.List;
@@ -50,7 +49,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     private  List<PrayerListRequest> prayerListRequests;
 
     public static Intent getStartIntent(final Context context, final PrayerList prayerList) {
-        Intent intent = new Intent(context, PrayerRequestDetailActivity.class);
+        Intent intent = new Intent(context, PrayerListActivity.class);
         intent.putExtra(EXTRA_PRAYER_LIST, prayerList);
         return intent;
     }
@@ -80,8 +79,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         // Handle item selection
         switch (item.getItemId()) {
             case android.R.id.home:
-                //Todo: don't leave this
-                startActivity(ContactGroupActivity.getStartIntent(this, null));
+                onSupportNavigateUp();
                 return true;
             case R.id.action_add_list:
                 prayerListPresenter.onPrayerListAddClick();
@@ -214,7 +212,8 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     @Override
     public void showPrayerRequestAddDialog(PrayerList prayerListKey) {
-        AddPrayerRequestDialogFragment addPrayerRequestDialogFragment = AddPrayerRequestDialogFragment.newAddInstance(prayerListKey, prayerListPresenter);
+        AddPrayerRequestDialogFragment addPrayerRequestDialogFragment =
+                AddPrayerRequestDialogFragment.newAddInstance(prayerListKey, prayerListPresenter);
         addPrayerRequestDialogFragment.show(getSupportFragmentManager(), "AddContactDialogFragment");
     }
 
@@ -231,7 +230,9 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         prayerListRequests.set(position, prayerListRequest);
         prayerRequestsListAdapter.notifyDataSetChanged();
 
-        Toast.makeText(getApplicationContext(), "Read: " + prayerListRequest.getDesc(), Toast.LENGTH_SHORT).show();
+        ViewPrayerRequestDialogFragment viewPrayerRequestDialog =
+                ViewPrayerRequestDialogFragment.newAddInstance(prayerListRequest, prayerListPresenter);
+        viewPrayerRequestDialog.show(getSupportFragmentManager(), "ViewPrayerRequestDialogFragment");
     }
 
     @Override

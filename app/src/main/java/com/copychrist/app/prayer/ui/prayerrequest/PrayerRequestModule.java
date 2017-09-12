@@ -3,6 +3,7 @@ package com.copychrist.app.prayer.ui.prayerrequest;
 import com.copychrist.app.prayer.ApplicationModule;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import javax.inject.Singleton;
@@ -29,8 +30,8 @@ public class PrayerRequestModule {
 
     @Provides
     @Singleton
-    PrayerRequestService providePrayerRequestService(FirebaseDatabase database) {
-        return new PrayerRequestService(database);
+    PrayerRequestService providePrayerRequestService(FirebaseDatabase database, FirebaseUser user) {
+        return new PrayerRequestService(database, user);
     }
 
     @Provides

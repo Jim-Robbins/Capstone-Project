@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.ui.prayerlist;
 
 import com.copychrist.app.prayer.ApplicationModule;
 import com.copychrist.app.prayer.model.PrayerList;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Module;
@@ -20,8 +21,8 @@ public class PrayerListModule {
     }
 
     @Provides
-    PrayerListService providePrayerListService(FirebaseDatabase firebaseDatabase) {
-        return new PrayerListService(firebaseDatabase);
+    PrayerListService providePrayerListService(FirebaseDatabase firebaseDatabase, FirebaseUser user) {
+        return new PrayerListService(firebaseDatabase, user);
     }
 
     @Provides

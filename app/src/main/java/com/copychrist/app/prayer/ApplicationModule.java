@@ -1,6 +1,8 @@
 package com.copychrist.app.prayer;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Module;
@@ -23,5 +25,10 @@ public class ApplicationModule {
     @Provides
     FirebaseDatabase provideFirebaseDatabase() {
         return FirebaseDatabase.getInstance(provideFirebaseApp());
+    }
+
+    @Provides
+    FirebaseUser provideFirebaseUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 }

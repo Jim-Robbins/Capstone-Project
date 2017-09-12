@@ -1,0 +1,89 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+      }
+    },
+    "contactGroups": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        "$contactGroupKey": {
+          "name": {
+            ".validate": "newData.isString() && newData.val().length < 20"
+          },
+          "dateCreated": {
+            ".validate": "newData.isNumber()"
+          },
+          "sortOrder": {
+            ".validate": "newData.isNumber()"
+          }
+        }
+      }
+    },
+    "contacts": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        "$contactKey": {
+          "firstName": {
+            ".validate": "newData.isString() && newData.val().length < 20"
+          },
+          "lastName": {
+            ".validate": "newData.isString() && newData.val().length < 30"
+          },
+          "dateCreated": {
+            ".validate": "newData.isNumber()"
+          }
+        }
+      }
+    },
+    "prayerLists": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        "$prayerListKey": {
+          "name": {
+            ".validate": "newData.isString() && newData.val().length < 20"
+          },
+          "dateCreated": {
+            ".validate": "newData.isNumber()"
+          },
+          "sortOrder": {
+            ".validate": "newData.isNumber()"
+          }
+        }
+      }
+    },
+    "prayerRequests": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        "$prayerRequestKey": {
+          "title": {
+            ".validate": "newData.isString() && newData.val().length < 40"
+          },
+        }
+      }
+    },
+    "biblePassages": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        "$biblePassageKey": {
+          "book": {
+            ".validate": "newData.isString() && newData.val().length < 16"
+          },
+          "chapter": {
+            ".validate": "newData.isNumber() && newData.val() < 151"
+          },
+          "verse": {
+            ".validate": "newData.isNumber() && newData.val() < 177"
+          }
+        }
+      }
+    }
+  }
+}

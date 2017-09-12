@@ -1,6 +1,7 @@
 package com.copychrist.app.prayer.ui.login;
 
 import com.copychrist.app.prayer.model.User;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -19,7 +20,7 @@ public class LoginService {
     ChildEventListener usersChildEventListener;
     ChildEventListener usersQryChildEventListener;
 
-    public LoginService(FirebaseDatabase database) {
+    public LoginService(FirebaseDatabase database, FirebaseUser user) {
         this.database = database;
         usersGroupsRef = database.getReference(User.DB_NAME);
     }
