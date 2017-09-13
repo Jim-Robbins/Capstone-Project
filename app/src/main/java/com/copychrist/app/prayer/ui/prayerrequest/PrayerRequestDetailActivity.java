@@ -24,7 +24,6 @@ import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.ViewMode;
 import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
-import com.copychrist.app.prayer.ui.contact.ContactDetailActivity;
 import com.copychrist.app.prayer.util.Utils;
 
 import java.text.SimpleDateFormat;
@@ -41,9 +40,8 @@ import butterknife.OnClick;
 public class PrayerRequestDetailActivity extends BaseActivity implements
          PrayerRequestContract.View, BibleVerseRecyclerViewAdapter.OnBibleVerseClickListener {
 
-    public static String EXTRA_CONTACT_KEY = "extra_contact_key";
+    public static String EXTRA_LIST_KEY = "extra_list_key";
     public static String EXTRA_CONTACT = "extra_contact";
-    public static String EXTRA_REQUEST_KEY = "extra_request_key";
     public static String EXTRA_REQUEST = "extra_request";
 
     @BindView(R.id.add_layout_container) LinearLayout layoutContainer;
@@ -64,6 +62,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
 
     private Contact contact;
     private PrayerRequest selectedPrayerRequest;
+    private String prayerListKey;
 
     private ViewMode viewMode;
 
@@ -76,6 +75,12 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
     public static Intent getStartEditIntent(final Context context, final PrayerRequest prayerRequest) {
         Intent intent = new Intent(context, PrayerRequestDetailActivity.class);
         intent.putExtra(EXTRA_REQUEST, prayerRequest);
+        return intent;
+    }
+
+    public static Intent getStartAddIntent(final Context context, final String prayerListKey) {
+        Intent intent = new Intent(context, PrayerRequestDetailActivity.class);
+        intent.putExtra(EXTRA_LIST_KEY, prayerListKey);
         return intent;
     }
 
@@ -146,9 +151,12 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
             } else {
                 viewMode = new ViewMode(ViewMode.ARCHIVE_MODE);
             }
+        } else if (getIntent().hasExtra(EXTRA_LIST_KEY)) {
+            viewMode = new ViewMode(ViewMode.FULL_ADD_MODE);
+            prayerListKey = getIntent().getExtras().getString(EXTRA_LIST_KEY);
         }
 
-        return new PrayerRequestModule(contact, selectedPrayerRequest);
+        return new PrayerRequestModule(contact, selectedPrayerRequest, prayerListKey);
     }
 
     @Override
@@ -157,6 +165,8 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
         addPrayerRequestPresenter.setView(this);
         if (viewMode.equals(ViewMode.ADD_MODE)) {
             showContactDetail(contact);
+        } if (viewMode.equals(ViewMode.FULL_ADD_MODE)) {
+            //Todo: Show contact selector
         } else {
             showPrayerRequestDetails(selectedPrayerRequest, null);
         }
@@ -219,7 +229,6 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
     }
 
     private void onNavUp() {
-        startActivity(ContactDetailActivity.getStartIntent(this, contact));
         finish();
     }
 

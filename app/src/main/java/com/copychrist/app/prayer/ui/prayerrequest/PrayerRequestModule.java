@@ -22,10 +22,12 @@ public class PrayerRequestModule {
 
     private final Contact contact;
     private final PrayerRequest prayerRequest;
+    private final String prayerListKey;
 
-    public PrayerRequestModule(final Contact contact, final PrayerRequest prayerRequest) {
+    public PrayerRequestModule(final Contact contact, final PrayerRequest prayerRequest, String prayerListKey) {
         this.contact = contact;
         this.prayerRequest = prayerRequest;
+        this.prayerListKey = prayerListKey;
     }
 
     @Provides
@@ -36,6 +38,6 @@ public class PrayerRequestModule {
 
     @Provides
     PrayerRequestContract.Presenter providePrayerRequestPresenter(final PrayerRequestService dataService) {
-        return new PrayerRequestPresenter(dataService, contact, prayerRequest);
+        return new PrayerRequestPresenter(dataService, contact, prayerRequest, prayerListKey);
     }
 }

@@ -169,7 +169,7 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
                     .transform(new CircleTransform(mContext))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.imgProfile);
-            holder.imgProfile.setColorFilter(null);
+            holder.imgProfile.setColorFilter(prayerListRequest.getColor());
             holder.txtIconText.setVisibility(View.GONE);
         } else {
             holder.imgProfile.setImageResource(R.drawable.bg_circle);

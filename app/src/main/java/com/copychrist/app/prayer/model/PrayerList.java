@@ -70,7 +70,7 @@ public class PrayerList implements Parcelable {
     @Exclude
     @Override
     public String toString() {
-        return "ContactEntry {"+
+        return "PrayerList {"+
                 "key='" + key + '\'' +
                 ", name ='" + name + '\'' +
                 ", order ='" + sortOrder + '\'' +

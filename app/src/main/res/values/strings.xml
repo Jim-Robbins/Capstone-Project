@@ -87,4 +87,7 @@
     <string name="menu_prayer_list_edit">Edit Prayer List</string>
     <string name="menu_prayer_list_delete">Delete Prayer List</string>
     <string name="btn_pray">Prayed For</string>
+    <string name="btn_add">Add</string>
+    <string name="dialog_prayer_list_add_request">Create a new request</string>
+    <string name="dialog_prayer_list_add_request_title">Select Requests To Add To The List</string>
 </resources>

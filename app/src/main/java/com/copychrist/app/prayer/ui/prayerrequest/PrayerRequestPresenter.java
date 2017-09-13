@@ -24,13 +24,17 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     private Contact selectedContact;
     private PrayerRequest selectedPrayerRequest;
     private PrayerRequestContract.View prayerRequestView;
+    private String prayerListKey;
 
 
-    public PrayerRequestPresenter(final PrayerRequestService dataService, Contact contact, PrayerRequest prayerRequest) {
+    public PrayerRequestPresenter(final PrayerRequestService dataService, Contact contact, PrayerRequest prayerRequest, String prayerListKey) {
         this.dataService = dataService;
         if (prayerRequest == null) {
             this.viewMode = new ViewMode(ViewMode.ADD_MODE);
             this.selectedContact = contact;
+        } else if (prayerListKey != null) {
+            this.viewMode = new ViewMode(ViewMode.FULL_ADD_MODE);
+            this.prayerListKey = prayerListKey;
         } else {
             this.viewMode = new ViewMode(ViewMode.EDIT_MODE);
             this.selectedPrayerRequest = prayerRequest;
@@ -44,6 +48,8 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
             prayerRequestView.showContactDetail(selectedContact);
         } else if (selectedPrayerRequest != null) {
             prayerRequestView.showPrayerRequestDetails(selectedPrayerRequest, null);
+        } else {
+            //Todo: Show contact selection
         }
     }
 

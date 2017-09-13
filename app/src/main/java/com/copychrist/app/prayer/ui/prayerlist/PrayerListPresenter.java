@@ -1,8 +1,11 @@
 package com.copychrist.app.prayer.ui.prayerlist;
 
+import android.content.Context;
+
 import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +21,13 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
 
     private PrayerList selectedPrayerList;
     private PrayerListContract.View prayerListView;
+    private Context context;
+    private List<PrayerListRequest> currentListPrayerListRequests;
+    private List<PrayerListRequest> fullListPrayerListRequests;
 
-    public PrayerListPresenter(PrayerListService prayerListService, PrayerList prayerList) {
+    public PrayerListPresenter(PrayerListService prayerListService, Context context, PrayerList prayerList) {
         this.dataService = prayerListService;
+        this.context = context;
         this.selectedPrayerList = prayerList;
     }
 
@@ -74,17 +81,18 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
     }
 
     @Override
-    public void onPrayerRequestResults(List<PrayerRequest> prayerRequests) {
-        List<PrayerListRequest> prayerListRequests = new ArrayList<>();
-        for (PrayerRequest prayerRequest : prayerRequests) {
-            PrayerListRequest prayerListRequest = new PrayerListRequest();
-            prayerListRequest.setContact(prayerRequest.getContact());
-            prayerListRequest.setGroup(prayerRequest.getContactGroup());
-            prayerListRequest.setPrayerRequest(prayerRequest);
-            //Todo: need context ref, prayerListRequest.setColor(Utils.getRandomMaterialColor(this, "mdcolor_400"));
-            prayerListRequests.add(prayerListRequest);
-        }
-        prayerListView.showPrayerListRequests(prayerListRequests);
+    public void onPrayerRequestResults(List<PrayerRequest> listRequests, List<PrayerRequest> allPrayerRequests) {
+        // Store copy of list filtered by current prayer list
+        currentListPrayerListRequests = mapRequestsToListRequests(listRequests);
+        prayerListView.showPrayerListRequests(currentListPrayerListRequests);
+        
+        // Store copy of full list
+        fullListPrayerListRequests = mapRequestsToListRequests(allPrayerRequests);
+    }
+
+    @Override
+    public List<PrayerListRequest> getAllPrayerRequests() {
+        return fullListPrayerListRequests;
     }
 
     @Override
@@ -101,5 +109,36 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
     public void clearView() {
         prayerListView = null;
         dataService.destroy();
+    }
+
+    private List<PrayerListRequest> mapRequestsToListRequests(List<PrayerRequest> requestList) {
+        List<PrayerListRequest> prayerListRequests = new ArrayList<>();
+        for (PrayerRequest prayerRequest : requestList) {
+            PrayerListRequest prayerListRequest = new PrayerListRequest();
+            prayerListRequest.setContact(prayerRequest.getContact());
+            prayerListRequest.setGroup(prayerRequest.getContactGroup());
+            prayerListRequest.setPrayerRequest(prayerRequest);
+            prayerListRequest.setColor(Utils.getRandomMaterialColor(context, "400"));
+            prayerListRequests.add(prayerListRequest);
+        }
+
+        return prayerListRequests;
+    }
+
+    @Override
+    public void onPrayerRequestsAddToList(List<String> prayerRequestKeys) {
+        Timber.d(prayerRequestKeys.toString());
+        dataService.updatePrayerRequestWithList(prayerRequestKeys, selectedPrayerList.getKey());
+    }
+
+    @Override
+    public void onPrayerRequestsAddNewRequest() {
+        Timber.d("onPrayerRequestsAddNewRequest");
+        prayerListView.showPrayerRequestAdd();
+    }
+
+    @Override
+    public void onPrayerRequestEditClick(PrayerRequest prayerRequest) {
+        prayerListView.showPrayerRequestEdit(prayerRequest);
     }
 }

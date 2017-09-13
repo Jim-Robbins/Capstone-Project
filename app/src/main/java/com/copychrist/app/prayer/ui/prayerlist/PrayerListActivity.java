@@ -17,6 +17,7 @@ import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerListRequestAdapter;
 import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerListRequest;
+import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
 import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
@@ -152,7 +153,8 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getTag() != null) {
                     Timber.d(TAG, tab.getText() + ":" + tab.getTag().toString());
-                    prayerListPresenter.onPrayerListClick((PrayerList) tab.getTag());
+                    selectedPrayerList = (PrayerList) tab.getTag();
+                    prayerListPresenter.onPrayerListClick(selectedPrayerList);
                 }
             }
 
@@ -165,6 +167,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         TabLayout.Tab selectedTab = tabLayoutPrayerList.getTabAt(selectedTabIndex);
         if(selectedTab != null) {
             selectedTab.select();
+            selectedPrayerList = (PrayerList) selectedTab.getTag();
         }
     }
 
@@ -213,7 +216,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     @Override
     public void showPrayerRequestAddDialog(PrayerList prayerListKey) {
         AddPrayerRequestDialogFragment addPrayerRequestDialogFragment =
-                AddPrayerRequestDialogFragment.newAddInstance(prayerListKey, prayerListPresenter);
+                AddPrayerRequestDialogFragment.newAddInstance(prayerListPresenter);
         addPrayerRequestDialogFragment.show(getSupportFragmentManager(), "AddContactDialogFragment");
     }
 
@@ -238,7 +241,17 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     @Override
     public void onRowLongClicked(int position) {
         PrayerListRequest prayerListRequest = prayerListRequests.get(position);
-        startActivity(PrayerRequestDetailActivity.getStartEditIntent(this, prayerListRequest.getPrayerRequest()));
+        showPrayerRequestEdit(prayerListRequest.getPrayerRequest());
+    }
+
+    @Override
+    public void showPrayerRequestEdit(PrayerRequest prayerRequest) {
+        startActivity(PrayerRequestDetailActivity.getStartEditIntent(this, prayerRequest));
+    }
+
+    @Override
+    public void showPrayerRequestAdd() {
+        startActivity(PrayerRequestDetailActivity.getStartAddIntent(this, selectedPrayerList.getKey()));
     }
 
     @Override

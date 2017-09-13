@@ -62,7 +62,7 @@ public class PrayingWithDedicationApplication extends Application {
     }
 
     private void initApplicationGraph() {
-        appGraph = ObjectGraph.create(new ApplicationModule());
+        appGraph = ObjectGraph.create(new ApplicationModule(this));
     }
 
     public static void injectModules(@NonNull final Object object, final Object... modules) {

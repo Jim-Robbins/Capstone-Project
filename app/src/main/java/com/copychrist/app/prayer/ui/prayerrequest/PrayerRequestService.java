@@ -51,7 +51,6 @@ public class PrayerRequestService {
 
     public void saveValue(PrayerRequest prayerRequest) {
         if (prayerRequest.getKey() == null ) {
-            prayerRequest.addPrayerLists("-KtjHcKikG2kIzD4Vbqw");
             prayerRequestsRef.push().setValue(prayerRequest);
         } else {
             prayerRequestsRef.child(prayerRequest.getKey()).setValue(prayerRequest);

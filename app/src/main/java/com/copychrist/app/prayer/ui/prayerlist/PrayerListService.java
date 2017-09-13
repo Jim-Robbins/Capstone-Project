@@ -14,7 +14,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -34,6 +36,7 @@ class PrayerListService {
     private final ChildEventListener queryAddPrayerListChildEventListener;
     private final ValueEventListener prayerRequestValueEventListener;
     private final ChildEventListener prayerRequestChildEventListener;
+    private final DatabaseReference.CompletionListener prayerRequestUpdateCompletionListener;
     private Query prayerListsQuery;
 
     private PrayerList selectedPrayerList;
@@ -105,17 +108,21 @@ class PrayerListService {
         prayerRequestValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<PrayerRequest> results = new ArrayList<>();
+                List<PrayerRequest> nonListResults = new ArrayList<>();
+                List<PrayerRequest> listResults = new ArrayList<>();
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     PrayerRequest prayerRequest = snapshot.getValue(PrayerRequest.class);
                     if (prayerRequest != null) {
-                        if(prayerRequest.getPrayerLists().indexOf(selectedPrayerList.getKey()) > -1) {
-                            prayerRequest.setKey(snapshot.getKey());
-                            results.add(prayerRequest);
+                        prayerRequest.setKey(snapshot.getKey());
+                        HashMap<String, Boolean> prayerList = prayerRequest.getPrayerLists();
+                        if(prayerList.containsKey(selectedPrayerList.getKey()) == true) {
+                            listResults.add(prayerRequest);
+                        } else {
+                            nonListResults.add(prayerRequest);
                         }
                     }
                 }
-                sendPrayerRequestResults(results);
+                sendPrayerRequestResults(listResults, nonListResults);
             }
 
             @Override
@@ -153,6 +160,16 @@ class PrayerListService {
             }
 
             @Override public void onCancelled(DatabaseError databaseError) {}
+        };
+
+        prayerRequestUpdateCompletionListener = new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Timber.e("Error updating data: " + databaseError.getMessage());
+                    sendDataResultMessage(databaseError.getMessage());
+                }
+            }
         };
     }
 
@@ -194,25 +211,22 @@ class PrayerListService {
     public void getPrayerRequestValues(PrayerList prayerList) {
         Timber.d("getPrayerRequestValues() called with: prayerList = [" + prayerList + "]");
         selectedPrayerList = prayerList;
-        prayerRequestsRef.orderByChild(PrayerRequest.CHILD_PRAYER_LISTS)
+        prayerRequestsRef.orderByChild(PrayerRequest.CHILD_DATE_CREATED)
+                .limitToFirst(200)
                 .addValueEventListener(prayerRequestValueEventListener);
 
     }
 
-    public void savePrayerRequestValue(PrayerRequest prayerRequest) {
-        Timber.d("savePrayerRequestValue() called with: prayerRequest = [" + prayerRequest + "]");
-        prayerRequestsRef.removeEventListener(prayerRequestChildEventListener);
-        prayerRequestsRef.orderByChild(PrayerRequest.CHILD_DATE_CREATED)
-                .startAt(Utils.getCurrentTime())
-                .addChildEventListener(prayerRequestChildEventListener);
+    public void updatePrayerRequestWithList(List<String> prayerRequestKeys, String prayerListKey) {
+        Timber.d("updatePrayerRequestWithList() called with: prayerRequestKeys = [" + prayerRequestKeys + "]");
 
-        if(prayerRequest.getKey() == null) {
-            // Add PrayerRequest Group
-            prayerRequestsRef.push().setValue(prayerRequest);
-        } else {
-            // Edit PrayerRequest Group
-            prayerRequestsRef.child(prayerRequest.getKey()).setValue(prayerRequest);
+        Map updatedPrayerRequestData = new HashMap();
+        for (String prayerRequestKey : prayerRequestKeys) {
+            updatedPrayerRequestData.put(prayerRequestKey + '/' + PrayerList.DB_NAME + '/'+ prayerListKey, true);
         }
+
+        prayerRequestsRef.updateChildren(updatedPrayerRequestData, prayerRequestUpdateCompletionListener);
+
     }
 
     private void sendDataResultMessage(int messageResId) {
@@ -227,8 +241,8 @@ class PrayerListService {
         presenter.onPrayerListResults(results, selectedPrayerList);
     }
 
-    private void sendPrayerRequestResults(List<PrayerRequest> results) {
-        presenter.onPrayerRequestResults(results);
+    private void sendPrayerRequestResults(List<PrayerRequest> filteredResults, List<PrayerRequest> nonListResults) {
+        presenter.onPrayerRequestResults(filteredResults, nonListResults);
     }
 
     public void destroy() {

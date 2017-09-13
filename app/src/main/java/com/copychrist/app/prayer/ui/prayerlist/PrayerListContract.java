@@ -20,7 +20,8 @@ public class PrayerListContract {
         void showPrayerListRequests(List<PrayerListRequest> prayerListRequests);
 
         void showPrayerRequestAddDialog(PrayerList prayerListKey);
-
+        void showPrayerRequestEdit(PrayerRequest prayerRequest);
+        void showPrayerRequestAdd();
         void showDatabaseResultMessage(String message);
         void showDatabaseResultMessage(int messageResId);
     }
@@ -34,8 +35,12 @@ public class PrayerListContract {
         void onPrayerListResults(List<PrayerList> prayerLists, PrayerList selectedList);
         void onPrayerListSaveClick(PrayerList prayerList);
         void onPrayerRequestAddClick();
-        void onPrayerRequestResults(List<PrayerRequest> prayerRequests);
+        void onPrayerRequestEditClick(PrayerRequest prayerRequest);
+        void onPrayerRequestResults(List<PrayerRequest> listRequests, List<PrayerRequest> allPrayerRequests);
+        void onPrayerRequestsAddNewRequest();
+        void onPrayerRequestsAddToList(List<String> prayerRequestKeys);
         void onDataResultMessage(String message);
         void onDataResultMessage(int messageResId);
+        List<PrayerListRequest> getAllPrayerRequests();
     }
 }

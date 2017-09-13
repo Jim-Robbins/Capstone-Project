@@ -1,5 +1,9 @@
 package com.copychrist.app.prayer;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.res.Resources;
+
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -15,7 +19,11 @@ import dagger.Provides;
 
 @Module(injects = PrayingWithDedicationApplication.class, library = true)
 public class ApplicationModule {
-    public ApplicationModule() {}
+    private Application application;
+
+    public ApplicationModule(Application application) {
+        this.application = application;
+    }
 
     @Provides
     FirebaseApp provideFirebaseApp() {
@@ -30,5 +38,15 @@ public class ApplicationModule {
     @Provides
     FirebaseUser provideFirebaseUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    @Provides
+    Resources provideResources() {
+        return application.getResources();
+    }
+
+    @Provides
+    Context provideContext() {
+        return application.getBaseContext();
     }
 }

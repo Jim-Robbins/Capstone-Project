@@ -11,6 +11,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @IgnoreExtraProperties
@@ -46,7 +47,7 @@ public class PrayerRequest implements Parcelable {
     @NonNull private Long dateCreated;
     public static final String CHILD_DATE_CREATED = "dateCreated";
 
-    @Nullable private List<String> prayerLists = new ArrayList<>();
+    @Nullable private HashMap<String, Boolean> prayerLists = new HashMap<String, Boolean>();
     public static final String CHILD_PRAYER_LISTS = "prayerLists";
 
     public PrayerRequest() {
@@ -167,19 +168,19 @@ public class PrayerRequest implements Parcelable {
     }
 
     @Nullable
-    public List<String> getPrayerLists() {
+    public HashMap<String, Boolean> getPrayerLists() {
         return prayerLists;
     }
-    public void setPrayerLists(@Nullable List<String> prayerLists) {
+    public void setPrayerLists(@Nullable HashMap<String, Boolean> prayerLists) {
         this.prayerLists = prayerLists;
     }
     @Exclude
-    public List<String> addPrayerLists(String prayerLists) {
-        this.prayerLists.add(prayerLists);
+    public HashMap<String, Boolean> addPrayerLists(String prayerLists) {
+        this.prayerLists.put(prayerLists, true);
         return this.prayerLists;
     }
     @Exclude
-    public List<String> removePrayerLists(String prayerLists) {
+    public HashMap<String, Boolean> removePrayerLists(String prayerLists) {
         this.prayerLists.remove(prayerLists);
         return this.prayerLists;
     }
@@ -195,7 +196,6 @@ public class PrayerRequest implements Parcelable {
                 ", description ='" + description + '\'' +
                 "}";
     }
-
     protected PrayerRequest(Parcel in) {
         key = in.readString();
         contactKey = in.readString();
@@ -219,12 +219,7 @@ public class PrayerRequest implements Parcelable {
         long tmpAnswered = in.readLong();
         answered = tmpAnswered != -1 ? new Date(tmpAnswered) : null;
         dateCreated = in.readByte() == 0x00 ? null : in.readLong();
-        if (in.readByte() == 0x01) {
-            prayerLists = new ArrayList<String>();
-            in.readList(prayerLists, String.class.getClassLoader());
-        } else {
-            prayerLists = null;
-        }
+        prayerLists = (HashMap) in.readValue(HashMap.class.getClassLoader());
     }
 
     @Override
@@ -259,12 +254,7 @@ public class PrayerRequest implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeLong(dateCreated);
         }
-        if (prayerLists == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(prayerLists);
-        }
+        dest.writeValue(prayerLists);
     }
 
     @SuppressWarnings("unused")

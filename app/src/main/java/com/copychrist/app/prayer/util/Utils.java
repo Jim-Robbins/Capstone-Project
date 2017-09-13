@@ -70,7 +70,7 @@ public class Utils {
      * @param typeColor
      * @return
      */
-    private int getRandomMaterialColor(Context context, String typeColor) {
+    public static int getRandomMaterialColor(Context context, String typeColor) {
         int returnColor = Color.GRAY;
         int arrayId = context.getResources().getIdentifier("mdcolor_" + typeColor, "array", context.getPackageName());
 
