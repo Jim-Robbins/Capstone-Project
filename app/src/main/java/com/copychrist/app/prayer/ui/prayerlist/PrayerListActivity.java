@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -65,8 +64,10 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     }
 
     private void initToolbar() {
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        this.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(this.getSupportActionBar() != null) {
+            this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            this.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     @Override
@@ -107,10 +108,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     private void initPrayerRequestList() {
         prayerRequestsListAdapter = new PrayerListRequestAdapter(this, this);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this,
-                getResources().getInteger(R.integer.contacts_grid_column));
-
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(prayerRequestsListAdapter);
@@ -126,6 +124,16 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     protected void onStop() {
         super.onStop();
         prayerListPresenter.clearView();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -221,6 +229,13 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     }
 
     @Override
+    public void showPrayerRequestAsPrayedFor(int position) {
+        onIconClicked(position);
+        PrayerListRequest prayerListRequest = prayerListRequests.get(position);
+        prayerListPresenter.onPrayerRequestPrayedFor(prayerListRequest.getPrayerRequest().getKey());
+    }
+
+    @Override
     public void onIconClicked(int position) {
         toggleSelection(position);
     }
@@ -234,12 +249,33 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         prayerRequestsListAdapter.notifyDataSetChanged();
 
         ViewPrayerRequestDialogFragment viewPrayerRequestDialog =
-                ViewPrayerRequestDialogFragment.newAddInstance(prayerListRequest, prayerListPresenter);
+                ViewPrayerRequestDialogFragment.newAddInstance(prayerListRequest,
+                        prayerListPresenter, position);
         viewPrayerRequestDialog.show(getSupportFragmentManager(), "ViewPrayerRequestDialogFragment");
     }
 
     @Override
     public void onRowLongClicked(int position) {
+        PrayerListRequest prayerListRequest = prayerListRequests.get(position);
+        //Todo: Hook up ability to drag sort
+    }
+
+    @Override
+    public void onRemoveClicked(int position) {
+        PrayerListRequest prayerListRequest = prayerListRequests.get(position);
+        prayerListPresenter.onPrayerRequestRemove(prayerListRequest.getPrayerRequest().getKey());
+        prayerRequestsListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onArchiveClicked(int position) {
+        PrayerListRequest prayerListRequest = prayerListRequests.get(position);
+        prayerListPresenter.onPrayerRequestArchive(prayerListRequest.getPrayerRequest().getKey());
+        prayerRequestsListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onMoreClicked(int position) {
         PrayerListRequest prayerListRequest = prayerListRequests.get(position);
         showPrayerRequestEdit(prayerListRequest.getPrayerRequest());
     }

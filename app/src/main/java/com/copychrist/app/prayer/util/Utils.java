@@ -20,6 +20,8 @@ import java.util.Locale;
  */
 
 public class Utils {
+    public static final long TWELVE_HOUR_OFFSET = 43200000L;
+
     @SuppressWarnings("deprecation")
     public static Spanned fromHtml(String html){
         Spanned result;
@@ -58,6 +60,10 @@ public class Utils {
             e.printStackTrace();
         }
         return newDate;
+    }
+
+    public static long getCurrentTime(long timeOffset) {
+        return getCurrentTime() + timeOffset;
     }
 
     public static long getCurrentTime() {

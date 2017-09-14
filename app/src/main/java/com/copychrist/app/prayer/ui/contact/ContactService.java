@@ -122,8 +122,6 @@ public class ContactService {
 
     private void sendPrayerRequestResults(List<PrayerRequest> prayerRequests) {
         if(prayerRequests == null) return;
-
-        Timber.d("sendPrayerRequestResults() called with: prayerRequests = [" + prayerRequests + "]");
         presenter.onPrayerRequestResults(prayerRequests);
     }
 

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.util.CircleTransform;
@@ -42,6 +43,8 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
     private PrayerListRequestAdapterListener prayerListRequestAdapterListener;
     private SparseBooleanArray selectedItems;
 
+//    private final ViewBinderHelper binderHelper = new ViewBinderHelper();
+
     // array used to perform multiple animation at once
     private SparseBooleanArray animationItemsIndex;
     private boolean reverseAllAnimations = false;
@@ -51,6 +54,12 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
     private static int currentSelectedIndex = -1;
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+
+        @BindView(R.id.swipe_layout) SwipeRevealLayout swipeLayout;
+        @BindView(R.id.delete_layout) LinearLayout deleteLayout;
+        @BindView(R.id.swipe_btn_archive) RelativeLayout btnArchive;
+        @BindView(R.id.swipe_btn_remove) RelativeLayout btnRemove;
+        @BindView(R.id.swipe_btn_more) RelativeLayout btnMore;
 
         @BindView(R.id.layout_request_item_container) LinearLayout itemContainer;
         @BindView(R.id.icon_container) RelativeLayout iconContainer;
@@ -69,6 +78,21 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
             itemView.setOnLongClickListener(this);
         }
 
+        public void bind(PrayerListRequest prayerListRequest) {
+            SimpleDateFormat dateFormat = Utils.getDateFormat(mContext);
+
+            // displaying text view data
+            txtContactName.setText(prayerListRequest.getContactName());
+            txtRequestTitle.setText(prayerListRequest.getTitle());
+            txtRequestDesc.setText(prayerListRequest.getDesc());
+
+            if(prayerListRequest.getEndDate() != null)
+                txtTimeStamp.setText(dateFormat.format(prayerListRequest.getEndDate()));
+
+            // displaying the first letter of From in icon text
+            txtIconText.setText(prayerListRequest.getContactName().substring(0, 1));
+        }
+
         @Override
         public boolean onLongClick(View view) {
             prayerListRequestAdapterListener.onRowLongClicked(getAdapterPosition());
@@ -81,6 +105,9 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         void onIconClicked(int position);
         void onRowClicked(int position);
         void onRowLongClicked(int position);
+        void onRemoveClicked(int position);
+        void onArchiveClicked(int position);
+        void onMoreClicked(int position);
     }
 
     public PrayerListRequestAdapter(Context mContext, PrayerListRequestAdapterListener listener) {
@@ -101,23 +128,24 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        SimpleDateFormat dateFormat = Utils.getDateFormat(this.mContext);
+
         PrayerListRequest prayerListRequest = prayerListRequests.get(position);
 
-        // displaying text view data
-        holder.txtContactName.setText(prayerListRequest.getContactName());
-        holder.txtRequestTitle.setText(prayerListRequest.getTitle());
-        holder.txtRequestDesc.setText(prayerListRequest.getDesc());
+        holder.bind(prayerListRequest);
 
-        if(prayerListRequest.getEndDate() != null)
-            holder.txtTimeStamp.setText(dateFormat.format(prayerListRequest.getEndDate()));
+        boolean rowStateActive = false;
+        if(prayerListRequest.getPrayerRequest().getLastPrayedFor() != null) {
+            long prayedForLast = prayerListRequest.getPrayerRequest().getLastPrayedFor();
+            if (prayedForLast > 0 && prayedForLast < Utils.getCurrentTime(Utils.TWELVE_HOUR_OFFSET)) {
+                // change the row state to activated
+                rowStateActive = true;
+                selectedItems.put(position, true);
+                animationItemsIndex.put(position, true);
+                applyIconAnimation(holder, position);
+            }
+        }
 
-
-        // displaying the first letter of From in icon text
-        holder.txtIconText.setText(prayerListRequest.getContactName().substring(0, 1));
-
-        // change the row state to activated
-        holder.itemView.setActivated(selectedItems.get(position, false));
+        holder.itemView.setActivated(selectedItems.get(position, rowStateActive));
 
         // change the font style depending on prayerListRequest read status
         applyPrayerStatus(holder, prayerListRequest);
@@ -130,19 +158,30 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
 
         // apply click events
         applyClickEvents(holder, position);
+
     }
+
+//    /**
+//     * Only if you need to restore open/close state when the orientation is changed.
+//     * Call this method in {@link android.app.Activity#onSaveInstanceState(Bundle)}
+//     */
+//    public void saveStates(Bundle outState) {
+//        binderHelper.saveStates(outState);
+//    }
+//
+//    /**
+//     * Only if you need to restore open/close state when the orientation is changed.
+//     * Call this method in {@link android.app.Activity#onRestoreInstanceState(Bundle)}
+//     */
+//    public void restoreStates(Bundle inState) {
+//        binderHelper.restoreStates(inState);
+//    }
 
     public void setAdpaterData(List<PrayerListRequest> prayerListRequests) {
         this.prayerListRequests = prayerListRequests;
-        notifyDataSetChanged();
+        clearSelections();
     }
     private void applyClickEvents(ViewHolder holder, final int position) {
-        holder.iconContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                prayerListRequestAdapterListener.onIconClicked(position);
-            }
-        });
 
         holder.itemContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,6 +196,27 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
                 prayerListRequestAdapterListener.onRowLongClicked(position);
                 view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 return true;
+            }
+        });
+
+        holder.btnRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prayerListRequestAdapterListener.onRemoveClicked(position);
+            }
+        });
+
+        holder.btnMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prayerListRequestAdapterListener.onMoreClicked(position);
+            }
+        });
+
+        holder.btnArchive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prayerListRequestAdapterListener.onArchiveClicked(position);
             }
         });
     }
@@ -251,9 +311,6 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         notifyDataSetChanged();
     }
 
-    public int getSelectedItemCount() {
-        return selectedItems.size();
-    }
 
     public List<Integer> getSelectedItems() {
         List<Integer> items =
@@ -262,11 +319,6 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
             items.add(selectedItems.keyAt(i));
         }
         return items;
-    }
-
-    public void removeData(int position) {
-        prayerListRequests.remove(position);
-        resetCurrentIndex();
     }
 
     private void resetCurrentIndex() {

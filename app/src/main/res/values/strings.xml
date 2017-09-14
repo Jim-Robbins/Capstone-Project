@@ -2,21 +2,21 @@
     <string name="app_name">Praying With Dedication</string>
 
     <string name="title_activity_main">Main Activity</string>
-    <string name="title_activity_contacts">Contacts</string>
+    <string name="title_activity_contacts">Contact Groups</string>
     <string name="title_activity_contact_detail">Contact Detail</string>
     <string name="title_activity_prayer_request_detail">Prayer Request</string>
 
     <string name="tab_requests">Requests</string>
-    <string name="tab_archive">Archive</string>
+    <string name="tab_archive">Answered</string>
 
-    <string name="menu_contact_group_edit">Edit Group</string>
-    <string name="menu_contact_group_delete">delete</string>
-    <string name="menu_contact_group_add">add groupId</string>
-    <string name="menu_contact_edit">Edit contact</string>
-    <string name="menu_contact_delete">delete contact</string>
+    <string name="menu_contact_group_edit">Edit Selected Group</string>
+    <string name="menu_contact_group_delete">Delete Selected Group</string>
+    <string name="menu_contact_group_add">Add New Group</string>
+    <string name="menu_contact_edit">Edit Contact</string>
+    <string name="menu_contact_delete">Delete Contact</string>
 
     <string name="btn_schedule">Schedule</string>
-    <string name="btn_archive">Archive</string>
+    <string name="btn_archive">Answered</string>
     <string name="btn_delete">Delete</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_save">Save</string>
@@ -90,4 +90,6 @@
     <string name="btn_add">Add</string>
     <string name="dialog_prayer_list_add_request">Create a new request</string>
     <string name="dialog_prayer_list_add_request_title">Select Requests To Add To The List</string>
+    <string name="btn_remove">Remove</string>
+    <string name="btn_more">More</string>
 </resources>

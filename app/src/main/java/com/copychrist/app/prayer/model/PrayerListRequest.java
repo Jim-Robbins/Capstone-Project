@@ -106,13 +106,13 @@ public class PrayerListRequest implements Parcelable {
         return value;
     }
 
-    public Date getEndDate() {
-        Date value;
+    public Long getEndDate() {
+        Long value;
         try {
             value = prayerRequest.getEndDate();
         } catch (Error e) {
             Timber.e(e.getMessage());
-            value = new Date(Utils.getCurrentTime());
+            value = Utils.getCurrentTime();
         }
         return value;
     }

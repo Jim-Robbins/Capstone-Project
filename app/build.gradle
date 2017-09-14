@@ -108,6 +108,8 @@ dependencies {
     testCompile deps.junit
     testCompile deps.mockito.core
 
+    compile 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.0'
+
     androidTestCompile deps.junit
     androidTestCompile deps.mockito.android
     androidTestCompile(deps.espresso.core, {

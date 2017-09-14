@@ -24,6 +24,7 @@ public class PrayerListContract {
         void showPrayerRequestAdd();
         void showDatabaseResultMessage(String message);
         void showDatabaseResultMessage(int messageResId);
+        void showPrayerRequestAsPrayedFor(int position);
     }
 
     public interface Presenter extends BasePresenter<PrayerListContract.View> {
@@ -42,5 +43,9 @@ public class PrayerListContract {
         void onDataResultMessage(String message);
         void onDataResultMessage(int messageResId);
         List<PrayerListRequest> getAllPrayerRequests();
+        void onPrayerRequestArchive(String prayerRequestKey);
+        void onPrayerRequestRemove(String prayerRequestKey);
+        void onPrayerRequestPrayedFor(String prayerRequestKey);
+        void onPrayerCardPrayedForClick(int position);
     }
 }

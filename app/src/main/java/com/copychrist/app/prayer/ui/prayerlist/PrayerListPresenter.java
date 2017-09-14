@@ -141,4 +141,24 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
     public void onPrayerRequestEditClick(PrayerRequest prayerRequest) {
         prayerListView.showPrayerRequestEdit(prayerRequest);
     }
+
+    @Override
+    public void onPrayerRequestArchive(String prayerRequestKey) {
+        dataService.archivePrayerRequest(prayerRequestKey);
+    }
+
+    @Override
+    public void onPrayerRequestRemove(String prayerRequestKey) {
+        dataService.removePrayerRequestFromList(prayerRequestKey, selectedPrayerList.getKey());
+    }
+
+    @Override
+    public void onPrayerRequestPrayedFor(String prayerRequestKey) {
+        dataService.prayedForRequest(prayerRequestKey);
+    }
+
+    @Override
+    public void onPrayerCardPrayedForClick(int position) {
+        prayerListView.showPrayerRequestAsPrayedFor(position);
+    }
 }

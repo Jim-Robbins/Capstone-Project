@@ -212,7 +212,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
         String endDate = editEndDate.getText().toString();
         if (!TextUtils.isEmpty(endDate)) {
             Date date = Utils.stringToDate(endDate, getBaseContext());
-            selectedPrayerRequest.setEndDate(date);
+            selectedPrayerRequest.setEndDate(date.getTime());
         }
 
         selectedPrayerRequest.setTitle(editRequestTitle.getText().toString());

@@ -112,7 +112,7 @@ class PrayerListService {
                 List<PrayerRequest> listResults = new ArrayList<>();
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     PrayerRequest prayerRequest = snapshot.getValue(PrayerRequest.class);
-                    if (prayerRequest != null) {
+                    if (prayerRequest != null && prayerRequest.getAnswered() == null) {
                         prayerRequest.setKey(snapshot.getKey());
                         HashMap<String, Boolean> prayerList = prayerRequest.getPrayerLists();
                         if(prayerList.containsKey(selectedPrayerList.getKey()) == true) {
@@ -226,7 +226,18 @@ class PrayerListService {
         }
 
         prayerRequestsRef.updateChildren(updatedPrayerRequestData, prayerRequestUpdateCompletionListener);
+    }
 
+    public void prayedForRequest(String prayerRequestKey) {
+        prayerRequestsRef.child(prayerRequestKey).child(PrayerRequest.CHILD_LAST_PRAYED_FOR).setValue(Utils.getCurrentTime());
+    }
+
+    public void archivePrayerRequest(String prayerRequestKey) {
+        prayerRequestsRef.child(prayerRequestKey).child(PrayerRequest.CHILD_ANSWERED).setValue(Utils.getCurrentTime());
+    }
+
+    public void removePrayerRequestFromList(String prayerRequestKey, String prayerListKey) {
+        prayerRequestsRef.child(prayerRequestKey).child(PrayerList.DB_NAME).child(prayerListKey).removeValue();
     }
 
     private void sendDataResultMessage(int messageResId) {

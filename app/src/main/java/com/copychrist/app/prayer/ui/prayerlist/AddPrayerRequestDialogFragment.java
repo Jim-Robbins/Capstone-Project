@@ -127,4 +127,19 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
     private final void editPrayerRequest() {
         presenter.onPrayerRequestsAddNewRequest();
     }
+
+    @Override
+    public void onRemoveClicked(int position) {
+
+    }
+
+    @Override
+    public void onArchiveClicked(int position) {
+
+    }
+
+    @Override
+    public void onMoreClicked(int position) {
+
+    }
 }

@@ -23,12 +23,15 @@ public class ViewPrayerRequestDialogFragment extends AppCompatDialogFragment {
 
     private PrayerListRequest prayerListRequest;
     private PrayerListContract.Presenter presenter;
+    private int position;
 
     public static ViewPrayerRequestDialogFragment newAddInstance(PrayerListRequest prayerListRequest,
-                                                                 PrayerListContract.Presenter prayerListPresenter) {
+                                                                 PrayerListContract.Presenter prayerListPresenter,
+                                                                 int position) {
         ViewPrayerRequestDialogFragment frag = new ViewPrayerRequestDialogFragment();
         frag.prayerListRequest = prayerListRequest;
         frag.presenter = prayerListPresenter;
+        frag.position = position;
         return frag;
     }
 
@@ -64,7 +67,7 @@ public class ViewPrayerRequestDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_pray, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //Todo: update prayedForOn?
+                presenter.onPrayerCardPrayedForClick(position);
                 dialog.dismiss();
             }
         });

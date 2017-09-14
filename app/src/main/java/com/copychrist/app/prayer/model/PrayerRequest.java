@@ -10,7 +10,6 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,16 +31,17 @@ public class PrayerRequest implements Parcelable {
     @Nullable private String description;
     public static final String CHILD_DESCRIPTION = "description";
 
-    @Nullable private Date endDate;
+    @Nullable private Long endDate;
     public static final String CHILD_END_DATE = "endDate";
 
+    //TODO: Store as List<BibleVerse>
     @Nullable private List<String> passages = new ArrayList<>();
     public static final String CHILD_PASSAGES = "passages";
 
-    @Nullable private List<String> prayedForOn = new ArrayList<>();
-    public static final String CHILD_PRAYED_FOR_ON = "prayedForOn";
+    @Nullable private Long lastPrayedFor;
+    public static final String CHILD_LAST_PRAYED_FOR = "lastPrayedFor";
 
-    @Nullable private Date answered;
+    @Nullable private Long answered;
     public static final String CHILD_ANSWERED = "answered";
 
     @NonNull private Long dateCreated;
@@ -134,55 +134,32 @@ public class PrayerRequest implements Parcelable {
     }
 
     @Nullable
-    public Date getEndDate() {
+    public Long getEndDate() {
         return endDate;
     }
-    public void setEndDate(@Nullable Date endDate) {
+    public void setEndDate(@Nullable Long endDate) {
         this.endDate = endDate;
     }
 
     @Nullable
-    public Date getAnswered() {
+    public Long getAnswered() {
         return answered;
     }
-    public void setAnswered(@Nullable Date answered) {
+    public void setAnswered(@Nullable Long answered) {
         this.answered = answered;
     }
 
     @Nullable
-    public List<String> getPrayedForOn() {
-        return prayedForOn;
+    public Long getLastPrayedFor() {
+        return lastPrayedFor;
     }
-    public void setPrayedForOn(@Nullable List<String> prayedForOn) {
-        this.prayedForOn = prayedForOn;
-    }
-    @Exclude
-    public List<String> addPrayedForOn(String prayedOn) {
-        this.prayedForOn.add(prayedOn);
-        return this.prayedForOn;
-    }
-    @Exclude
-    public List<String> removePrayedForOn(String prayedOn) {
-        this.prayedForOn.remove(prayedOn);
-        return this.prayedForOn;
+    public void setLastPrayedFor(@Nullable Long lastPrayedFor) {
+        this.lastPrayedFor = lastPrayedFor;
     }
 
     @Nullable
     public HashMap<String, Boolean> getPrayerLists() {
         return prayerLists;
-    }
-    public void setPrayerLists(@Nullable HashMap<String, Boolean> prayerLists) {
-        this.prayerLists = prayerLists;
-    }
-    @Exclude
-    public HashMap<String, Boolean> addPrayerLists(String prayerLists) {
-        this.prayerLists.put(prayerLists, true);
-        return this.prayerLists;
-    }
-    @Exclude
-    public HashMap<String, Boolean> removePrayerLists(String prayerLists) {
-        this.prayerLists.remove(prayerLists);
-        return this.prayerLists;
     }
 
     @Exclude
@@ -202,22 +179,15 @@ public class PrayerRequest implements Parcelable {
         contact = (Contact) in.readValue(Contact.class.getClassLoader());
         title = in.readString();
         description = in.readString();
-        long tmpEndDate = in.readLong();
-        endDate = tmpEndDate != -1 ? new Date(tmpEndDate) : null;
+        endDate = in.readByte() == 0x00 ? null : in.readLong();
         if (in.readByte() == 0x01) {
             passages = new ArrayList<String>();
             in.readList(passages, String.class.getClassLoader());
         } else {
             passages = null;
         }
-        if (in.readByte() == 0x01) {
-            prayedForOn = new ArrayList<String>();
-            in.readList(prayedForOn, String.class.getClassLoader());
-        } else {
-            prayedForOn = null;
-        }
-        long tmpAnswered = in.readLong();
-        answered = tmpAnswered != -1 ? new Date(tmpAnswered) : null;
+        lastPrayedFor = in.readByte() == 0x00 ? null : in.readLong();
+        answered = in.readByte() == 0x00 ? null : in.readLong();
         dateCreated = in.readByte() == 0x00 ? null : in.readLong();
         prayerLists = (HashMap) in.readValue(HashMap.class.getClassLoader());
     }
@@ -234,20 +204,30 @@ public class PrayerRequest implements Parcelable {
         dest.writeValue(contact);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeLong(endDate != null ? endDate.getTime() : -1L);
+        if (endDate == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeLong(endDate);
+        }
         if (passages == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeList(passages);
         }
-        if (prayedForOn == null) {
+        if (lastPrayedFor == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(prayedForOn);
+            dest.writeLong(lastPrayedFor);
         }
-        dest.writeLong(answered != null ? answered.getTime() : -1L);
+        if (answered == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeLong(answered);
+        }
         if (dateCreated == null) {
             dest.writeByte((byte) (0x00));
         } else {

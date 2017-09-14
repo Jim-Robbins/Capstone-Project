@@ -11,7 +11,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,7 +61,7 @@ public class PrayerRequestService {
 
     public void archivePrayerRequest(PrayerRequestContract.Presenter presenter, PrayerRequest prayerRequest) {
         this.presenter = presenter;
-        prayerRequest.setAnswered(new Date(Utils.getCurrentTime()));
+        prayerRequest.setAnswered(Utils.getCurrentTime());
         prayerRequestsRef.child(prayerRequest.getKey()).setValue(prayerRequest);
     }
 
