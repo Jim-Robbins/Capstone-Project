@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?><!-- https://www.androidhive.info/2017/02/android-creating-gmail-like-inbox-using-recyclerview/ -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_list_row"
+    android:clickable="true"
+    android:focusable="true">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_row_height"
+        android:paddingBottom="@dimen/padding_list_row"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="@dimen/padding_list_row">
+
+        <LinearLayout
+            android:id="@+id/layout_request_item_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/padding_list_row"
+            android:paddingStart="@dimen/padding_list_row_start">
+
+            <TextView
+                android:id="@+id/txt_contact_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/color_item_main"
+                android:textSize="@dimen/msg_text_primary"
+                android:textStyle="bold"
+                tools:text="Request Contact Name"/>
+
+            <TextView
+                android:id="@+id/txt_request_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/color_item_primary"
+                android:textSize="@dimen/msg_text_secondary"
+                android:textStyle="bold"
+                tools:text="Request Title"/>
+
+            <TextView
+                android:id="@+id/txt_request_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/color_item_secondary"
+                android:textSize="@dimen/msg_text_secondary"
+                tools:text="Request Details"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/icon_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/icon_front"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon_profile"
+                    android:layout_width="@dimen/item_icon_width_height"
+                    android:layout_height="@dimen/item_icon_width_height"
+                    android:src="@drawable/bg_circle"/>
+
+                <TextView
+                    android:id="@+id/txt_icon_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/icon_text"
+                    tools:text="C"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txt_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/color_timestamp"
+            android:textSize="@dimen/timestamp_font_size"
+            android:textStyle="bold"
+            tools:text="Sept 15, 2017"/>
+    </RelativeLayout>
+</RelativeLayout>

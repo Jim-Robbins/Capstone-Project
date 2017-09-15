@@ -92,4 +92,5 @@
     <string name="dialog_prayer_list_add_request_title">Select Requests To Add To The List</string>
     <string name="btn_remove">Remove</string>
     <string name="btn_more">More</string>
+    <string name="widget_title">Praying With Dedication - Prayer List</string>
 </resources>
