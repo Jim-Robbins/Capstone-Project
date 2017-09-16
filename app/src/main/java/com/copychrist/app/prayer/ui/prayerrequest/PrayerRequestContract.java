@@ -16,17 +16,21 @@ import java.util.List;
 public class PrayerRequestContract {
     public interface View {
         void finish();
-        void showBibleVerseDetails(String bibleVerse);
-        void showBibleVerses(List<String> biblePassages);
+        void showBiblePassageAddDialog();
+        void showBiblePassages(List<BiblePassage> listResults, List<BiblePassage> nonListResults);
         void showContactDetail(Contact selectedContact);
         void showPrayerRequestDetails(PrayerRequest prayerRequest, PrayerListsListAdapter prayerListsListAdapter);
         void showDatabaseResultMessage(String message);
         void showDatabaseResultMessage(int messageResId);
+        void showContactSelector();
     }
 
     public interface Presenter extends BasePresenter<View> {
-        void onBibleVerseResults(List<BiblePassage> results);
-        void onBibleVerseItemClick(String bibleVerse);
+        void onBiblePassagesAddedToPrayerRequest(List<String> selectedPassageKeys);
+        void onBiblePassageAddNew();
+        void onBiblePassageSave(BiblePassage biblePassage);
+        void onBiblePassageDeleteCompleted();
+        void onBiblePassageResults(List<BiblePassage> listResults, List<BiblePassage> nonListResults);
         void onDataResultMessage(String message);
         void onDataResultMessage(int messageResId);
         void onPrayerListResults(List<PrayerList> prayerLists);
@@ -36,5 +40,17 @@ public class PrayerRequestContract {
         void onPrayerRequestUnarchive();
         void onPrayerRequestSaveClick(PrayerRequest request);
         void onPrayerRequestScheduleReminderClick();
+
+    }
+
+    public interface Service {
+        void onBiblePassageSave(BiblePassage biblePassage);
+        void onBiblePassageDelete(BiblePassage biblePassage);
+        void onBiblePassagesLoad(List<String> selectedPassages);
+        void onPrayerRequestSave(PrayerRequest prayerRequest);
+        void onPrayerRequestArchive(PrayerRequest prayerRequest);
+        void onPrayerRequestUnarchive(PrayerRequest prayerRequest);
+        void onPrayerRequestDelete(PrayerRequest prayerRequest);
+        void onDestroy();
     }
 }

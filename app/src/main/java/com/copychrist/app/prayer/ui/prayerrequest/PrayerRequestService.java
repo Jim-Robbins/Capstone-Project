@@ -10,24 +10,30 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by jim on 9/8/17.
+ *
  */
 
-public class PrayerRequestService {
+public class PrayerRequestService implements PrayerRequestContract.Service {
 
-    DatabaseReference prayerRequestsRef;
-    DatabaseReference bibleVersesRef;
-    ChildEventListener prayerRequestDeleteChildEventListener;
+    private DatabaseReference prayerRequestsRef;
+    private DatabaseReference biblePassagesRef;
+    private ChildEventListener prayerRequestDeleteChildEventListener;
+    private ValueEventListener biblePassageDataListener;
+    private ChildEventListener biblePassageChildEventListener;
 
     private PrayerRequestContract.Presenter presenter;
+    private List<String> selectedPassages;
 
     public PrayerRequestService(FirebaseDatabase database, FirebaseUser currentUser) {
         prayerRequestsRef = database.getReference(PrayerRequest.DB_NAME).child(currentUser.getUid());
-        bibleVersesRef = database.getReference(BiblePassage.DB_NAME).child(currentUser.getUid());
+        biblePassagesRef = database.getReference(BiblePassage.DB_NAME).child(currentUser.getUid());
 
         prayerRequestDeleteChildEventListener = new ChildEventListener() {
             @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -46,39 +52,99 @@ public class PrayerRequestService {
             @Override public void onChildAdded(DataSnapshot dataSnapshot, String s) {}
             @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
         };
+
+        biblePassageDataListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<BiblePassage> listResults = new ArrayList<>();
+                List<BiblePassage> nonListResults = new ArrayList<>();
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    BiblePassage biblePassage = snapshot.getValue(BiblePassage.class);
+                    if (biblePassage != null) {
+                        if(selectedPassages != null && selectedPassages.contains(biblePassage.getKey())) {
+                            listResults.add(biblePassage);
+                        } else {
+                            nonListResults.add(biblePassage);
+                        }
+                    }
+                }
+                sendBiblePassagesResult(listResults, nonListResults);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                sendDataResultMessage(databaseError.getMessage());
+            }
+        };
+
+        biblePassageChildEventListener = new ChildEventListener() {
+            @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                sendDataResultMessage(R.string.data_value_changed);
+            }
+
+            @Override public void onChildRemoved(DataSnapshot dataSnapshot) {
+                sendDataResultMessage(R.string.data_value_deleted);
+                presenter.onBiblePassageDeleteCompleted();
+            }
+
+            @Override public void onCancelled(DatabaseError databaseError) {
+                sendDataResultMessage(databaseError.getMessage());
+            }
+
+            @Override public void onChildAdded(DataSnapshot dataSnapshot, String s) {}
+            @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+        };
     }
 
-    public void saveValue(PrayerRequest prayerRequest) {
+    public void setPresenter(PrayerRequestContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void onPrayerRequestSave(PrayerRequest prayerRequest) {
         if (prayerRequest.getKey() == null ) {
             prayerRequestsRef.push().setValue(prayerRequest);
         } else {
             prayerRequestsRef.child(prayerRequest.getKey()).setValue(prayerRequest);
         }
-
-        //Todo: Also process passages
-        //Todo: Also process prayerList
     }
 
-    public void archivePrayerRequest(PrayerRequestContract.Presenter presenter, PrayerRequest prayerRequest) {
-        this.presenter = presenter;
+    @Override
+    public void onPrayerRequestArchive(PrayerRequest prayerRequest) {
         prayerRequest.setAnswered(Utils.getCurrentTime());
         prayerRequestsRef.child(prayerRequest.getKey()).setValue(prayerRequest);
     }
 
-    public void unarchivePrayerRequest(PrayerRequestContract.Presenter presenter, PrayerRequest prayerRequest) {
-        this.presenter = presenter;
+    @Override
+    public void onPrayerRequestUnarchive(PrayerRequest prayerRequest) {
         prayerRequest.setAnswered(null);
         prayerRequestsRef.child(prayerRequest.getKey()).setValue(prayerRequest);
     }
 
-    public void deletePrayerRequest(PrayerRequestContract.Presenter presenter, PrayerRequest prayerRequest) {
-        this.presenter = presenter;
+    @Override
+    public void onPrayerRequestDelete(PrayerRequest prayerRequest) {
         prayerRequestsRef.child(prayerRequest.getKey()).removeValue();
-        // Todo: Remove key from any prayer lists
     }
 
-    private void sendBibleVersesResult(List<BiblePassage> results) {
-        presenter.onBibleVerseResults(results);
+    @Override
+    public void onBiblePassagesLoad(List<String> selectedPassages) {
+        this.selectedPassages = selectedPassages;
+        biblePassagesRef.addValueEventListener(biblePassageDataListener);
+    }
+
+    @Override
+    public void onBiblePassageSave(BiblePassage biblePassage) {
+        biblePassagesRef.child(biblePassage.getKey()).setValue(biblePassage);
+        biblePassagesRef.addChildEventListener(biblePassageChildEventListener);
+    }
+
+    @Override
+    public void onBiblePassageDelete(BiblePassage biblePassage) {
+
+    }
+
+    private void sendBiblePassagesResult(List<BiblePassage> listResults, List<BiblePassage> nonListResults) {
+        presenter.onBiblePassageResults(listResults, nonListResults);
     }
 
     private void sendDataResultMessage(String message) {
@@ -89,7 +155,9 @@ public class PrayerRequestService {
         presenter.onDataResultMessage(messageResId);
     }
 
-    public void destroy() {
+    public void onDestroy() {
         prayerRequestsRef.removeEventListener(prayerRequestDeleteChildEventListener);
+        biblePassagesRef.removeEventListener(biblePassageChildEventListener);
+        biblePassagesRef.removeEventListener(biblePassageDataListener);
     }
 }

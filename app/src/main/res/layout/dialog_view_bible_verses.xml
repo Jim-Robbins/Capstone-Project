@@ -18,14 +18,14 @@
 
         <ImageView
             android:id="@+id/icon_circle"
-            android:layout_width="@dimen/item_done_icon_width"
-            android:layout_height="@dimen/item_done_icon_width"
+            android:layout_width="@dimen/item_icon_width_height"
+            android:layout_height="@dimen/item_icon_width_height"
             android:tint="@color/green_400"
             android:src="@drawable/bg_circle" />
 
         <ImageView
-            android:layout_width="@dimen/item_done_icon_width"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/item_icon_width_height"
+            android:layout_height="@dimen/item_icon_width_height"
             android:src="@drawable/ic_add_24dp" />
 
         <TextView

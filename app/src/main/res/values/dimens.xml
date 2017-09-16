@@ -32,4 +32,6 @@
     <dimen name="widget_default_height">110dp</dimen>
     <dimen name="widget_min_resize_width">40dp</dimen>
     <dimen name="widget_min_resize_height">40dp</dimen>
+    <dimen name="spinner_font_size">16sp</dimen>
+    <dimen name="dialog_search_result_font_size">16sp</dimen>
 </resources>

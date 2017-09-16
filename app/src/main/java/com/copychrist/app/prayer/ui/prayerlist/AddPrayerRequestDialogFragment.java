@@ -82,7 +82,7 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
         recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(prayerRequestsListAdapter);
 
-        prayerListRequests = presenter.getAllPrayerRequests();
+        prayerListRequests = presenter.getUnselectedPrayerListRequests();
         prayerRequestsListAdapter.setAdpaterData(prayerListRequests);
 
         // Setup Confirm button

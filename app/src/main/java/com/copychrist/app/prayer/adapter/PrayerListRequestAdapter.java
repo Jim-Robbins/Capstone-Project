@@ -43,8 +43,6 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
     private PrayerListRequestAdapterListener prayerListRequestAdapterListener;
     private SparseBooleanArray selectedItems;
 
-//    private final ViewBinderHelper binderHelper = new ViewBinderHelper();
-
     // array used to perform multiple animation at once
     private SparseBooleanArray animationItemsIndex;
     private boolean reverseAllAnimations = false;
@@ -53,7 +51,7 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
     // dirty fix, find a better solution
     private static int currentSelectedIndex = -1;
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.swipe_layout) SwipeRevealLayout swipeLayout;
         @BindView(R.id.delete_layout) LinearLayout deleteLayout;
@@ -75,7 +73,6 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnLongClickListener(this);
         }
 
         public void bind(PrayerListRequest prayerListRequest) {
@@ -91,13 +88,6 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
 
             // displaying the first letter of From in icon text
             txtIconText.setText(prayerListRequest.getContactName().substring(0, 1));
-        }
-
-        @Override
-        public boolean onLongClick(View view) {
-            prayerListRequestAdapterListener.onRowLongClicked(getAdapterPosition());
-            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            return true;
         }
     }
 

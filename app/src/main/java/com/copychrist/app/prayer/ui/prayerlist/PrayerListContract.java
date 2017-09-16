@@ -37,12 +37,12 @@ public class PrayerListContract {
         void onPrayerListSaveClick(PrayerList prayerList);
         void onPrayerRequestAddClick();
         void onPrayerRequestEditClick(PrayerRequest prayerRequest);
-        void onPrayerRequestResults(List<PrayerRequest> listRequests, List<PrayerRequest> allPrayerRequests);
+        void onPrayerRequestResults(List<PrayerRequest> listRequests, List<PrayerRequest> nonListRequests);
         void onPrayerRequestsAddNewRequest();
         void onPrayerRequestsAddToList(List<String> prayerRequestKeys);
         void onDataResultMessage(String message);
         void onDataResultMessage(int messageResId);
-        List<PrayerListRequest> getAllPrayerRequests();
+        List<PrayerListRequest> getUnselectedPrayerListRequests();
         void onPrayerRequestArchive(String prayerRequestKey);
         void onPrayerRequestRemove(String prayerRequestKey);
         void onPrayerRequestPrayedFor(String prayerRequestKey);

@@ -10,25 +10,24 @@ import java.util.List;
 
 import timber.log.Timber;
 
-import static com.facebook.stetho.inspector.network.ResponseHandlingInputStream.TAG;
-
 /**
  * Created by jim on 8/19/17.
  */
 
 public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
 
-    private final PrayerRequestService dataService;
     private final ViewMode viewMode;
 
     private Contact selectedContact;
     private PrayerRequest selectedPrayerRequest;
+    private final PrayerRequestContract.Service dataService;
     private PrayerRequestContract.View prayerRequestView;
     private String prayerListKey;
 
 
     public PrayerRequestPresenter(final PrayerRequestService dataService, Contact contact, PrayerRequest prayerRequest, String prayerListKey) {
         this.dataService = dataService;
+        dataService.setPresenter(this);
         if (prayerRequest == null) {
             this.viewMode = new ViewMode(ViewMode.ADD_MODE);
             this.selectedContact = contact;
@@ -44,13 +43,23 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     @Override
     public void setView(PrayerRequestContract.View view) {
         prayerRequestView = view;
+        List<String> selectedBiblePassages = null;
         if(selectedContact != null) {
             prayerRequestView.showContactDetail(selectedContact);
         } else if (selectedPrayerRequest != null) {
+            selectedBiblePassages = selectedPrayerRequest.getPassages();
             prayerRequestView.showPrayerRequestDetails(selectedPrayerRequest, null);
         } else {
-            //Todo: Show contact selection
+            prayerRequestView.showContactSelector();
         }
+
+        dataService.onBiblePassagesLoad(selectedBiblePassages);
+    }
+
+    @Override
+    public void clearView() {
+        prayerRequestView = null;
+        dataService.onDestroy();
     }
 
     @Override
@@ -59,24 +68,13 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     }
 
     @Override
-    public void onBibleVerseResults(List<BiblePassage> results) {
-        prayerRequestView.showBibleVerses(selectedPrayerRequest.getPassages());
-    }
-
-    @Override
-    public void clearView() {
-        prayerRequestView = null;
-        dataService.destroy();
+    public void onBiblePassageResults(List<BiblePassage> listResults, List<BiblePassage> nonListResults) {
+        prayerRequestView.showBiblePassages(listResults, nonListResults);
     }
 
     @Override
     public void onPrayerRequestSaveClick(PrayerRequest prayerRequest) {
-        dataService.saveValue(prayerRequest);
-    }
-
-    @Override
-    public void onBibleVerseItemClick(String bibleVerse) {
-        prayerRequestView.showBibleVerseDetails(bibleVerse);
+        dataService.onPrayerRequestSave(prayerRequest);
     }
 
     @Override
@@ -88,24 +86,24 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     @Override
     public void onPrayerRequestArchive() {
         Timber.d("onPrayerRequestArchive");
-        dataService.archivePrayerRequest(this, selectedPrayerRequest);
+        dataService.onPrayerRequestArchive(selectedPrayerRequest);
     }
 
     @Override
     public void onPrayerRequestUnarchive() {
         Timber.d("onPrayerRequestUnarchive");
-        dataService.unarchivePrayerRequest(this, selectedPrayerRequest);
+        dataService.onPrayerRequestUnarchive(selectedPrayerRequest);
     }
 
     @Override
     public void onPrayerRequestDelete() {
-        Timber.d(TAG, "onPrayerRequestDelete");
-        dataService.deletePrayerRequest(this, selectedPrayerRequest);
+        Timber.d("onPrayerRequestDelete");
+        dataService.onPrayerRequestDelete(selectedPrayerRequest);
     }
 
     @Override
     public void onPrayerRequestDeleteCompleted() {
-        Timber.d(TAG, "onPrayerRequestDeleteCompleted");
+        Timber.d("onPrayerRequestDeleteCompleted");
         prayerRequestView.finish();
     }
 
@@ -119,4 +117,28 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
         prayerRequestView.showDatabaseResultMessage(messageResId);
     }
 
+    @Override
+    public void onBiblePassagesAddedToPrayerRequest(List<String> selectedPassageKeys) {
+        if(selectedPassageKeys != null) {
+            if (selectedPrayerRequest == null) {
+                selectedPrayerRequest = new PrayerRequest();
+            }
+            selectedPrayerRequest.setPassages(selectedPassageKeys);
+        }
+    }
+
+    @Override
+    public void onBiblePassageAddNew() {
+        prayerRequestView.showBiblePassageAddDialog();
+    }
+
+    @Override
+    public void onBiblePassageSave(BiblePassage biblePassage) {
+        dataService.onBiblePassageSave(biblePassage);
+    }
+
+    @Override
+    public void onBiblePassageDeleteCompleted() {
+
+    }
 }

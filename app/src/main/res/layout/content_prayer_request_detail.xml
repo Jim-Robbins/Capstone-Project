@@ -52,7 +52,8 @@
                 android:hint="Passage" />
         </android.support.design.widget.TextInputLayout>
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/btn_bible_passage_finder"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"

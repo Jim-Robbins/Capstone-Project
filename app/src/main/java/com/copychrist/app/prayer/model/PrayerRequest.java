@@ -34,7 +34,6 @@ public class PrayerRequest implements Parcelable {
     @Nullable private Long endDate;
     public static final String CHILD_END_DATE = "endDate";
 
-    //TODO: Store as List<BibleVerse>
     @Nullable private List<String> passages = new ArrayList<>();
     public static final String CHILD_PASSAGES = "passages";
 
@@ -118,7 +117,6 @@ public class PrayerRequest implements Parcelable {
     }
     @Exclude
     public List<String> setPassages(List<String> passages) {
-        this.passages.clear();
         this.passages.addAll(passages);
         return this.passages;
     }

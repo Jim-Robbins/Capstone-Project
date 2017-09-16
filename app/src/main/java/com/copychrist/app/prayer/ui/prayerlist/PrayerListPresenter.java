@@ -23,7 +23,7 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
     private PrayerListContract.View prayerListView;
     private Context context;
     private List<PrayerListRequest> currentListPrayerListRequests;
-    private List<PrayerListRequest> fullListPrayerListRequests;
+    private List<PrayerListRequest> unselectedPrayerListRequests;
 
     public PrayerListPresenter(PrayerListService prayerListService, Context context, PrayerList prayerList) {
         this.dataService = prayerListService;
@@ -81,18 +81,17 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
     }
 
     @Override
-    public void onPrayerRequestResults(List<PrayerRequest> listRequests, List<PrayerRequest> allPrayerRequests) {
+    public void onPrayerRequestResults(List<PrayerRequest> listRequests, List<PrayerRequest> nonListPrayerRequests) {
         // Store copy of list filtered by current prayer list
         currentListPrayerListRequests = mapRequestsToListRequests(listRequests);
         prayerListView.showPrayerListRequests(currentListPrayerListRequests);
         
         // Store copy of full list
-        fullListPrayerListRequests = mapRequestsToListRequests(allPrayerRequests);
+        unselectedPrayerListRequests = mapRequestsToListRequests(nonListPrayerRequests);
     }
 
-    @Override
-    public List<PrayerListRequest> getAllPrayerRequests() {
-        return fullListPrayerListRequests;
+    public List<PrayerListRequest> getUnselectedPrayerListRequests() {
+        return unselectedPrayerListRequests;
     }
 
     @Override

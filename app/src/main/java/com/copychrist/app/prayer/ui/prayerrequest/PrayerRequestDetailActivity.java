@@ -10,7 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,10 +21,13 @@ import android.widget.Toast;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.BibleVerseRecyclerViewAdapter;
 import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
+import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.ViewMode;
+import com.copychrist.app.prayer.ui.biblepassages.BiblePassageFinderDialogFragment;
+import com.copychrist.app.prayer.ui.biblepassages.ViewBiblePassagesDialogFragment;
 import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
 import com.copychrist.app.prayer.util.Utils;
 
@@ -37,8 +42,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PrayerRequestDetailActivity extends BaseActivity implements
-         PrayerRequestContract.View, BibleVerseRecyclerViewAdapter.OnBibleVerseClickListener {
+public class PrayerRequestDetailActivity extends BaseActivity implements PrayerRequestContract.View,
+        BibleVerseRecyclerViewAdapter.BiblePassageAdapterListener {
 
     public static String EXTRA_LIST_KEY = "extra_list_key";
     public static String EXTRA_CONTACT = "extra_contact";
@@ -53,7 +58,9 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
     @BindView(R.id.spinner_prayer_lists) Spinner spinnerPrayerLists;
     @BindView(R.id.text_contact_first_name) TextView txtFirstName;
     @BindView(R.id.text_contact_last_name) TextView txtLastName;
-    @BindView(R.id.recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+    @BindView(R.id.btn_bible_passage_finder) ImageButton btnBiblePassageFinder;
 
     @Inject
     PrayerRequestContract.Presenter addPrayerRequestPresenter;
@@ -63,7 +70,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
     private Contact contact;
     private PrayerRequest selectedPrayerRequest;
     private String prayerListKey;
-
+    private ViewBiblePassagesDialogFragment viewBiblePassagesDialogFragment;
     private ViewMode viewMode;
 
     public static Intent getStartAddIntent(final Context context, final Contact contact) {
@@ -89,7 +96,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prayer_request_detail);
         ButterKnife.bind(this);
-
+        viewMode = new ViewMode(ViewMode.FULL_ADD_MODE);
         initToolbar();
     }
 
@@ -186,6 +193,11 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
     }
 
     @Override
+    public void showContactSelector() {
+
+    }
+
+    @Override
     public void showDatabaseResultMessage(String message) {
         Snackbar.make(layoutContainer, message, Snackbar.LENGTH_SHORT).show();
     }
@@ -260,21 +272,40 @@ public class PrayerRequestDetailActivity extends BaseActivity implements
     }
 
     @Override
-    public void showBibleVerses(List<String> biblePassages) {
-        bibleVerseAdapter = new BibleVerseRecyclerViewAdapter();
-        bibleVerseAdapter.setBibleVerseClickListener(this);
+    public void showBiblePassages(final List<BiblePassage> listResults, final List<BiblePassage> nonListResults) {
+        bibleVerseAdapter = new BibleVerseRecyclerViewAdapter(this, this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(bibleVerseAdapter);
+
+        if (viewBiblePassagesDialogFragment != null) {
+            viewBiblePassagesDialogFragment.setAdapter(nonListResults);
+        }
+
+        btnBiblePassageFinder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewBiblePassagesDialogFragment = ViewBiblePassagesDialogFragment.newInstance(addPrayerRequestPresenter, nonListResults);
+                viewBiblePassagesDialogFragment.show(getSupportFragmentManager(), "ViewBiblePassagesDialogFragment");
+            }
+        });
     }
 
     @Override
-    public void showBibleVerseDetails(String bibleVerse) {
-        //Todo: hook up Bible verse editor
+    public void showBiblePassageAddDialog() {
+        BiblePassageFinderDialogFragment biblePassageFinderDialogFragment = BiblePassageFinderDialogFragment.newInstance(addPrayerRequestPresenter);
+        biblePassageFinderDialogFragment.show(getSupportFragmentManager(), "BiblePassageFinderDialogFragment");
+    }
+
+
+
+    @Override
+    public void onRowClicked(int position) {
+
     }
 
     @Override
-    public void onBibleVerseClick(String biblePassage) {
-        addPrayerRequestPresenter.onBibleVerseItemClick(biblePassage);
+    public void onRowLongClicked(int position) {
+
     }
 }

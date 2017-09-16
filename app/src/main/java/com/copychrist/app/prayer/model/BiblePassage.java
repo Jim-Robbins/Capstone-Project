@@ -12,41 +12,66 @@ import java.util.regex.Pattern;
 
 @IgnoreExtraProperties
 public class BiblePassage {
-    public static String DB_NAME = "biblePassages";
+    public static final String DB_NAME = "biblePassages";
+
+    @Exclude
+    private String key;
 
     @NonNull
     private String book;
+    public static final String CHILD_BOOK = "book";
 
     @NonNull
-    private int chapter;
+    private String chapter;
+    public static final String CHILD_CHAPTER = "chapter";
 
     @Nullable
     private String verse;
+    public static final String CHILD_VERSE = "verse";
 
     @Nullable
     private String text;
+    public static final String CHILD_TEXT = "text";
 
     @Nullable
     private String version;
+    public static final String CHILD_VERSION = "version";
 
     @Nullable
-    private String apiUrl;
+    private String copyright;
+    public static final String CHILD_COPY_RIGHT = "copyright";
 
     public BiblePassage() {
         // Default constructor required for calls to DataSnapshot.getContact(BiblePassage.class)
     }
 
-    public BiblePassage(String book, int chapter, String verse) {
+    public BiblePassage(String book, String chapter, String verse) {
         this.book = book;
         this.chapter = chapter;
         this.verse = verse;
+        setKey();
+    }
+
+    /**
+     * Auto-generated Firebase key
+     * @return key [String] - Used to reference data value set for this group
+     */
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+    /**
+     * Not editable by user, stores reference to Firebase key
+     */
+    public void setKey() {
+        this.key = book + chapter + ":" + verse;
     }
 
     public String getBook() {
         return book;
     }
 
-    public int getChapter() {
+    public String getChapter() {
         return chapter;
     }
 
@@ -62,8 +87,8 @@ public class BiblePassage {
         return version;
     }
 
-    public String getApiUrl() {
-        return apiUrl;
+    public String getCopyright() {
+        return copyright;
     }
 
     public String getPassageReference() {
@@ -88,7 +113,7 @@ public class BiblePassage {
                 ", verse='" + verse + '\'' +
                 " ,text='" + text + '\'' +
                 " ,version='" + version + '\'' +
-                " ,apiUrl='" + apiUrl + '\'' +
+                " ,copyright='" + copyright + '\'' +
                 " ,passage='" + getPassageReference() + '\'' +
                 "}";
     }
@@ -99,12 +124,11 @@ public class BiblePassage {
         Matcher matcher = pattern.matcher(passage);
         String book = "";
         String verse = "";
-        int chapter = 0;
+        String chapter = "";
 
         if(matcher.find()) {
             book = pattern.matcher(passage).group(0);
-            chapter = Integer.parseInt(pattern.matcher(passage).group(1));
-
+            chapter = pattern.matcher(passage).group(1);
             verse = pattern.matcher(passage).group(2);
         }
 
@@ -115,7 +139,7 @@ public class BiblePassage {
         this.book = book;
     }
 
-    public void setChapter(@NonNull int chapter) {
+    public void setChapter(@NonNull String chapter) {
         this.chapter = chapter;
     }
 
@@ -131,7 +155,7 @@ public class BiblePassage {
         this.version = version;
     }
 
-    public void setApiUrl(@Nullable String apiUrl) {
-        this.apiUrl = apiUrl;
+    public void setCopyright(@Nullable String copyright) {
+        this.copyright = copyright;
     }
 }

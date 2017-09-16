@@ -85,15 +85,6 @@ dependencies {
     compile deps.gson
     compile deps.glide
 
-    compile deps.okhttp
-    compile deps.okdownloader
-    compile deps.retrofit.core
-    compile deps.retrofit.gson
-
-    compile deps.stetho.stetho
-    compile deps.stetho.okhttp
-
-
     compile deps.dagger.dagger
     compile deps.dagger.compiler
 

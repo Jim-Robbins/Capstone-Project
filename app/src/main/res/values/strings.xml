@@ -95,4 +95,8 @@
     <string name="widget_title">Praying With Dedication - Prayer List</string>
     <string name="dialog_bible_passage_add">Add A New Bible Passage</string>
     <string name="dialog_bible_passage_title">Add or Select a Bible Passage</string>
+    <string name="dialog_search_verse">Verse(s)</string>
+    <string name="dialog_search_and_save_bible_passage_title">Bible Passage Finder</string>
+    <string name="btn_find">Find</string>
+    <string name="spinner_books_hint">Bible Books</string>
 </resources>
