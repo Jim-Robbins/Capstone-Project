@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
  * https://www.androidhive.info/2017/02/android-creating-gmail-like-inbox-using-recyclerview/
  */
 public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListRequestAdapter.ViewHolder> {
-    private Context mContext;
+    private Context context;
     private List<PrayerListRequest> prayerListRequests;
     private PrayerListRequestAdapterListener prayerListRequestAdapterListener;
     private SparseBooleanArray selectedItems;
@@ -79,7 +79,7 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         }
 
         public void bind(PrayerListRequest prayerListRequest) {
-            SimpleDateFormat dateFormat = Utils.getDateFormat(mContext);
+            SimpleDateFormat dateFormat = Utils.getDateFormat(context);
 
             // displaying text view data
             txtContactName.setText(prayerListRequest.getContactName());
@@ -110,9 +110,9 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         void onMoreClicked(int position);
     }
 
-    public PrayerListRequestAdapter(Context mContext, PrayerListRequestAdapterListener listener) {
+    public PrayerListRequestAdapter(Context context, PrayerListRequestAdapterListener listener) {
         super();
-        this.mContext = mContext;
+        this.context = context;
         this.prayerListRequestAdapterListener = listener;
         selectedItems = new SparseBooleanArray();
         animationItemsIndex = new SparseBooleanArray();
@@ -223,10 +223,10 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
 
     private void applyProfilePicture(ViewHolder holder, PrayerListRequest prayerListRequest) {
         if (!TextUtils.isEmpty(prayerListRequest.getPicture())) {
-            Glide.with(mContext).load(prayerListRequest.getPicture())
+            Glide.with(context).load(prayerListRequest.getPicture())
                     .thumbnail(0.5f)
                     .crossFade()
-                    .transform(new CircleTransform(mContext))
+                    .transform(new CircleTransform(context))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.imgProfile);
             holder.imgProfile.setColorFilter(prayerListRequest.getColor());
@@ -245,7 +245,7 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
             holder.iconBack.setVisibility(View.VISIBLE);
             holder.iconBack.setAlpha(1);
             if (currentSelectedIndex == position) {
-                FlipAnimator.flipView(mContext, holder.iconBack, holder.iconFront, true);
+                FlipAnimator.flipView(context, holder.iconBack, holder.iconFront, true);
                 resetCurrentIndex();
             }
         } else {
@@ -254,7 +254,7 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
             holder.iconFront.setVisibility(View.VISIBLE);
             holder.iconFront.setAlpha(1);
             if ((reverseAllAnimations && animationItemsIndex.get(position, false)) || currentSelectedIndex == position) {
-                FlipAnimator.flipView(mContext, holder.iconBack, holder.iconFront, false);
+                FlipAnimator.flipView(context, holder.iconBack, holder.iconFront, false);
                 resetCurrentIndex();
             }
         }
@@ -278,13 +278,13 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         if (prayerListRequest.isPrayedFor()) {
             holder.txtContactName.setTypeface(null, Typeface.NORMAL);
             holder.txtRequestTitle.setTypeface(null, Typeface.NORMAL);
-            holder.txtContactName.setTextColor(ContextCompat.getColor(mContext, R.color.color_item_primary));
-            holder.txtRequestTitle.setTextColor(ContextCompat.getColor(mContext, R.color.color_item_secondary));
+            holder.txtContactName.setTextColor(ContextCompat.getColor(context, R.color.color_item_primary));
+            holder.txtRequestTitle.setTextColor(ContextCompat.getColor(context, R.color.color_item_secondary));
         } else {
             holder.txtContactName.setTypeface(null, Typeface.BOLD);
             holder.txtRequestTitle.setTypeface(null, Typeface.BOLD);
-            holder.txtContactName.setTextColor(ContextCompat.getColor(mContext, R.color.color_item_main));
-            holder.txtRequestTitle.setTextColor(ContextCompat.getColor(mContext, R.color.color_item_primary));
+            holder.txtContactName.setTextColor(ContextCompat.getColor(context, R.color.color_item_main));
+            holder.txtRequestTitle.setTextColor(ContextCompat.getColor(context, R.color.color_item_primary));
         }
     }
 

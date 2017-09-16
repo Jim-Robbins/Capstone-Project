@@ -10,18 +10,86 @@
     android:clickable="true"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/text_bible_passage"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="John 3:16"
-        />
+        android:paddingBottom="@dimen/padding_list_row"
+        android:paddingEnd="?listPreferredItemPaddingRight"
+        android:paddingStart="?listPreferredItemPaddingLeft"
+        android:paddingTop="@dimen/padding_list_row">
 
-    <TextView
-        android:id="@+id/text_verse_text"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/layout_request_item_container"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="For God so loved the world that He gave His only begotten son, that whosoever believeth in Him, should not perish but have everlasting life."
-        />
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/padding_list_row"
+        android:paddingStart="@dimen/padding_list_row_start">
+
+        <TextView
+            android:id="@+id/text_bible_passage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textColor="@color/color_item_main"
+            android:textSize="@dimen/msg_text_primary"
+            android:textStyle="bold"
+            tools:text="John 3:16"
+            />
+
+        <TextView
+            android:id="@+id/text_verse_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_item_secondary"
+            android:textSize="@dimen/msg_text_secondary"
+            android:textStyle="italic"
+            android:lines="5"
+            android:ellipsize="end"
+            tools:text="For God so loved the world that He gave His only begotten son, that whosoever believeth in Him, should not perish but have everlasting life."
+            />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/icon_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/icon_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/item_icon_width_height"
+                android:layout_height="@dimen/item_icon_width_height"
+                android:src="@drawable/bg_circle" />
+
+            <ImageView
+                android:layout_width="@dimen/item_done_icon_width"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_done_24dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/icon_front"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/icon_profile"
+                android:layout_width="@dimen/item_icon_width_height"
+                android:layout_height="@dimen/item_icon_width_height" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

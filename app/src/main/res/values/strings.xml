@@ -93,4 +93,6 @@
     <string name="btn_remove">Remove</string>
     <string name="btn_more">More</string>
     <string name="widget_title">Praying With Dedication - Prayer List</string>
+    <string name="dialog_bible_passage_add">Add A New Bible Passage</string>
+    <string name="dialog_bible_passage_title">Add or Select a Bible Passage</string>
 </resources>
