@@ -158,7 +158,7 @@ public class ContactService {
         presenter.onContactUpdated(contact);
     }
 
-    void destroy() {
+    public void destroy() {
         contactsRef.removeEventListener(contactChildEventListener);
         prayerRequestsRef.removeEventListener(prayerRequestsValueEventListener);
         prayerRequestsRef.removeEventListener(contactDeleteSingleEventListener);

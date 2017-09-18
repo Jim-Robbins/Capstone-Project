@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.copychrist.app.prayer.BuildConfig;
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.adapter.BibleBooksArrayAdapter;
+import com.copychrist.app.prayer.adapter.BibleBooksSpinnerArrayAdapter;
 import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestContract;
 import com.faithcomesbyhearing.dbt.Dbt;
@@ -57,7 +57,7 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
-        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_search_and_find_bible_passage, null);
+        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_bible_passage_finder, null);
         alertDialogBuilder.setView(dialogView);
         context = dialogView.getContext();
 
@@ -122,7 +122,7 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
         final int layoutRes = R.layout.item_spinner;
         final int textViewRes = R.id.text_spinner_item;
 
-        BibleBooksArrayAdapter bibleBooksAdapter = new BibleBooksArrayAdapter(context,
+        BibleBooksSpinnerArrayAdapter bibleBooksAdapter = new BibleBooksSpinnerArrayAdapter(context,
                 layoutRes, textViewRes, bookList);
         booksSpinner.setAdapter(bibleBooksAdapter);
 

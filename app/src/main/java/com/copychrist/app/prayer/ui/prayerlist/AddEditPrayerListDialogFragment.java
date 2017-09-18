@@ -38,7 +38,7 @@ public class AddEditPrayerListDialogFragment extends AppCompatDialogFragment {
         View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_save_prayer_list, null);
         alertDialogBuilder.setView(dialogView);
 
-        textPrayerListName = dialogView.findViewById(R.id.text_name);
+        textPrayerListName = dialogView.findViewById(R.id.txt_prayer_list_name);
 
         if(prayerList != null) {
             alertDialogBuilder.setTitle(R.string.dialog_prayer_list_title_edit);

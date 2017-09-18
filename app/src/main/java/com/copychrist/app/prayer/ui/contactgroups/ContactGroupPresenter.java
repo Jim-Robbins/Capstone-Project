@@ -40,6 +40,11 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
     }
 
     @Override
+    public void onContactDeleteConfirmed(Contact contact) {
+        contactGroupService.deleteContact(contact.getKey());
+    }
+
+    @Override
     public void onContactGroupClicked(ContactGroup contactGroup) {
         Timber.d("onContactGroupClicked() called with: contactGroup = [" + contactGroup.toString() + "]");
         selectedContactGroup = contactGroup;

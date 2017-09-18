@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/dialog_horizontal_margin"
+    android:paddingStart="@dimen/dialog_horizontal_margin">
+
+    <TextView
+        android:id="@+id/txt_group_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Family" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorAccent">
+
+        <RelativeLayout
+            android:id="@+id/layout_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/medium_space">
+
+            <RelativeLayout
+                android:id="@+id/layout_icon_front"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon_profile"
+                    style="@style/Item_UnSelected"
+                    android:layout_width="@dimen/item_icon_width_height"
+                    android:layout_height="@dimen/item_icon_width_height"/>
+
+                <TextView
+                    android:id="@+id/txt_icon_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/item_icon_font_size" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            style="@style/Item_Secondary"
+            android:id="@+id/txt_contact_first_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/layout_item_icon"
+            android:paddingTop="@dimen/normal_space"
+            tools:text="Jill" />
+
+        <TextView
+            style="@style/Item_Secondary"
+            android:id="@+id/txt_contact_last_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/layout_item_icon"
+            android:layout_below="@+id/txt_contact_first_name"
+            tools:text="Jackson" />
+        <TextView
+            style="@style/Item_Timestamp"
+            android:id="@+id/txt_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            tools:text="Sept 17,2017" />
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/Item_Primary"
+        android:id="@+id/txt_request_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Title" />
+
+    <TextView
+        style="@style/Item_Secondary"
+        android:id="@+id/txt_request_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Request Details" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+</LinearLayout>

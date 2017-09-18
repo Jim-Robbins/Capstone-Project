@@ -32,6 +32,7 @@ public class ContactGroupContract {
         void onContactGroupResults(List<ContactGroup> results, ContactGroup selectedContactGroup);
         void onContactGroupSaveClick(ContactGroup contactGroup);
         void onContactAddClick();
+        void onContactDeleteConfirmed(Contact contact);
         void onContactResults(List<Contact> results);
         void onContactSaveClick(Contact contact);
         void onDataResultMessage(String message);

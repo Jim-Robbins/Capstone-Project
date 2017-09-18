@@ -170,4 +170,8 @@ public class Contact implements Parcelable {
             return new Contact[size];
         }
     };
+
+    public int getColor() {
+        return 0;
+    }
 }

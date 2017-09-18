@@ -39,8 +39,8 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
         View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_save_contact_group, null);
         alertDialogBuilder.setView(dialogView);
 
-        textGroupName = dialogView.findViewById(R.id.text_group_name);
-        textGroupDesc = dialogView.findViewById(R.id.text_group_desc);
+        textGroupName = dialogView.findViewById(R.id.txt_group_name);
+        textGroupDesc = dialogView.findViewById(R.id.txt_group_desc);
 
         if(contactGroup != null) {
             alertDialogBuilder.setTitle(R.string.dialog_edit_contact_group_title);

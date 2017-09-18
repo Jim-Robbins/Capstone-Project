@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.adapter.PrayerRequestsListAdapter;
+import com.copychrist.app.prayer.adapter.PrayerRequestsSwipeableAdapter;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BaseActivity;
@@ -31,21 +33,22 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class ContactDetailActivity extends BaseActivity
-        implements ContactContract.View, PrayerRequestsListAdapter.OnPrayerRequestClickListener,
+        implements ContactContract.View, PrayerRequestsSwipeableAdapter.PrayerRequestSwipeableListener,
         DeleteDialogFragment.DeleteActionDialogListener {
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    @BindView(R.id.text_contact_first_name) TextView txtFirstName;
-    @BindView(R.id.text_contact_last_name) TextView txtLastName;
+    @BindView(R.id.txt_contact_first_name) TextView txtFirstName;
+    @BindView(R.id.txt_contact_last_name) TextView txtLastName;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.tabLayout) TabLayout tabLayout;
 
-    PrayerRequestsListAdapter prayerRequestsListAdapter;
+    PrayerRequestsSwipeableAdapter prayerRequestsSwipeableAdapter;
     @Inject ContactContract.Presenter contactPresenter;
 
     public static String EXTRA_CONTACT = "extra_contact";
     private Contact contact;
+    private List<PrayerRequest> prayerRequests;
 
     public static Intent getStartIntent(final Context context, final Contact contact) {
         Intent intent = new Intent(context, ContactDetailActivity.class);
@@ -85,7 +88,7 @@ public class ContactDetailActivity extends BaseActivity
         // Handle item selection
         switch (item.getItemId()) {
             case android.R.id.home:
-                onSupportNavigateUp();
+                finish();
                 return true;
             case R.id.action_edit_contact:
                 showContactDetailEditView();
@@ -99,8 +102,32 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onPrayerRequestClick(PrayerRequest request) {
-        showPrayerRequestDetailView(request);
+    public void onPrayerRequestClick(int position) {
+        PrayerRequest prayerRequest = prayerRequests.get(position);
+        showPrayerRequestDetailView(prayerRequest);
+    }
+
+    @Override
+    public void onRemoveClicked(int position) {
+        PrayerRequest prayerRequest = prayerRequests.get(position);
+        Timber.d(prayerRequest.toString());
+    }
+
+    @Override
+    public void onArchiveClicked(int position) {
+        PrayerRequest prayerRequest = prayerRequests.get(position);
+        Timber.d(prayerRequest.toString());
+    }
+
+    @Override
+    public void onMoreClicked(int position) {
+        PrayerRequest prayerRequest = prayerRequests.get(position);
+        Timber.d(prayerRequest.toString());
+    }
+
+    @Override
+    public void onRowLongClicked(int position) {
+        //Todo: Allow user to sort the order of the requess?
     }
 
     @OnClick(R.id.fab)
@@ -135,9 +162,9 @@ public class ContactDetailActivity extends BaseActivity
     @Override
     public void showPrayerRequests(List<PrayerRequest> prayerRequests) {
         if(prayerRequests == null) return;
-        Timber.d("showPrayerRequests() called with: prayerRequests = [" + prayerRequests + "]");
+        this.prayerRequests = prayerRequests;
         recyclerView.removeAllViews();
-        prayerRequestsListAdapter.setPrayerRequests(prayerRequests);
+        prayerRequestsSwipeableAdapter.setPrayerRequests(prayerRequests);
     }
 
     @Override
@@ -181,11 +208,13 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     private void initList() {
-        prayerRequestsListAdapter = new PrayerRequestsListAdapter();
-        prayerRequestsListAdapter.setPrayerRequestClickListener(this);
+        prayerRequestsSwipeableAdapter = new PrayerRequestsSwipeableAdapter();
+        prayerRequestsSwipeableAdapter.setPrayerRequestClickListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(prayerRequestsListAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(prayerRequestsSwipeableAdapter);
     }
 
     private void showPrayerRequestDetailView(PrayerRequest prayerRequest) {

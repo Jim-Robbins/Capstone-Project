@@ -51,7 +51,9 @@ public class ContactPresenter implements ContactContract.Presenter {
 
     @Override
     public void onContactDeleteCompleted() {
-        contactView.finish();
+        if(contactView != null) {
+            contactView.finish();
+        }
     }
 
     @Override

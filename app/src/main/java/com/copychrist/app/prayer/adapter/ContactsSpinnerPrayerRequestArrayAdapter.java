@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.faithcomesbyhearing.dbt.model.Book;
+import com.copychrist.app.prayer.model.Contact;
 
 import java.util.List;
 
@@ -20,15 +20,15 @@ import java.util.List;
  * Ref: http://www.zoftino.com/android-spinner-custom-adapter-&-layout
  */
 
-public class BibleBooksArrayAdapter extends ArrayAdapter<Book>{
+public class ContactsSpinnerPrayerRequestArrayAdapter extends ArrayAdapter<Contact>{
 
     private final LayoutInflater layoutInflater;
     private final Context context;
-    private final List<Book> items;
+    private final List<Contact> items;
     private final int resource;
     private final int txtViewId;
 
-    public BibleBooksArrayAdapter(@NonNull Context context, @LayoutRes int resource, @IdRes int textViewResourceId, @NonNull List<Book> objects) {
+    public ContactsSpinnerPrayerRequestArrayAdapter(@NonNull Context context, @LayoutRes int resource, @IdRes int textViewResourceId, @NonNull List<Contact> objects) {
         super(context, resource, textViewResourceId, objects);
 
         this.context = context;
@@ -52,10 +52,10 @@ public class BibleBooksArrayAdapter extends ArrayAdapter<Book>{
     private View createItemView(int position, View convertView, ViewGroup parent){
         final View view = layoutInflater.inflate(resource, parent, false);
 
-        Book book = items.get(position);
+        Contact contact = items.get(position);
 
         TextView txtItem = (TextView) view.findViewById(txtViewId);
-        txtItem.setText(book.getBookId());
+        txtItem.setText(contact.getContactGroup().getName() + " : " + contact.getFirstName() + " " + contact.getLastName());
         return view;
     }
 }

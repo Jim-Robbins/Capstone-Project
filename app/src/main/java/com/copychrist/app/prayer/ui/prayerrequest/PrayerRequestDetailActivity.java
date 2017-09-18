@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -12,15 +14,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.adapter.BibleVerseRecyclerViewAdapter;
-import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
+import com.copychrist.app.prayer.adapter.BiblePassageFinderSelectableAdapter;
+import com.copychrist.app.prayer.adapter.BiblePassageSwipableAdapter;
+import com.copychrist.app.prayer.adapter.ContactsSpinnerPrayerRequestArrayAdapter;
 import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
@@ -32,7 +35,6 @@ import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
 import com.copychrist.app.prayer.util.Utils;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -43,7 +45,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class PrayerRequestDetailActivity extends BaseActivity implements PrayerRequestContract.View,
-        BibleVerseRecyclerViewAdapter.BiblePassageAdapterListener {
+        BiblePassageFinderSelectableAdapter.BiblePassageAdapterListener,
+        BiblePassageSwipableAdapter.BiblePassageAdapterListener {
 
     public static String EXTRA_LIST_KEY = "extra_list_key";
     public static String EXTRA_CONTACT = "extra_contact";
@@ -53,25 +56,28 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.edit_request_title) EditText editRequestTitle;
     @BindView(R.id.edit_request_desc) EditText editRequestDesc;
-    @BindView(R.id.edit_passage) EditText editPassage;
     @BindView(R.id.edit_end_date) EditText editEndDate;
-    @BindView(R.id.spinner_prayer_lists) Spinner spinnerPrayerLists;
-    @BindView(R.id.text_contact_first_name) TextView txtFirstName;
-    @BindView(R.id.text_contact_last_name) TextView txtLastName;
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.btn_bible_passage_finder) ImageButton btnBiblePassageFinder;
+    @BindView(R.id.txt_contact_first_name) TextView txtFirstName;
+    @BindView(R.id.txt_contact_last_name) TextView txtLastName;
+    @BindView(R.id.recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.btn_bible_passage_finder) ImageView btnBiblePassageFinder;
+    @BindView(R.id.contact_container) LinearLayout layoutContactContainer;
+    @BindView(R.id.spinner_contacts) Spinner spinnerContacts;
+    @BindView(R.id.profile_icon) ImageView toolbarIcon;
+//    @BindView(R.id.spinner_prayer_lists) Spinner spinnerPrayerLists;
 
     @Inject
     PrayerRequestContract.Presenter addPrayerRequestPresenter;
 
-    BibleVerseRecyclerViewAdapter bibleVerseAdapter;
+    BiblePassageSwipableAdapter bibleVerseAdapter;
+    SimpleDateFormat dateFormat;
 
     private Contact contact;
     private PrayerRequest selectedPrayerRequest;
     private String prayerListKey;
     private ViewBiblePassagesDialogFragment viewBiblePassagesDialogFragment;
     private ViewMode viewMode;
+    private List<BiblePassage> selectedVerses;
 
     public static Intent getStartAddIntent(final Context context, final Contact contact) {
         Intent intent = new Intent(context, PrayerRequestDetailActivity.class);
@@ -96,8 +102,9 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prayer_request_detail);
         ButterKnife.bind(this);
-        viewMode = new ViewMode(ViewMode.FULL_ADD_MODE);
         initToolbar();
+        initAdapter();
+        dateFormat = Utils.getDateFormat(this);
     }
 
     @Override
@@ -143,7 +150,19 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
         if(viewMode.equals(ViewMode.EDIT_MODE)) {
             this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        } else {
+            toolbarIcon.setVisibility(View.GONE);
+            this.getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
+    }
+
+    private void initAdapter() {
+        bibleVerseAdapter = new BiblePassageSwipableAdapter(this);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(bibleVerseAdapter);
     }
 
     @Override
@@ -172,11 +191,10 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         addPrayerRequestPresenter.setView(this);
         if (viewMode.equals(ViewMode.ADD_MODE)) {
             showContactDetail(contact);
-        } if (viewMode.equals(ViewMode.FULL_ADD_MODE)) {
-            //Todo: Show contact selector
-        } else {
-            showPrayerRequestDetails(selectedPrayerRequest, null);
+        } if (viewMode.equals(ViewMode.EDIT_MODE)) {
+            showPrayerRequestDetails(selectedPrayerRequest);
         }
+        showDatePicker();
     }
 
     @Override
@@ -193,8 +211,14 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
     }
 
     @Override
-    public void showContactSelector() {
+    public void showContactSelector(List<Contact> contacts) {
+        layoutContactContainer.setVisibility(View.VISIBLE);
 
+        final int layoutRes = R.layout.item_spinner;
+        final int textViewRes = R.id.text_spinner_item;
+
+        ContactsSpinnerPrayerRequestArrayAdapter contactsAdapter = new ContactsSpinnerPrayerRequestArrayAdapter(this, layoutRes, textViewRes, contacts);
+        spinnerContacts.setAdapter(contactsAdapter);
     }
 
     @Override
@@ -209,16 +233,18 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
 
     @OnClick(R.id.action_save)
     public void onSaveClick() {
-        if (selectedPrayerRequest == null) {
+        if(selectedPrayerRequest == null) {
             selectedPrayerRequest = new PrayerRequest();
-            selectedPrayerRequest.setContact(contact);
-            selectedPrayerRequest.setContactKey(contact.getKey());
         }
 
-        String passagesEntry = editPassage.getText().toString();
-        if (!TextUtils.isEmpty(passagesEntry)) {
-            String[] passages = passagesEntry.split("(\\s*,\\s*)(\\s*|\\s*)");
-            selectedPrayerRequest.setPassages(Arrays.asList(passages));
+        if (viewMode.equals(ViewMode.FULL_ADD_MODE)) {
+            selectedPrayerRequest.getPrayerLists().put(prayerListKey, true);
+            contact = (Contact) spinnerContacts.getSelectedItem();
+        }
+
+        if (viewMode.equals(ViewMode.ADD_MODE) || viewMode.equals(ViewMode.FULL_ADD_MODE)) {
+            selectedPrayerRequest.setContact(contact);
+            selectedPrayerRequest.setContactKey(contact.getKey());
         }
 
         String endDate = editEndDate.getText().toString();
@@ -245,14 +271,10 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
     }
 
     @Override
-    public void showPrayerRequestDetails(PrayerRequest prayerRequest, PrayerListsListAdapter prayerListsListAdapter) {
-        SimpleDateFormat dateFormat = Utils.getDateFormat(this);
-
-        spinnerPrayerLists.setAdapter(prayerListsListAdapter);
+    public void showPrayerRequestDetails(PrayerRequest prayerRequest) {
         selectedPrayerRequest = prayerRequest;
 
         if(selectedPrayerRequest != null) {
-
             contact = selectedPrayerRequest.getContact();
             contact.setKey(selectedPrayerRequest.getContactKey());
             showContactDetail(contact);
@@ -260,24 +282,27 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
             editRequestTitle.setText(selectedPrayerRequest.getTitle());
             editRequestDesc.setText(selectedPrayerRequest.getDescription());
 
-            if(selectedPrayerRequest.getPassages() != null && selectedPrayerRequest.getPassages().size() > 0) {
-                String passageList = TextUtils.join(", ", selectedPrayerRequest.getPassages());
-                editPassage.setText(passageList);
-            }
             if(selectedPrayerRequest.getEndDate() != null)
                 editEndDate.setText(dateFormat.format(selectedPrayerRequest.getEndDate()));
         }
+    }
+
+    private void showDatePicker() {
         editEndDate.setFocusable(false);
         editEndDate.setOnClickListener(new DatePickerOnClickListener(dateFormat));
     }
-
     @Override
     public void showBiblePassages(final List<BiblePassage> listResults, final List<BiblePassage> nonListResults) {
-        bibleVerseAdapter = new BibleVerseRecyclerViewAdapter(this, this);
+        setupBiblePassagesRecycler(listResults);
+        setupBiblePassagesFinder(nonListResults);
+    }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(bibleVerseAdapter);
+    private void setupBiblePassagesRecycler(List<BiblePassage> listResults) {
+        selectedVerses = listResults;
+        bibleVerseAdapter.setAdapterData(listResults);
+    }
 
+    private void setupBiblePassagesFinder(final List<BiblePassage> nonListResults) {
         if (viewBiblePassagesDialogFragment != null) {
             viewBiblePassagesDialogFragment.setAdapter(nonListResults);
         }
@@ -297,7 +322,14 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         biblePassageFinderDialogFragment.show(getSupportFragmentManager(), "BiblePassageFinderDialogFragment");
     }
 
-
+//    @Override
+//    public void showPrayerListSelector(List<PrayerList> prayerLists) {
+//        final int layoutRes = R.layout.item_spinner;
+//        final int textViewRes = R.id.text_spinner_item;
+//
+//        PrayerListsSpinnerArrayAdapter prayerListsListAdapter = new PrayerListsSpinnerArrayAdapter(this, layoutRes, textViewRes, prayerLists);
+//        spinnerPrayerLists.setAdapter(prayerListsListAdapter);
+//    }
 
     @Override
     public void onRowClicked(int position) {
@@ -307,5 +339,10 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
     @Override
     public void onRowLongClicked(int position) {
 
+    }
+
+    @Override
+    public void onRemoveClicked(int position) {
+        addPrayerRequestPresenter.onBiblePassageRemove(selectedVerses.get(position));
     }
 }

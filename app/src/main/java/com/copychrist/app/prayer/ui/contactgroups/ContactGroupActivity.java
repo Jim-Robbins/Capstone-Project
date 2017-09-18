@@ -5,14 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.Tab;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.adapter.ContactsListAdapter;
+import com.copychrist.app.prayer.adapter.ContactsSwipeableSelectableRVAdapter;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
 import com.copychrist.app.prayer.model.PrayerRequest;
@@ -33,7 +35,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class ContactGroupActivity extends BaseActivity implements ContactGroupContract.View,
-        ContactsListAdapter.OnContactClickListener, DeleteDialogFragment.DeleteActionDialogListener {
+        ContactsSwipeableSelectableRVAdapter.ContactSwipeableSelectableRVListener, DeleteDialogFragment.DeleteActionDialogListener {
 
     private static final String TAG = "ContactGroupActivity";
 
@@ -41,14 +43,17 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     @BindView(R.id.tab_layout_groups) TabLayout tabLayoutGroups;
     @Inject ContactGroupContract.Presenter contactsPresenter;
 
-    private ContactsListAdapter contactsListAdapter;
+    private ContactsSwipeableSelectableRVAdapter contactsSwipeableSelectableRVAdapter;
     private int selectedTabIndex = 0;
     private ContactGroup selectedContactGroup;
     public static String EXTRA_CONTACT_GROUP = "extra_contact_group";
+    private List<Contact> contacts;
+    private String deleteType;
+    private Contact contact;
 
     public static Intent getStartIntent(final Context context, final ContactGroup contactGroup) {
         Intent intent = new Intent(context, ContactGroupActivity.class);
-        intent.putExtra(EXTRA_CONTACT_GROUP, contactGroup);
+        if(contactGroup != null) intent.putExtra(EXTRA_CONTACT_GROUP, contactGroup);
         return intent;
     }
 
@@ -95,21 +100,19 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
         if (getIntent().hasExtra(EXTRA_CONTACT_GROUP)) {
             selectedContactGroup = getIntent().getParcelableExtra(EXTRA_CONTACT_GROUP);
             if (selectedContactGroup == null) {
-                Timber.e("ContactGroup Parcel not properly sent.");
+                Timber.i("ContactGroup Parcel not properly sent.");
             }
         }
         return new ContactGroupModule(selectedContactGroup);
     }
 
     private void initContactList() {
-        contactsListAdapter = new ContactsListAdapter();
-        contactsListAdapter.setContactClickListener(this);
+        contactsSwipeableSelectableRVAdapter = new ContactsSwipeableSelectableRVAdapter(this, this);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this,
-               getResources().getInteger(R.integer.contacts_grid_column));
-
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(contactsListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(contactsSwipeableSelectableRVAdapter);
     }
 
     @Override
@@ -126,7 +129,8 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     @Override
     public void showContacts(List<Contact> contacts) {
-        contactsListAdapter.setContacts(contacts);
+        this.contacts = contacts;
+        contactsSwipeableSelectableRVAdapter.setAdpaterData(contacts);
     }
 
     @Override
@@ -182,6 +186,7 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     @Override
     public void showContactGroupDialogDelete(ContactGroup contactGroup) {
+        this.deleteType = ContactGroup.DB_NAME;
         if (tabLayoutGroups.getTabCount() > 1) {
             DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
                     getString(R.string.dialog_delete_group_title),
@@ -199,7 +204,11 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     @Override
     public void onConfirmedDeleteDialog() {
-        contactsPresenter.onContactGroupDeleteConfirmed();
+        if(deleteType.equalsIgnoreCase(Contact.DB_NAME)) {
+            contactsPresenter.onContactDeleteConfirmed(contact);
+        } else {
+            contactsPresenter.onContactGroupDeleteConfirmed();
+        }
     }
 
     @OnClick(R.id.fab)
@@ -214,7 +223,39 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     }
 
     @Override
-    public void onContactClick(Contact contact) {
+    public void onContactClick(int position) {
+        Contact contact = contacts.get(position);
+        startActivity(ContactDetailActivity.getStartIntent(this, contact));
+    }
+
+    @Override
+    public void onRowLongClicked(int position) {
+        //Todo: Allow user to sort contacts by dragging
+    }
+
+    @Override
+    public void onContactRemoveClicked(int position) {
+        this.deleteType = Contact.DB_NAME;
+        this.contact = contacts.get(position);
+        if (tabLayoutGroups.getTabCount() > 1) {
+            DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
+                    getString(R.string.dialog_delete_contact_title),
+                    contact.getFirstName() + contact.getLastName()
+            );
+            deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
+        } else {
+            MessageDialogFragment dialogFragment = MessageDialogFragment.newInstance(
+                    getString(R.string.dialog_delete_contact_title),
+                    getString(R.string.dialog_delete_group_denied)
+            );
+            dialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
+        }
+
+    }
+
+    @Override
+    public void onContactEditClicked(int position) {
+        Contact contact = contacts.get(position);
         startActivity(ContactDetailActivity.getStartIntent(this, contact));
     }
 

@@ -40,6 +40,7 @@ public class ContactGroupService {
 
     public ContactGroupService(FirebaseDatabase database, FirebaseUser currentUser) {
         Timber.d("ContactGroupService() called with: database = [" + database + "]");
+
         contactGroupsRef = database.getReference(ContactGroup.DB_NAME).child(currentUser.getUid());
         contactsRef = database.getReference(Contact.DB_NAME).child(currentUser.getUid());
 
@@ -200,6 +201,9 @@ public class ContactGroupService {
         //Todo: update the sort orders
     }
 
+    public void deleteContact(String contactKey) {
+        contactsRef.child(contactKey).removeValue();
+    }
 
     void getContactValues(ContactGroup contactGroup) {
         Timber.d("getContactValues() called with: contactGroup = [" + contactGroup + "]");

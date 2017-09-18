@@ -36,7 +36,7 @@ public class WidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         for (int appWidgetId : appWidgetIds) {
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_requests);
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout_content);
 
             // Create an Intent to launch MainActivity when icon is clicked
             Intent mainIntent = new Intent(context, MainActivity.class);
@@ -75,7 +75,7 @@ public class WidgetProvider extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
         for (int appWidgetId : appWidgetIds) {
-            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_requests);
+            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout_content);
             rv.removeAllViews(appWidgetId);
         }
     }

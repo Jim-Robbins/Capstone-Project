@@ -17,4 +17,220 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="Item_Primary">
+        <item name="android:textColor">@color/color_item_main</item>
+        <item name="android:textSize">@dimen/item_text_primary_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Item_Secondary">
+        <item name="android:textColor">@color/color_item_primary</item>
+        <item name="android:textSize">@dimen/item_text_secondary_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Item_Sub_Secondary">
+        <item name="android:textColor">@color/color_item_secondary</item>
+        <item name="android:textSize">@dimen/item_text_secondary_font_size</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <!-- Selectable Adapter Row Styles -->
+    <style name="Item_Selected">
+        <item name="android:tint">@color/light_green_400</item>
+        <item name="srcCompat">@drawable/bg_circle</item>
+        <item name="android:contentDescription">@string/item_selected_acc</item>
+    </style>
+
+    <style name="Item_Select_Icon">
+        <item name="srcCompat">@drawable/ic_done_24dp</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
+    <style name="Item_UnSelected">
+        <item name="android:tint">@color/grey_400</item>
+        <item name="srcCompat">@drawable/bg_circle</item>
+        <item name="android:contentDescription">@string/item_unselected_acc</item>
+    </style>
+
+    <!-- Selection Adapter Add Item Styles -->
+    <style name="Item_Add_Container">
+        <item name="android:background">@color/light_green_400</item>
+    </style>
+
+    <style name="Item_Add_Circle">
+        <item name="android:tint">@color/green_400</item>
+        <item name="srcCompat">@drawable/bg_circle</item>
+    </style>
+
+    <style name="Item_Add_Icon">
+        <item name="srcCompat">@drawable/ic_add_24dp</item>
+    </style>
+
+    <style name="Item_Icon_Text">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/item_icon_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- General Item Styles -->
+    <style name="Item_Timestamp">
+        <item name="android:textColor">@color/color_timestamp</item>
+        <item name="android:textSize">@dimen/item_timestamp_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Item_Contact_Prayer_Request">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/small_space</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <!-- Swipeable Menus -->
+    <style name="Swipe_Btn_Text">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/item_swipe_btn_font_size</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginBottom">12dp</item>
+    </style>
+
+    <style name="Swipe_Btn_Icon">
+        <item name="android:layout_width">@dimen/item_swipe_icon_size</item>
+        <item name="android:layout_height">@dimen/item_swipe_icon_size</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="Swipe_Btn_More_Icon" parent="Swipe_Btn_Icon">
+        <item name="srcCompat">@drawable/ic_settings_24dp</item>
+    </style>
+
+    <style name="Swipe_Btn_More_Container" parent="Swipe_Btn_Container">
+        <item name="android:background">@color/blue_grey_500</item>
+    </style>
+
+    <style name="Swipe_Btn_Edit_Icon" parent="Swipe_Btn_Icon">
+        <item name="srcCompat">@drawable/ic_create_24dp</item>
+    </style>
+
+    <style name="Swipe_Btn_Edit_Container" parent="Swipe_Btn_Container">
+        <item name="android:background">@color/blue_grey_500</item>
+    </style>
+
+    <style name="Swipe_Btn_Remove_Icon" parent="Swipe_Btn_Icon">
+        <item name="srcCompat">@drawable/ic_cancel_24dp</item>
+    </style>
+
+    <style name="Swipe_Btn_Remove_Container" parent="Swipe_Btn_Container">
+        <item name="android:background">@color/red_500</item>
+    </style>
+
+    <style name="Swipe_Btn_Archive_Icon" parent="Swipe_Btn_Icon">
+        <item name="srcCompat">@drawable/ic_archive_24dp</item>
+    </style>
+
+    <style name="Swipe_Btn_Archive_Container" parent="Swipe_Btn_Container">
+        <item name="android:background">@color/deep_purple_400</item>
+    </style>
+
+    <style name="Swipe_Btn_Container">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_alignParentStart">true</item>
+    </style>
+
+    <style name="Dialog_Search_Btn">
+        <item name="android:tint">@color/colorAccent</item>
+        <item name="srcCompat">@drawable/ic_search_24dp</item>
+    </style>
+
+    <style name="Dialog_Search_Text">
+        <item name="android:textSize">@dimen/dialog_search_result_font_size</item>
+        <item name="android:maxLines">20</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:fadeScrollbars">false</item>
+    </style>
+
+    <style name="Required_Field">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:text">@string/required_fields</item>
+    </style>
+
+    <style name="Contact_Profile_Icon">
+        <item name="android:tint">@color/grey_500</item>
+        <item name="srcCompat">@drawable/ic_account_circle_24dp</item>
+    </style>
+
+    <style name="Prayer_Request_Detail_Icon">
+        <item name="android:layout_width">@dimen/prayer_request_detail_icon_size</item>
+        <item name="android:layout_height">@dimen/prayer_request_detail_icon_size</item>
+        <item name="android:tint">@color/colorAccent</item>
+    </style>
+
+    <style name="Prayer_Request_Contact_Icon" parent="Prayer_Request_Detail_Icon">
+        <item name="srcCompat">@drawable/ic_account_circle_24dp</item>
+    </style>
+
+    <style name="Prayer_Request_Request_Icon" parent="Prayer_Request_Detail_Icon">
+        <item name="srcCompat">@drawable/ic_question_answer_24dp</item>
+    </style>
+
+    <style name="Prayer_Request_Calendar_Icon" parent="Prayer_Request_Detail_Icon">
+        <item name="srcCompat">@drawable/ic_event_24dp</item>
+    </style>
+
+    <style name="Prayer_Request_Passages_Icon" parent="Prayer_Request_Detail_Icon">
+        <item name="srcCompat">@drawable/ic_bookmark_24dp</item>
+    </style>
+
+    <style name="Toolbar_Contact">
+        <item name="srcCompat">@drawable/ic_account_circle_24dp</item>
+        <item name="android:layout_width">@dimen/toolbar_icon_size</item>
+        <item name="android:layout_height">@dimen/toolbar_icon_size</item>
+        <item name="android:paddingEnd">@dimen/medium_space</item>
+    </style>
+
+    <style name="Tab_Requests">
+        <item name="android:icon">@drawable/ic_question_answer_24dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Tab_Answered">
+        <item name="android:icon">@drawable/ic_archive_24dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Fab" parent="Widget.Design.FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:layout_margin">@dimen/fab_margin</item>
+    </style>
+
+    <style name="Fab_Add_Request" parent="Fab">
+        <item name="srcCompat">@drawable/ic_question_answer_24dp</item>
+    </style>
+
+    <style name="Fab_Add_Contact" parent="Fab">
+        <item name="srcCompat">@drawable/ic_person_add_24dp</item>
+    </style>
+
+    <style name="Bottom_Navigation">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="itemBackground">@color/colorPrimary</item>
+        <item name="itemIconTint">@android:color/white</item>
+        <item name="itemTextColor">@android:color/white</item>
+    </style>
 </resources>

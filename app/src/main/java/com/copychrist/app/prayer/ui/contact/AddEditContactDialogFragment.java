@@ -50,8 +50,8 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_save_contact, null);
         alertDialogBuilder.setView(dialogView);
 
-        txtFirstName = dialogView.findViewById(R.id.text_contact_first_name);
-        txtLastName = dialogView.findViewById(R.id.text_contact_last_name);
+        txtFirstName = dialogView.findViewById(R.id.txt_contact_first_name);
+        txtLastName = dialogView.findViewById(R.id.txt_contact_last_name);
 
         if(contact != null) {
             alertDialogBuilder.setTitle(R.string.dialog_edit_contact_title);

@@ -8,6 +8,7 @@ import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.contactgroups.ContactGroupActivity;
 import com.copychrist.app.prayer.ui.login.LoginActivity;
 import com.copychrist.app.prayer.ui.prayerlist.PrayerListActivity;
+import com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestDetailActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -64,7 +65,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
     @OnClick(R.id.icon_container_prayer_requests)
     public void onPrayerRequestsClick() {
-        //startActivity(BibleVerseActivity.getStartIntent(this, null));
+        startActivity(PrayerRequestDetailActivity.getStartAddIntent(this, "zzz"));
     }
 
     @OnClick(R.id.icon_container_contact_groups)
@@ -74,7 +75,9 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
     @OnClick(R.id.icon_container_contacts)
     public void onContactsClick() {
-        //startActivity(BibleVerseActivity.getStartIntent(this, null));
+        //TODO :: hook up a simple presenter to save verses
+//        BiblePassageFinderDialogFragment biblePassageFinderDialogFragment = BiblePassageFinderDialogFragment.newInstance();
+//        biblePassageFinderDialogFragment.show(getSupportFragmentManager(), "BiblePassageFinderDialogFragment");
     }
 
     @OnClick(R.id.icon_container_bible_verses)

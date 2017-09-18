@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.util.CircleTransform;
@@ -37,7 +38,7 @@ import butterknife.ButterKnife;
  * Inspired by Ravi Tamada on 21/02/17.
  * https://www.androidhive.info/2017/02/android-creating-gmail-like-inbox-using-recyclerview/
  */
-public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListRequestAdapter.ViewHolder> {
+public class PrayerListRequestSelectableSwipeableAdapter extends RecyclerView.Adapter<PrayerListRequestSelectableSwipeableAdapter.ViewHolder> {
     private Context context;
     private List<PrayerListRequest> prayerListRequests;
     private PrayerListRequestAdapterListener prayerListRequestAdapterListener;
@@ -46,6 +47,7 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
     // array used to perform multiple animation at once
     private SparseBooleanArray animationItemsIndex;
     private boolean reverseAllAnimations = false;
+    private ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     // index is used to animate only the selected row
     // dirty fix, find a better solution
@@ -53,22 +55,22 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.swipe_layout) SwipeRevealLayout swipeLayout;
-        @BindView(R.id.delete_layout) LinearLayout deleteLayout;
+        @BindView(R.id.layout_swipeable_item_container) SwipeRevealLayout swipeLayout;
+        @BindView(R.id.layout_swipeable_menu) LinearLayout deleteLayout;
         @BindView(R.id.swipe_btn_archive) RelativeLayout btnArchive;
         @BindView(R.id.swipe_btn_remove) RelativeLayout btnRemove;
-        @BindView(R.id.swipe_btn_more) RelativeLayout btnMore;
+        @BindView(R.id.swipe_btn_edit) RelativeLayout btnEdit;
 
-        @BindView(R.id.layout_request_item_container) LinearLayout itemContainer;
-        @BindView(R.id.icon_container) RelativeLayout iconContainer;
-        @BindView(R.id.icon_back) RelativeLayout iconBack;
-        @BindView(R.id.icon_front) RelativeLayout iconFront;
+        @BindView(R.id.layout_item_content) LinearLayout itemContainer;
+        @BindView(R.id.layout_item_icon) RelativeLayout iconContainer;
+        @BindView(R.id.layout_icon_back) RelativeLayout iconBack;
+        @BindView(R.id.layout_icon_front) RelativeLayout iconFront;
         @BindView(R.id.txt_contact_name) TextView txtContactName;
         @BindView(R.id.txt_request_title) TextView txtRequestTitle;
         @BindView(R.id.txt_request_details) TextView txtRequestDesc;
         @BindView(R.id.txt_icon_text) TextView txtIconText;
         @BindView(R.id.txt_timestamp) TextView txtTimeStamp;
-        @BindView(R.id.icon_profile) ImageView imgProfile;
+        @BindView(R.id.img_icon_profile) ImageView imgProfile;
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -83,8 +85,12 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
             txtRequestTitle.setText(prayerListRequest.getTitle());
             txtRequestDesc.setText(prayerListRequest.getDesc());
 
-            if(prayerListRequest.getEndDate() != null)
+            if(prayerListRequest.getEndDate() == null) {
+                txtTimeStamp.setVisibility(View.GONE);
+            } else {
+                txtTimeStamp.setVisibility(View.VISIBLE);
                 txtTimeStamp.setText(dateFormat.format(prayerListRequest.getEndDate()));
+            }
 
             // displaying the first letter of From in icon text
             txtIconText.setText(prayerListRequest.getContactName().substring(0, 1));
@@ -100,18 +106,20 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         void onMoreClicked(int position);
     }
 
-    public PrayerListRequestAdapter(Context context, PrayerListRequestAdapterListener listener) {
+    public PrayerListRequestSelectableSwipeableAdapter(Context context, PrayerListRequestAdapterListener listener) {
         super();
         this.context = context;
         this.prayerListRequestAdapterListener = listener;
         selectedItems = new SparseBooleanArray();
         animationItemsIndex = new SparseBooleanArray();
+
+        viewBinderHelper.setOpenOnlyOne(true);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_prayer_list_request, parent, false);
+                .inflate(R.layout.item_prayer_request_swipeable_selectable, parent, false);
 
         return new ViewHolder(itemView);
     }
@@ -121,19 +129,21 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
 
         PrayerListRequest prayerListRequest = prayerListRequests.get(position);
 
+        viewBinderHelper.bind(holder.swipeLayout, prayerListRequest.getKey());
+
         holder.bind(prayerListRequest);
 
         boolean rowStateActive = false;
-        if(prayerListRequest.getPrayerRequest().getLastPrayedFor() != null) {
-            long prayedForLast = prayerListRequest.getPrayerRequest().getLastPrayedFor();
-            if (prayedForLast > 0 && prayedForLast < Utils.getCurrentTime(Utils.TWELVE_HOUR_OFFSET)) {
-                // change the row state to activated
-                rowStateActive = true;
-                selectedItems.put(position, true);
-                animationItemsIndex.put(position, true);
-                applyIconAnimation(holder, position);
-            }
-        }
+//        if(prayerListRequest.getPrayerRequest().getLastPrayedFor() != null) {
+//            long prayedForLast = prayerListRequest.getPrayerRequest().getLastPrayedFor();
+//            if (prayedForLast > 0 && prayedForLast < Utils.getCurrentTime(Utils.TWELVE_HOUR_OFFSET)) {
+//                // change the row state to activated
+//                rowStateActive = true;
+//                selectedItems.put(position, true);
+//                animationItemsIndex.put(position, true);
+//                applyIconAnimation(holder, position);
+//            }
+//        }
 
         holder.itemView.setActivated(selectedItems.get(position, rowStateActive));
 
@@ -148,6 +158,7 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
 
         // apply click events
         applyClickEvents(holder, position);
+
 
     }
 
@@ -192,13 +203,17 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         holder.btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PrayerListRequest prayerListRequest = prayerListRequests.get(position);
+                viewBinderHelper.closeLayout(prayerListRequest.getKey());
                 prayerListRequestAdapterListener.onRemoveClicked(position);
             }
         });
 
-        holder.btnMore.setOnClickListener(new View.OnClickListener() {
+        holder.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PrayerListRequest prayerListRequest = prayerListRequests.get(position);
+                viewBinderHelper.closeLayout(prayerListRequest.getKey());
                 prayerListRequestAdapterListener.onMoreClicked(position);
             }
         });
@@ -206,6 +221,8 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         holder.btnArchive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PrayerListRequest prayerListRequest = prayerListRequests.get(position);
+                viewBinderHelper.closeLayout(prayerListRequest.getKey());
                 prayerListRequestAdapterListener.onArchiveClicked(position);
             }
         });
@@ -259,7 +276,7 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         }
     }
 
-    public void resetAnimationIndex() {
+    private void resetAnimationIndex() {
         reverseAllAnimations = false;
         animationItemsIndex.clear();
     }
@@ -295,9 +312,10 @@ public class PrayerListRequestAdapter extends RecyclerView.Adapter<PrayerListReq
         notifyItemChanged(pos);
     }
 
-    public void clearSelections() {
+    private void clearSelections() {
         reverseAllAnimations = true;
         selectedItems.clear();
+        resetAnimationIndex();
         notifyDataSetChanged();
     }
 

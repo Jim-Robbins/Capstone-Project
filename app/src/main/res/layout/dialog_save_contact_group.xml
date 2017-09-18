@@ -11,11 +11,11 @@
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/text_group_name"
+            android:id="@+id/txt_group_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/dialog_contact_group_name_hint"
-            android:inputType="text"
+            android:inputType="textCapWords"
             android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
@@ -24,18 +24,16 @@
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/text_group_desc"
+            android:id="@+id/txt_group_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/dialog_contact_group_desc_hint"
-            android:inputType="text"
+            android:inputType="textCapSentences"
             android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/required_fields"
-        android:textColor="@color/colorAccent"
-        android:textStyle="italic" />
+        style="@style/Required_Field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

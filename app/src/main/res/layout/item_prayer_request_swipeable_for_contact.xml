@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_swipeable_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_swipeable_row_height"
+    android:background="@drawable/bg_list_row"
+    android:clickable="true"
+    android:focusable="true"
+    app:dragEdge="right"
+    app:mode="same_level">
+
+    <LinearLayout
+        android:id="@+id/layout_swipeable_menu"
+        android:layout_width="@dimen/item_swipe_tri_button"
+        android:layout_height="@dimen/item_swipeable_row_height">
+
+        <RelativeLayout
+            android:id="@+id/swipe_btn_edit"
+            style="@style/Swipe_Btn_Edit_Container"
+            android:layout_alignParentEnd="true">
+
+            <ImageView style="@style/Swipe_Btn_Edit_Icon" />
+
+            <TextView
+                style="@style/Swipe_Btn_Text"
+                android:text="@string/btn_edit" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/swipe_btn_archive"
+            style="@style/Swipe_Btn_Archive_Container">
+
+            <ImageView style="@style/Swipe_Btn_Archive_Icon" />
+
+            <TextView
+                style="@style/Swipe_Btn_Text"
+                android:text="@string/btn_archive" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/swipe_btn_remove"
+            style="@style/Swipe_Btn_Remove_Container">
+
+            <ImageView style="@style/Swipe_Btn_Remove_Icon" />
+
+            <TextView
+                style="@style/Swipe_Btn_Text"
+                android:text="@string/btn_remove" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/item_top_bottom_padding"
+        android:paddingEnd="@dimen/item_start_end_padding"
+        android:paddingStart="@dimen/item_start_end_padding"
+        android:paddingTop="@dimen/item_top_bottom_padding">
+
+        <TextView
+            android:id="@+id/txt_request_title"
+            style="@style/Item_Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Request Title" />
+
+        <TextView
+            android:id="@+id/txt_request_desc"
+            style="@style/Item_Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_request_title"
+            tools:text="Request Desc Lorem ipsum bisum meepsum blopsum dippty doo, bing bang boom boom" />
+
+        <TextView
+            android:id="@+id/txt_verse"
+            style="@style/Item_Sub_Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_request_desc"
+            tools:text="John 3:16" />
+
+        <TextView
+            android:id="@+id/txt_timestamp"
+            style="@style/Item_Timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            tools:text="Sept 17,2017" />
+    </RelativeLayout>
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

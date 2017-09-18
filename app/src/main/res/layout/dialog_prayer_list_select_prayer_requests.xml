@@ -1,40 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <RelativeLayout
-        android:id="@+id/btn_add_new_passage"
+        style="@style/Item_Add_Container"
+        android:id="@+id/btn_add"
         android:layout_width="match_parent"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/recycler_view"
-        android:background="@color/lime_400">
+        android:paddingBottom="@dimen/item_add_top_bottom_padding"
+        android:paddingStart="@dimen/item_start_end_padding"
+        android:paddingTop="@dimen/item_add_top_bottom_padding">
 
         <ImageView
-            android:id="@+id/icon_circle"
+            style="@style/Item_Add_Circle"
+            android:id="@+id/img_icon_circle"
             android:layout_width="@dimen/item_icon_width_height"
-            android:layout_height="@dimen/item_icon_width_height"
-            android:tint="@color/green_400"
-            android:src="@drawable/bg_circle" />
+            android:layout_height="@dimen/item_icon_width_height" />
 
         <ImageView
+            style="@style/Item_Add_Icon"
             android:layout_width="@dimen/item_icon_width_height"
-            android:layout_height="@dimen/item_icon_width_height"
-            android:src="@drawable/ic_add_24dp" />
+            android:layout_height="@dimen/item_icon_width_height" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dialog_bible_passage_add"
             android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@id/icon_circle"/>
+            android:layout_marginStart="@dimen/item_start_end_padding"
+            android:layout_toEndOf="@id/img_icon_circle"
+            android:text="@string/dialog_prayer_list_add_request" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -42,7 +39,7 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_add_new_passage"
-        />
+        android:layout_below="@+id/btn_add"
+         />
 
 </RelativeLayout>

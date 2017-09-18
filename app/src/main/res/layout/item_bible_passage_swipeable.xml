@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_swipeable_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_swipeable_row_height"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    app:dragEdge="right"
+    app:mode="same_level">
+
+    <LinearLayout
+        android:id="@+id/layout_swipeable_menu"
+        android:layout_width="@dimen/item_swipe_single_button"
+        android:layout_height="@dimen/item_swipeable_row_height">
+
+        <RelativeLayout
+            android:id="@+id/swipe_btn_remove"
+            style="@style/Swipe_Btn_Remove_Container">
+
+            <ImageView
+                style="@style/Swipe_Btn_Remove_Icon" />
+
+            <TextView
+                style="@style/Swipe_Btn_Text"
+                android:text="@string/btn_remove" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/item_top_bottom_padding"
+        android:paddingStart="@dimen/item_start_end_padding"
+        android:paddingEnd="@dimen/item_start_end_padding"
+        android:paddingBottom="@dimen/item_top_bottom_padding">
+
+        <TextView
+            style="@style/Item_Primary"
+            android:id="@+id/txt_bible_passage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            tools:text="John 3:16" />
+
+        <TextView
+            style="@style/Item_Sub_Secondary"
+            android:id="@+id/txt_verse_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="For God so loved the world that He gave His only begotten son, that whosoever believeth in Him, should not perish but have everlasting life." />
+    </LinearLayout>
+
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

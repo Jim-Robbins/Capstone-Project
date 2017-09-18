@@ -1,9 +1,7 @@
 package com.copychrist.app.prayer.ui.prayerrequest;
 
-import com.copychrist.app.prayer.adapter.PrayerListsListAdapter;
 import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BasePresenter;
 
@@ -19,21 +17,24 @@ public class PrayerRequestContract {
         void showBiblePassageAddDialog();
         void showBiblePassages(List<BiblePassage> listResults, List<BiblePassage> nonListResults);
         void showContactDetail(Contact selectedContact);
-        void showPrayerRequestDetails(PrayerRequest prayerRequest, PrayerListsListAdapter prayerListsListAdapter);
+        void showPrayerRequestDetails(PrayerRequest prayerRequest);
         void showDatabaseResultMessage(String message);
         void showDatabaseResultMessage(int messageResId);
-        void showContactSelector();
+        void showContactSelector(List<Contact> contacts);
+        //void showPrayerListSelector(List<PrayerList> prayerLists);
     }
 
     public interface Presenter extends BasePresenter<View> {
         void onBiblePassagesAddedToPrayerRequest(List<String> selectedPassageKeys);
         void onBiblePassageAddNew();
         void onBiblePassageSave(BiblePassage biblePassage);
+        void onBiblePassageRemove(BiblePassage biblePassage);
         void onBiblePassageDeleteCompleted();
         void onBiblePassageResults(List<BiblePassage> listResults, List<BiblePassage> nonListResults);
+        void onContactsResults(List<Contact> contacts);
         void onDataResultMessage(String message);
         void onDataResultMessage(int messageResId);
-        void onPrayerListResults(List<PrayerList> prayerLists);
+        //void onPrayerListResults(List<PrayerList> prayerLists);
         void onPrayerRequestDelete();
         void onPrayerRequestDeleteCompleted();
         void onPrayerRequestArchive();
@@ -47,6 +48,9 @@ public class PrayerRequestContract {
         void onBiblePassageSave(BiblePassage biblePassage);
         void onBiblePassageDelete(BiblePassage biblePassage);
         void onBiblePassagesLoad(List<String> selectedPassages);
+        void onBiblePassageRemoveFromPrayerRequest(String prayerRequestKey, String biblePassageRef);
+        void onContactsLoad();
+        //void onPrayerListsLoad();
         void onPrayerRequestSave(PrayerRequest prayerRequest);
         void onPrayerRequestArchive(PrayerRequest prayerRequest);
         void onPrayerRequestUnarchive(PrayerRequest prayerRequest);

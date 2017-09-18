@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.adapter.PrayerListRequestAdapter;
+import com.copychrist.app.prayer.adapter.PrayerRequestSelectableRVAdapter;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 
 import java.util.ArrayList;
@@ -23,13 +23,14 @@ import timber.log.Timber;
 
 /**
  * Created by jim on 9/10/17.
+ * Dialog shown when adding Prayer Requests to Prayer List
  */
 
-public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment implements PrayerListRequestAdapter.PrayerListRequestAdapterListener {
+public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment implements PrayerRequestSelectableRVAdapter.PrayerRequestSelectableListener {
     private List<PrayerListRequest> prayerListRequests;
     private List<String> selectedPrayerRequestKeys = new ArrayList<>();
     private PrayerListContract.Presenter presenter;
-    private PrayerListRequestAdapter prayerRequestsListAdapter;
+    private PrayerRequestSelectableRVAdapter prayerRequestsListAdapter;
 
     public static AddPrayerRequestDialogFragment newAddInstance(PrayerListContract.Presenter presenter) {
         AddPrayerRequestDialogFragment frag = new AddPrayerRequestDialogFragment();
@@ -38,17 +39,12 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
     }
 
     @Override
-    public void onIconClicked(int position) {
+    public void onSelectionRowClicked(int position) {
         toggleSelection(position);
     }
 
     @Override
-    public void onRowClicked(int position) {
-        toggleSelection(position);
-    }
-
-    @Override
-    public void onRowLongClicked(int position) {
+    public void onSelectionRowLongClicked(int position) {
         PrayerListRequest prayerListRequest = prayerListRequests.get(position);
         presenter.onPrayerRequestEditClick(prayerListRequest.getPrayerRequest());
     }
@@ -66,16 +62,16 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
         // Inflate custom view
-        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_to_prayer_list, null);
+        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_prayer_list_select_prayer_requests, null);
         alertDialogBuilder.setView(dialogView);
 
         alertDialogBuilder.setTitle(R.string.dialog_prayer_list_add_request_title);
 
         RecyclerView recyclerView = dialogView.findViewById(R.id.recycler_view);
-        RelativeLayout btnCreateNew = dialogView.findViewById(R.id.btn_create_request);
+        RelativeLayout btnCreateNew = dialogView.findViewById(R.id.btn_add);
         btnCreateNew.setOnClickListener(onCreateClick);
 
-        prayerRequestsListAdapter = new PrayerListRequestAdapter(this.getContext(), this);
+        prayerRequestsListAdapter = new PrayerRequestSelectableRVAdapter(this.getContext(), this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -124,22 +120,8 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
         prayerRequestsListAdapter.toggleSelection(position);
     }
 
-    private final void editPrayerRequest() {
+    private void editPrayerRequest() {
         presenter.onPrayerRequestsAddNewRequest();
     }
 
-    @Override
-    public void onRemoveClicked(int position) {
-
-    }
-
-    @Override
-    public void onArchiveClicked(int position) {
-
-    }
-
-    @Override
-    public void onMoreClicked(int position) {
-
-    }
 }

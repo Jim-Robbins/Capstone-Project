@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingTop="@dimen/item_top_bottom_padding"
+    android:paddingStart="@dimen/item_start_end_padding"
+    android:paddingEnd="@dimen/item_start_end_padding"
+    android:paddingBottom="@dimen/item_top_bottom_padding">
+
+    <LinearLayout
+        android:id="@+id/layout_item_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/item_start_end_padding"
+        android:paddingStart="@dimen/item_content_start_padding">
+
+        <TextView
+            style="@style/Item_Primary"
+            android:id="@+id/txt_contact_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            tools:text="Jim Robbins" />
+
+        <TextView
+            style="@style/Item_Secondary"
+            android:id="@+id/txt_request_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            tools:text="Wisdom for working on project" />
+
+        <TextView
+            style="@style/Item_Sub_Secondary"
+            android:id="@+id/txt_request_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            tools:text="Diligence, determination, and peace." />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/layout_icon_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                style="@style/Item_Selected"
+                android:layout_width="@dimen/item_icon_width_height"
+                android:layout_height="@dimen/item_icon_width_height" />
+
+            <ImageView
+                style="@style/Item_Select_Icon"
+                android:layout_width="@dimen/item_icon_inner_width_height"
+                android:layout_height="@dimen/item_icon_inner_width_height" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_icon_front"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                style="@style/Item_UnSelected"
+                android:layout_width="@dimen/item_icon_width_height"
+                android:layout_height="@dimen/item_icon_width_height"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/Item_Timestamp"
+        android:id="@+id/txt_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        tools:text="Sept 17,2017" />
+</RelativeLayout>

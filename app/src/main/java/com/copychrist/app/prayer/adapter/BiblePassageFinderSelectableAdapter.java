@@ -7,7 +7,6 @@ import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,7 +26,7 @@ import butterknife.ButterKnife;
  * https://www.androidhive.info/2017/02/android-creating-gmail-like-inbox-using-recyclerview/
  */
 
-public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVerseRecyclerViewAdapter.ViewHolder> {
+public class BiblePassageFinderSelectableAdapter extends RecyclerView.Adapter<BiblePassageFinderSelectableAdapter.ViewHolder> {
     private Context context;
     private List<BiblePassage> biblePassages;
     private BiblePassageAdapterListener biblePassageAdapterListener;
@@ -43,12 +42,12 @@ public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVer
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.layout_item_container) LinearLayout itemContainer;
-        @BindView(R.id.text_bible_passage) TextView biblePassage;
-        @BindView(R.id.text_verse_text) TextView verseText;
-        @BindView(R.id.icon_container) RelativeLayout iconContainer;
-        @BindView(R.id.icon_back) RelativeLayout iconBack;
-        @BindView(R.id.icon_front) RelativeLayout iconFront;
+        @BindView(R.id.layout_item_container) RelativeLayout itemContainer;
+        @BindView(R.id.txt_bible_passage) TextView biblePassage;
+        @BindView(R.id.txt_verse_text) TextView verseText;
+        @BindView(R.id.layout_item_icon) RelativeLayout iconContainer;
+        @BindView(R.id.layout_icon_back) RelativeLayout iconBack;
+        @BindView(R.id.layout_icon_front) RelativeLayout iconFront;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -66,7 +65,7 @@ public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVer
         void onRowLongClicked(int position);
     }
 
-    public BibleVerseRecyclerViewAdapter(Context context, BiblePassageAdapterListener listener) {
+    public BiblePassageFinderSelectableAdapter(Context context, BiblePassageAdapterListener listener) {
         super();
         this.context = context;
         this.biblePassageAdapterListener = listener;
@@ -77,7 +76,7 @@ public class BibleVerseRecyclerViewAdapter extends RecyclerView.Adapter<BibleVer
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
-                                                R.layout.item_bible_passage,
+                                                R.layout.item_bible_passage_selectable,
                                                 parent,
                                                 false);
 

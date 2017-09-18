@@ -34,8 +34,8 @@ public class PrayerRequest implements Parcelable {
     @Nullable private Long endDate;
     public static final String CHILD_END_DATE = "endDate";
 
-    @Nullable private List<String> passages = new ArrayList<>();
-    public static final String CHILD_PASSAGES = "passages";
+    @Nullable private HashMap<String, Boolean> biblePassages = new HashMap<String, Boolean>();
+    public static final String CHILD_PASSAGES = "biblePassages";
 
     @Nullable private Long lastPrayedFor;
     public static final String CHILD_LAST_PRAYED_FOR = "lastPrayedFor";
@@ -112,23 +112,15 @@ public class PrayerRequest implements Parcelable {
     }
 
     @Nullable
-    public List<String> getPassages() {
-        return passages;
+    public HashMap<String, Boolean> getBiblePassages() {
+        return biblePassages;
     }
+
     @Exclude
-    public List<String> setPassages(List<String> passages) {
-        this.passages.addAll(passages);
-        return this.passages;
-    }
-    @Exclude
-    public List<String> addPassage(String passage) {
-        this.passages.add(passage);
-        return this.passages;
-    }
-    @Exclude
-    public List<String> removePassage(String passage) {
-        this.passages.remove(passage);
-        return this.passages;
+    public List<String> getBiblePassagesAsList() {
+        HashMap<String, Boolean> passageMap = biblePassages;
+        List<String> keySet = new ArrayList<>(passageMap.keySet());
+        return keySet;
     }
 
     @Nullable
@@ -178,12 +170,7 @@ public class PrayerRequest implements Parcelable {
         title = in.readString();
         description = in.readString();
         endDate = in.readByte() == 0x00 ? null : in.readLong();
-        if (in.readByte() == 0x01) {
-            passages = new ArrayList<String>();
-            in.readList(passages, String.class.getClassLoader());
-        } else {
-            passages = null;
-        }
+        biblePassages = (HashMap) in.readValue(HashMap.class.getClassLoader());
         lastPrayedFor = in.readByte() == 0x00 ? null : in.readLong();
         answered = in.readByte() == 0x00 ? null : in.readLong();
         dateCreated = in.readByte() == 0x00 ? null : in.readLong();
@@ -208,12 +195,7 @@ public class PrayerRequest implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeLong(endDate);
         }
-        if (passages == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(passages);
-        }
+        dest.writeValue(biblePassages);
         if (lastPrayedFor == null) {
             dest.writeByte((byte) (0x00));
         } else {

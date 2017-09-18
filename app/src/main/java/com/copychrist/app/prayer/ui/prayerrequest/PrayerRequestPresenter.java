@@ -2,10 +2,10 @@ package com.copychrist.app.prayer.ui.prayerrequest;
 
 import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.Contact;
-import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.ViewMode;
 
+import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
@@ -23,7 +23,8 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     private final PrayerRequestContract.Service dataService;
     private PrayerRequestContract.View prayerRequestView;
     private String prayerListKey;
-
+    private List<BiblePassage> listResults;
+    private List<BiblePassage> nonListResults;
 
     public PrayerRequestPresenter(final PrayerRequestService dataService, Contact contact, PrayerRequest prayerRequest, String prayerListKey) {
         this.dataService = dataService;
@@ -47,13 +48,14 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
         if(selectedContact != null) {
             prayerRequestView.showContactDetail(selectedContact);
         } else if (selectedPrayerRequest != null) {
-            selectedBiblePassages = selectedPrayerRequest.getPassages();
-            prayerRequestView.showPrayerRequestDetails(selectedPrayerRequest, null);
+            selectedBiblePassages = selectedPrayerRequest.getBiblePassagesAsList();
+            prayerRequestView.showPrayerRequestDetails(selectedPrayerRequest);
         } else {
-            prayerRequestView.showContactSelector();
+            dataService.onContactsLoad();
         }
 
         dataService.onBiblePassagesLoad(selectedBiblePassages);
+        //dataService.onPrayerListsLoad();
     }
 
     @Override
@@ -61,14 +63,16 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
         prayerRequestView = null;
         dataService.onDestroy();
     }
-
-    @Override
-    public void onPrayerListResults(List<PrayerList> prayerLists) {
-        //PrayerListsListAdapter prayerListsListAdapter = new PrayerListsListAdapter(this);
-    }
+//
+//    @Override
+//    public void onPrayerListResults(List<PrayerList> prayerLists) {
+//        prayerRequestView.showPrayerListSelector(prayerLists);
+//    }
 
     @Override
     public void onBiblePassageResults(List<BiblePassage> listResults, List<BiblePassage> nonListResults) {
+        this.listResults = listResults;
+        this.nonListResults = nonListResults;
         prayerRequestView.showBiblePassages(listResults, nonListResults);
     }
 
@@ -104,17 +108,21 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     @Override
     public void onPrayerRequestDeleteCompleted() {
         Timber.d("onPrayerRequestDeleteCompleted");
-        prayerRequestView.finish();
+        if(prayerRequestView != null) {
+            prayerRequestView.finish();
+        }
     }
 
     @Override
     public void onDataResultMessage(String message) {
-        prayerRequestView.showDatabaseResultMessage(message);
+        if(prayerRequestView != null)
+            prayerRequestView.showDatabaseResultMessage(message);
     }
 
     @Override
     public void onDataResultMessage(int messageResId) {
-        prayerRequestView.showDatabaseResultMessage(messageResId);
+        if(prayerRequestView != null)
+            prayerRequestView.showDatabaseResultMessage(messageResId);
     }
 
     @Override
@@ -123,8 +131,23 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
             if (selectedPrayerRequest == null) {
                 selectedPrayerRequest = new PrayerRequest();
             }
-            selectedPrayerRequest.setPassages(selectedPassageKeys);
+            HashMap<String, Boolean> passagesMap = selectedPrayerRequest.getBiblePassages();
+            for (String passage: selectedPassageKeys) {
+                passagesMap.put(passage, true);
+            }
         }
+
+        for (BiblePassage passage : nonListResults) {
+            Timber.d(passage.getKey() + " contained in + " + selectedPassageKeys.toString());
+            if(selectedPassageKeys.contains(passage.getPassageReference())) {
+                listResults.add(passage);
+            }
+        }
+        for (BiblePassage removePassage : listResults) {
+            nonListResults.remove(removePassage);
+        }
+
+        prayerRequestView.showBiblePassages(listResults, nonListResults);
     }
 
     @Override
@@ -140,5 +163,20 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     @Override
     public void onBiblePassageDeleteCompleted() {
 
+    }
+
+    @Override
+    public void onContactsResults(List<Contact> contacts) {
+        prayerRequestView.showContactSelector(contacts);
+    }
+
+    @Override
+    public void onBiblePassageRemove(BiblePassage biblePassage) {
+        nonListResults.add(biblePassage);
+        listResults.remove(biblePassage);
+        prayerRequestView.showBiblePassages(listResults, nonListResults);
+        if(selectedPrayerRequest.getKey() != null) {
+            dataService.onBiblePassageRemoveFromPrayerRequest(selectedPrayerRequest.getKey(), biblePassage.getPassageReference());
+        }
     }
 }

@@ -37,20 +37,19 @@
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
         <ImageButton
+            style="@style/Dialog_Search_Btn"
             android:id="@+id/btn_find"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:tint="@color/colorAccent"
-            android:src="@drawable/ic_search_24dp"/>
+            android:layout_width="@dimen/dialog_search_btn_width_height"
+            android:layout_height="@dimen/dialog_search_btn_width_height"/>
     </LinearLayout>
-
     <TextView
+        style="@style/Required_Field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        style="@style/Dialog_Search_Text"
         android:id="@+id/txt_search_result"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="@dimen/dialog_search_result_font_size"
-        android:maxLines = "20"
-        android:scrollbars = "vertical"
-        android:fadeScrollbars="false"
         android:layout_margin="8dp" />
 </LinearLayout>

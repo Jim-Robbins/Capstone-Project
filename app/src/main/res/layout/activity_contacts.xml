@@ -16,20 +16,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"
-            app:tabMode="scrollable"/>
+            app:tabMode="scrollable" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_contacts" />
+    <include layout="@layout/content_contact_groups" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:tint="@android:color/white"
-        app:srcCompat="@drawable/ic_person_add_24dp"
-        android:tooltipText="Add Text"/>
+        style="@style/Fab_Add_Contact"
+        android:tooltipText="Add Text" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -92,11 +92,17 @@
     <string name="dialog_prayer_list_add_request_title">Select Requests To Add To The List</string>
     <string name="btn_remove">Remove</string>
     <string name="btn_more">More</string>
-    <string name="widget_title">Praying With Dedication - Prayer List</string>
+    <string name="widget_title">Prayer List</string>
     <string name="dialog_bible_passage_add">Add A New Bible Passage</string>
     <string name="dialog_bible_passage_title">Add or Select a Bible Passage</string>
     <string name="dialog_search_verse">Verse(s)</string>
     <string name="dialog_search_and_save_bible_passage_title">Bible Passage Finder</string>
     <string name="btn_find">Find</string>
     <string name="spinner_books_hint">Bible Books</string>
+    <string name="spinner_contacts_hint">Select a contact</string>
+    <string name="contact">Contact</string>
+    <string name="item_selected_acc">Item Selected</string>
+    <string name="item_unselected_acc">Item Not Selected</string>
+    <string name="btn_edit">Edit</string>
+    <string name="item_more_requests">More Requests...</string>
 </resources>

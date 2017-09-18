@@ -2,46 +2,44 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/widget_margin"
-    android:background="@color/grey_400">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/widget_margin"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/colorPrimaryDark">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/widget_margin">
+            android:layout_margin="@dimen/widget_margin">
 
             <ImageView
                 android:id="@+id/widget_icon"
                 android:layout_width="@dimen/widget_icon"
                 android:layout_height="@dimen/widget_icon"
+                android:layout_margin="@dimen/widget_margin"
                 android:layout_centerVertical="true"
                 android:scaleType="centerInside"
                 android:src="@mipmap/ic_launcher" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/small_space"
                 android:text="@string/widget_title"
-                android:textAppearance="@android:style/TextAppearance.Small"
-                android:textStyle="bold" />
+                android:layout_marginStart="@dimen/normal_space"
+                android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Title"/>
         </LinearLayout>
 
         <ListView
+            android:background="@color/color_white"
             android:id="@+id/widget_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/widget_margin"
-            tools:listitem="@layout/widget_item_request" />
+            tools:listitem="@layout/widget_item_prayer_request" />
 
         <TextView
             android:id="@+id/widget_empty"

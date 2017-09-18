@@ -97,7 +97,7 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int position) {
-            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_item_request);
+            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_item_prayer_request);
             if (position < prayerListRequests.size()) {
 
                 PrayerListRequest prayerRequest = prayerListRequests.get(position);

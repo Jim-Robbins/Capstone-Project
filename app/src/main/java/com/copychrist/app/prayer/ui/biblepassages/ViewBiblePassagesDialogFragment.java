@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.adapter.BibleVerseRecyclerViewAdapter;
+import com.copychrist.app.prayer.adapter.BiblePassageFinderSelectableAdapter;
 import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestContract;
 
@@ -27,14 +27,13 @@ import timber.log.Timber;
  */
 
 public class ViewBiblePassagesDialogFragment extends AppCompatDialogFragment
-        implements BibleVerseRecyclerViewAdapter.BiblePassageAdapterListener {
+        implements BiblePassageFinderSelectableAdapter.BiblePassageAdapterListener {
 
     private PrayerRequestContract.Presenter presenter;
 
     private List<BiblePassage> biblePassages;
     private List<String> selectedPassageKeys = new ArrayList<>();
-    private List<String> prayerRequestVerses;
-    private BibleVerseRecyclerViewAdapter bibleVerseRecyclerViewAdapter;
+    private BiblePassageFinderSelectableAdapter BiblePassageFinderSelectableAdapter;
 
     View.OnClickListener onCreateClick = new View.OnClickListener() {
         @Override
@@ -56,23 +55,23 @@ public class ViewBiblePassagesDialogFragment extends AppCompatDialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
-        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_view_bible_verses, null);
+        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_prayer_request_select_bible_passages, null);
         alertDialogBuilder.setView(dialogView);
 
         alertDialogBuilder.setTitle(R.string.dialog_bible_passage_title);
 
         RecyclerView recyclerView = dialogView.findViewById(R.id.recycler_view);
-        RelativeLayout btnCreateNew = dialogView.findViewById(R.id.btn_add_new_passage);
+        RelativeLayout btnCreateNew = dialogView.findViewById(R.id.btn_add);
         btnCreateNew.setOnClickListener(onCreateClick);
 
-        bibleVerseRecyclerViewAdapter = new BibleVerseRecyclerViewAdapter(dialogView.getContext(), this);
+        BiblePassageFinderSelectableAdapter = new BiblePassageFinderSelectableAdapter(dialogView.getContext(), this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(bibleVerseRecyclerViewAdapter);
+        recyclerView.setAdapter(BiblePassageFinderSelectableAdapter);
 
 
-        bibleVerseRecyclerViewAdapter.setAdapterData(biblePassages);
+        BiblePassageFinderSelectableAdapter.setAdapterData(biblePassages);
 
         // Setup Confirm button
         alertDialogBuilder.setPositiveButton(R.string.btn_add, new DialogInterface.OnClickListener() {
@@ -101,7 +100,7 @@ public class ViewBiblePassagesDialogFragment extends AppCompatDialogFragment
     }
 
     private void saveBiblePassagesToPrayerRequest() {
-        List<Integer> selectedRows = bibleVerseRecyclerViewAdapter.getSelectedItems();
+        List<Integer> selectedRows = BiblePassageFinderSelectableAdapter.getSelectedItems();
         if(selectedRows != null) {
             for (int position : selectedRows) {
                 BiblePassage biblePassage = biblePassages.get(position);
@@ -112,7 +111,7 @@ public class ViewBiblePassagesDialogFragment extends AppCompatDialogFragment
     }
 
     private void toggleSelection(int position) {
-        bibleVerseRecyclerViewAdapter.toggleSelection(position);
+        BiblePassageFinderSelectableAdapter.toggleSelection(position);
     }
 
     private void addNewBiblePassage() {
@@ -121,18 +120,17 @@ public class ViewBiblePassagesDialogFragment extends AppCompatDialogFragment
 
     @Override
     public void onRowClicked(int position) {
-        Timber.d("Huh...wah.. he clicked me!");
         toggleSelection(position);
     }
 
     @Override
     public void onRowLongClicked(int position) {
-        BiblePassage biblePassage = biblePassages.get(position);
-        //presenter.onBiblePassage(biblePassage);
+//        BiblePassage biblePassage = biblePassages.get(position);
+//        //presenter.onBiblePassage(biblePassage);
     }
 
     public void setAdapter(List<BiblePassage> adapter) {
         this.biblePassages = adapter;
-        bibleVerseRecyclerViewAdapter.setAdapterData(biblePassages);
+        BiblePassageFinderSelectableAdapter.setAdapterData(biblePassages);
     }
 }

@@ -12,7 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.model.PrayerList;
+import com.copychrist.app.prayer.model.ContactGroup;
 
 import java.util.List;
 
@@ -24,10 +24,10 @@ import butterknife.ButterKnife;
  *
  */
 
-public class PrayerListsListAdapter extends ArrayAdapter<PrayerList> {
+public class ContactGroupsSpinnerArrayAdapter extends ArrayAdapter<ContactGroup> {
 
-    public PrayerListsListAdapter(@NonNull Context context, @LayoutRes int resource,
-                                  @IdRes int textViewResourceId, @NonNull List<PrayerList> list) {
+    public ContactGroupsSpinnerArrayAdapter(@NonNull Context context, @LayoutRes int resource,
+                                            @IdRes int textViewResourceId, @NonNull List<ContactGroup> list) {
         super(context, resource, textViewResourceId, list);
     }
 
@@ -45,9 +45,9 @@ public class PrayerListsListAdapter extends ArrayAdapter<PrayerList> {
         }
 
         if (viewHolder != null) {
-            final PrayerList prayerList = getItem(position);
-            if(prayerList != null) {
-                viewHolder.textItem.setText(prayerList.getName());
+            final ContactGroup contactGroup = getItem(position);
+            if(contactGroup != null) {
+                viewHolder.textItem.setText(contactGroup.getName());
             }
         }
 
@@ -55,12 +55,10 @@ public class PrayerListsListAdapter extends ArrayAdapter<PrayerList> {
     }
 
     class ViewHolder {
-
         @BindView(R.id.text_spinner_item) TextView textItem;
 
         private ViewHolder(final View itemView) {
             ButterKnife.bind(this, itemView);
         }
     }
-
 }

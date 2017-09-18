@@ -14,6 +14,7 @@ import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.util.Utils;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created by jim on 9/10/17.
@@ -39,7 +40,7 @@ public class ViewPrayerRequestDialogFragment extends AppCompatDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         // Inflate custom view
-        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_view_prayer_request, null);
+        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_prayer_request_card_view, null);
         alertDialogBuilder.setView(dialogView);
 
         TextView txtGroupName = dialogView.findViewById(R.id.txt_group_name);
@@ -48,16 +49,20 @@ public class ViewPrayerRequestDialogFragment extends AppCompatDialogFragment {
         TextView txtLastName = dialogView.findViewById(R.id.txt_contact_last_name);
         TextView txtTitle = dialogView.findViewById(R.id.txt_request_title);
         TextView txtDesc = dialogView.findViewById(R.id.txt_request_desc);
-        TextView txtPassage = dialogView.findViewById(R.id.txt_passage);
-        TextView txtEndDate = dialogView.findViewById(R.id.txt_end_date);
+//        TextView txtPassage = dialogView.findViewById(R.id.txt_passage);
+        TextView txtEndDate = dialogView.findViewById(R.id.txt_timestamp);
 
         txtGroupName.setText(prayerListRequest.getGroupName());
         txtFirstName.setText(prayerListRequest.getContact().getFirstName());
         txtLastName.setText(prayerListRequest.getContact().getLastName());
         txtTitle.setText(prayerListRequest.getTitle());
         txtDesc.setText(prayerListRequest.getDesc());
-        if(!prayerListRequest.getPrayerRequest().getPassages().isEmpty())
-            txtPassage.setText(prayerListRequest.getPrayerRequest().getPassages().get(0));
+
+        List<String> passages = prayerListRequest.getPrayerRequest().getBiblePassagesAsList();
+//        if(!passages.isEmpty()) {
+//            txtPassage.setText(passages.get(0));
+//        }
+
 
         SimpleDateFormat dateFormat = Utils.getDateFormat(this.getContext());
         if(prayerListRequest.getEndDate() != null)

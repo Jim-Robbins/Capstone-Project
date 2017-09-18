@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.adapter.PrayerListRequestAdapter;
+import com.copychrist.app.prayer.adapter.PrayerListRequestSelectableSwipeableAdapter;
 import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.model.PrayerRequest;
@@ -32,7 +32,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class PrayerListActivity extends BaseActivity implements PrayerListContract.View,
-        PrayerListRequestAdapter.PrayerListRequestAdapterListener,
+        PrayerListRequestSelectableSwipeableAdapter.PrayerListRequestAdapterListener,
         DeleteDialogFragment.DeleteActionDialogListener {
 
     private static final String TAG = "PrayerListActivity";
@@ -41,7 +41,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     @BindView(R.id.tab_layout_prayer_list) TabLayout tabLayoutPrayerList;
     @Inject PrayerListContract.Presenter prayerListPresenter;
 
-    private PrayerListRequestAdapter prayerRequestsListAdapter;
+    private PrayerListRequestSelectableSwipeableAdapter prayerRequestsListAdapter;
     private int selectedTabIndex = 0;
     private PrayerList selectedPrayerList;
     public static String EXTRA_PRAYER_LIST = "extra_prayer_list";
@@ -106,7 +106,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     }
 
     private void initPrayerRequestList() {
-        prayerRequestsListAdapter = new PrayerListRequestAdapter(this, this);
+        prayerRequestsListAdapter = new PrayerListRequestSelectableSwipeableAdapter(this, this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
