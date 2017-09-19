@@ -3,6 +3,7 @@ package com.copychrist.app.prayer.ui.prayerrequest;
 import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.model.PresenterState;
 import com.copychrist.app.prayer.ui.ViewMode;
 
 import java.util.HashMap;
@@ -16,19 +17,18 @@ import timber.log.Timber;
 
 public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
 
-    private final ViewMode viewMode;
+    private PrayerRequestContract.View prayerRequestView;
+    private final PrayerRequestContract.Service dataService;
 
+    private ViewMode viewMode;
     private Contact selectedContact;
     private PrayerRequest selectedPrayerRequest;
-    private final PrayerRequestContract.Service dataService;
-    private PrayerRequestContract.View prayerRequestView;
     private String prayerListKey;
     private List<BiblePassage> listResults;
     private List<BiblePassage> nonListResults;
 
     public PrayerRequestPresenter(final PrayerRequestService dataService, Contact contact, PrayerRequest prayerRequest, String prayerListKey) {
         this.dataService = dataService;
-        dataService.setPresenter(this);
         if (prayerRequest == null) {
             this.viewMode = new ViewMode(ViewMode.ADD_MODE);
             this.selectedContact = contact;
@@ -44,6 +44,7 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
     @Override
     public void setView(PrayerRequestContract.View view) {
         prayerRequestView = view;
+        dataService.setPresenter(this);
         List<String> selectedBiblePassages = null;
         if(selectedContact != null) {
             prayerRequestView.showContactDetail(selectedContact);
@@ -56,6 +57,35 @@ public class PrayerRequestPresenter implements PrayerRequestContract.Presenter {
 
         dataService.onBiblePassagesLoad(selectedBiblePassages);
         //dataService.onPrayerListsLoad();
+    }
+
+    @Override
+    public void resetView(PrayerRequestContract.View view) {
+        prayerRequestView = view;
+        dataService.setPresenter(this);
+
+        viewMode = PresenterState.PrayerRequestState.viewMode;
+        selectedContact = PresenterState.PrayerRequestState.selectedContact;
+        selectedPrayerRequest = PresenterState.PrayerRequestState.selectedPrayerRequest;
+        prayerListKey = PresenterState.PrayerRequestState.prayerListKey;
+        listResults = PresenterState.PrayerRequestState.listResults;
+        nonListResults = PresenterState.PrayerRequestState.nonListResults;
+
+        if(selectedContact != null) {
+            prayerRequestView.showContactDetail(selectedContact);
+        } else if (selectedPrayerRequest != null) {
+            prayerRequestView.showPrayerRequestDetails(selectedPrayerRequest);
+        }
+    }
+
+    @Override
+    public void saveState() {
+        PresenterState.PrayerRequestState.viewMode =  viewMode;
+        PresenterState.PrayerRequestState.selectedContact =  selectedContact;
+        PresenterState.PrayerRequestState.selectedPrayerRequest =  selectedPrayerRequest;
+        PresenterState.PrayerRequestState.prayerListKey =  prayerListKey;
+        PresenterState.PrayerRequestState.listResults =  listResults;
+        PresenterState.PrayerRequestState.nonListResults =  nonListResults;
     }
 
     @Override

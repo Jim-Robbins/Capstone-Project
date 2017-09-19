@@ -18,16 +18,16 @@ import com.copychrist.app.prayer.model.PrayerList;
 public class AddEditPrayerListDialogFragment extends AppCompatDialogFragment {
     protected PrayerList prayerList;
     protected int prayerListCounter;
-    protected PrayerListContract.Presenter presenter;
-
     private EditText textPrayerListName;
 
-    public static AddEditPrayerListDialogFragment newInstance(PrayerList prayerList,
-                                                            PrayerListContract.Presenter presenter, int tabCount) {
+    public interface AddEditPrayerListDialogListener {
+        void onPrayerListSaveClick(PrayerList prayerList);
+    }
+
+    public static AddEditPrayerListDialogFragment newInstance(PrayerList prayerList, int tabCount) {
         AddEditPrayerListDialogFragment frag = new AddEditPrayerListDialogFragment();
         frag.prayerList = prayerList;
         frag.prayerListCounter = tabCount;
-        frag.presenter = presenter;
         return frag;
     }
 
@@ -79,7 +79,7 @@ public class AddEditPrayerListDialogFragment extends AppCompatDialogFragment {
             prayerList.setSortOrder(prayerListCounter);
         }
         prayerList.setName(textPrayerListName.getText().toString());
-        presenter.onPrayerListSaveClick(prayerList);
+        ((AddEditPrayerListDialogListener) getActivity()).onPrayerListSaveClick(prayerList);
     }
 }
 

@@ -17,6 +17,16 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
+    public void resetView(MainContract.View view) {
+
+    }
+
+    @Override
+    public void saveState() {
+
+    }
+
+    @Override
     public void clearView() {
         mainView = null;
     }

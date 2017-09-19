@@ -35,7 +35,6 @@ class PrayerListService {
     private final ChildEventListener prayerListEditDeleteChildEventListener;
     private final ChildEventListener queryAddPrayerListChildEventListener;
     private final ValueEventListener prayerRequestValueEventListener;
-    private final ChildEventListener prayerRequestChildEventListener;
     private final DatabaseReference.CompletionListener prayerRequestUpdateCompletionListener;
     private Query prayerListsQuery;
 
@@ -131,23 +130,6 @@ class PrayerListService {
             }
         };
 
-        prayerRequestChildEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Timber.d(dataSnapshot.toString());
-                sendDataResultMessage("PrayerRequest successfully added");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                sendDataResultMessage(databaseError.getMessage());
-            }
-
-            @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-            @Override public void onChildRemoved(DataSnapshot dataSnapshot) {}
-            @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-        };
-
         prayerListDeleteSingleEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -173,10 +155,12 @@ class PrayerListService {
         };
     }
 
-    public void getPrayerListValues(PrayerListContract.Presenter presenter) {
-        Timber.d("getPrayerListValues()");
-
+    public void setPresenter(PrayerListContract.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    public void getPrayerListValues() {
+        Timber.d("getPrayerListValues()");
 
         prayerListsRef.orderByChild(PrayerList.CHILD_ORDER).addValueEventListener(prayerListDataListener);
         prayerListsRef.orderByChild(PrayerList.CHILD_ORDER).addChildEventListener(prayerListEditDeleteChildEventListener);
@@ -257,10 +241,13 @@ class PrayerListService {
     }
 
     public void destroy() {
-        prayerListsRef.removeEventListener(prayerListDataListener);
-        prayerListsRef.removeEventListener(prayerListEditDeleteChildEventListener);
-        prayerListsQuery.removeEventListener(queryAddPrayerListChildEventListener);
-        prayerRequestsRef.removeEventListener(prayerRequestValueEventListener);
-        prayerRequestsRef.removeEventListener(prayerRequestChildEventListener);
+        try {
+            prayerListsRef.removeEventListener(prayerListDataListener);
+            prayerListsRef.removeEventListener(prayerListEditDeleteChildEventListener);
+            prayerRequestsRef.removeEventListener(prayerRequestValueEventListener);
+            if (prayerListsQuery != null) prayerListsQuery.removeEventListener(queryAddPrayerListChildEventListener);
+        } catch (Error e) {
+            Timber.w(e.getMessage());
+        }
     }
 }

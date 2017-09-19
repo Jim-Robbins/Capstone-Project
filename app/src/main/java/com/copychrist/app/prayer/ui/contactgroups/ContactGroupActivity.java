@@ -35,7 +35,10 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class ContactGroupActivity extends BaseActivity implements ContactGroupContract.View,
-        ContactsSwipeableSelectableRVAdapter.ContactSwipeableSelectableRVListener, DeleteDialogFragment.DeleteActionDialogListener {
+        ContactsSwipeableSelectableRVAdapter.ContactSwipeableSelectableRVListener,
+        DeleteDialogFragment.DeleteActionDialogListener,
+        AddContactGroupDialogFragment.AddContactGroupDialogListener,
+        AddEditContactDialogFragment.AddEditContactDialogListener {
 
     private static final String TAG = "ContactGroupActivity";
 
@@ -50,6 +53,7 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     private List<Contact> contacts;
     private String deleteType;
     private Contact contact;
+    private boolean retoreView;
 
     public static Intent getStartIntent(final Context context, final ContactGroup contactGroup) {
         Intent intent = new Intent(context, ContactGroupActivity.class);
@@ -118,13 +122,33 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     @Override
     protected void onStart() {
         super.onStart();
-        contactsPresenter.setView(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         contactsPresenter.clearView();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        contactsPresenter.saveState();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        retoreView = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(retoreView)
+            contactsPresenter.resetView(this);
+        else
+            contactsPresenter.setView(this);
     }
 
     @Override
@@ -173,15 +197,20 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     @Override
     public void showContactGroupDialogAdd() {
         AddContactGroupDialogFragment addContactGroupDialogFragment =
-                AddContactGroupDialogFragment.newInstance(null, contactsPresenter, tabLayoutGroups.getTabCount());
+                AddContactGroupDialogFragment.newInstance(null, tabLayoutGroups.getTabCount());
         addContactGroupDialogFragment.show(getSupportFragmentManager(), "AddContactGroupDialog");
     }
 
     @Override
     public void showContactGroupDialogEdit(ContactGroup contactGroup) {
         AddContactGroupDialogFragment addContactGroupDialogFragment =
-                AddContactGroupDialogFragment.newInstance(contactGroup, contactsPresenter, tabLayoutGroups.getTabCount());
+                AddContactGroupDialogFragment.newInstance(contactGroup, tabLayoutGroups.getTabCount());
         addContactGroupDialogFragment.show(getSupportFragmentManager(), "EditContactGroupDialog");
+    }
+
+    @Override
+    public void onContactGroupSaveClick(ContactGroup contactGroup) {
+        contactsPresenter.onContactGroupSaveClick(contactGroup);
     }
 
     @Override
@@ -218,8 +247,13 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     @Override
     public void showContactAddDialog(ContactGroup contactGroup) {
-        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newAddInstance(contactGroup, contactsPresenter);
+        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newAddInstance(contactGroup);
         addEditContactDialogFragment.show(getSupportFragmentManager(), "AddContactDialogFragment");
+    }
+
+    @Override
+    public void onContactSaveClick(Contact contact) {
+        contactsPresenter.onContactSaveClick(contact);
     }
 
     @Override

@@ -21,19 +21,27 @@ import java.util.List;
  */
 
 public class ViewPrayerRequestDialogFragment extends AppCompatDialogFragment {
+    private static final String DATA_OBJECT = "VPRDF_DATA";
 
     private PrayerListRequest prayerListRequest;
-    private PrayerListContract.Presenter presenter;
     private int position;
 
     public static ViewPrayerRequestDialogFragment newAddInstance(PrayerListRequest prayerListRequest,
-                                                                 PrayerListContract.Presenter prayerListPresenter,
                                                                  int position) {
         ViewPrayerRequestDialogFragment frag = new ViewPrayerRequestDialogFragment();
         frag.prayerListRequest = prayerListRequest;
-        frag.presenter = prayerListPresenter;
         frag.position = position;
         return frag;
+    }
+
+    public interface ViewPrayerRequestDialogListener {
+        void onPrayerCardPrayedForClick(int position);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(DATA_OBJECT, prayerListRequest);
     }
 
     @Override
@@ -72,7 +80,7 @@ public class ViewPrayerRequestDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_pray, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                presenter.onPrayerCardPrayedForClick(position);
+                ((ViewPrayerRequestDialogListener) getActivity()).onPrayerCardPrayedForClick(position);
                 dialog.dismiss();
             }
         });

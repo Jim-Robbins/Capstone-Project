@@ -19,16 +19,16 @@ import com.copychrist.app.prayer.model.ContactGroup;
 public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
     protected ContactGroup contactGroup;
     protected int groupCounter;
-    protected ContactGroupContract.Presenter presenter;
-
     private EditText textGroupName, textGroupDesc;
 
-    public static AddContactGroupDialogFragment newInstance(ContactGroup contactGroup,
-                                                            ContactGroupContract.Presenter contactsPresenter, int tabCount) {
+    public interface AddContactGroupDialogListener {
+        void onContactGroupSaveClick(ContactGroup contactGroup);
+    }
+
+    public static AddContactGroupDialogFragment newInstance(ContactGroup contactGroup, int tabCount) {
         AddContactGroupDialogFragment frag = new AddContactGroupDialogFragment();
         frag.contactGroup = contactGroup;
         frag.groupCounter = tabCount;
-        frag.presenter = contactsPresenter;
         return frag;
     }
 
@@ -83,6 +83,6 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
         }
         contactGroup.setName(textGroupName.getText().toString());
         contactGroup.setDescription(textGroupDesc.getText().toString());
-        presenter.onContactGroupSaveClick(contactGroup);
+        ((AddContactGroupDialogListener) getActivity()).onContactGroupSaveClick(contactGroup);
     }
 }

@@ -166,10 +166,8 @@ public class ContactGroupService {
         };
     }
 
-    void getContactGroupValues(ContactGroupContract.Presenter presenter) {
+    void getContactGroupValues() {
         Timber.d("getContactGroupValues()");
-
-        this.presenter = presenter;
 
         contactGroupsRef.orderByChild(ContactGroup.CHILD_SORT_ORDER).addValueEventListener(contactGroupDataListener);
         contactGroupsRef.orderByChild(ContactGroup.CHILD_SORT_ORDER).addChildEventListener(contactGroupEditDeleteChildEventListener);
@@ -250,9 +248,12 @@ public class ContactGroupService {
     void destroy() {
         contactGroupsRef.removeEventListener(contactGroupDataListener);
         contactGroupsRef.removeEventListener(contactGroupEditDeleteChildEventListener);
-        contactGroupsQuery.removeEventListener(queryAddContactGroupChildEventListener);
+        if(contactGroupsQuery != null) contactGroupsQuery.removeEventListener(queryAddContactGroupChildEventListener);
         contactsRef.removeEventListener(contactValueEventListener);
         contactsRef.removeEventListener(contactChildEventListener);
     }
 
+    public void setPresenter(ContactGroupContract.Presenter contactGroupPresenter) {
+        presenter = contactGroupPresenter;
+    }
 }

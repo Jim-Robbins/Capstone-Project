@@ -1,5 +1,7 @@
 package com.copychrist.app.prayer.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -11,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @IgnoreExtraProperties
-public class BiblePassage {
+public class BiblePassage implements Parcelable {
     public static final String DB_NAME = "biblePassages";
 
     @Exclude
@@ -158,4 +160,43 @@ public class BiblePassage {
     public void setCopyright(@Nullable String copyright) {
         this.copyright = copyright;
     }
+
+    protected BiblePassage(Parcel in) {
+        key = in.readString();
+        book = in.readString();
+        chapter = in.readString();
+        verse = in.readString();
+        text = in.readString();
+        version = in.readString();
+        copyright = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
+        dest.writeString(book);
+        dest.writeString(chapter);
+        dest.writeString(verse);
+        dest.writeString(text);
+        dest.writeString(version);
+        dest.writeString(copyright);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<BiblePassage> CREATOR = new Parcelable.Creator<BiblePassage>() {
+        @Override
+        public BiblePassage createFromParcel(Parcel in) {
+            return new BiblePassage(in);
+        }
+
+        @Override
+        public BiblePassage[] newArray(int size) {
+            return new BiblePassage[size];
+        }
+    };
 }

@@ -34,7 +34,8 @@ import timber.log.Timber;
 
 public class ContactDetailActivity extends BaseActivity
         implements ContactContract.View, PrayerRequestsSwipeableAdapter.PrayerRequestSwipeableListener,
-        DeleteDialogFragment.DeleteActionDialogListener {
+        DeleteDialogFragment.DeleteActionDialogListener,
+        AddEditContactDialogFragment.AddEditContactDialogListener {
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.txt_contact_first_name) TextView txtFirstName;
@@ -46,9 +47,12 @@ public class ContactDetailActivity extends BaseActivity
     PrayerRequestsSwipeableAdapter prayerRequestsSwipeableAdapter;
     @Inject ContactContract.Presenter contactPresenter;
 
+    public static String CONTACT_VIEW = "ContactDetailActivity_View";
     public static String EXTRA_CONTACT = "extra_contact";
     private Contact contact;
     private List<PrayerRequest> prayerRequests;
+    private boolean restoreView;
+    private int selectedTabIndex = 0;
 
     public static Intent getStartIntent(final Context context, final Contact contact) {
         Intent intent = new Intent(context, ContactDetailActivity.class);
@@ -62,7 +66,6 @@ public class ContactDetailActivity extends BaseActivity
         setContentView(R.layout.activity_contact_detail);
         ButterKnife.bind(this);
 
-        initToolbar();
         initList();
     }
 
@@ -143,13 +146,37 @@ public class ContactDetailActivity extends BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        contactPresenter.setView(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         contactPresenter.clearView();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CONTACT_VIEW, selectedTabIndex);
+        contactPresenter.saveState();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        selectedTabIndex = savedInstanceState.getInt(CONTACT_VIEW);
+        restoreView = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(restoreView)
+            contactPresenter.resetView(this);
+        else
+            contactPresenter.setView(this);
+
+        initToolbar();
     }
 
     @Override
@@ -187,6 +214,7 @@ public class ContactDetailActivity extends BaseActivity
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                selectedTabIndex = tab.getPosition();
                 switch (tab.getPosition()) {
                     case 1:
                         contactPresenter.onPrayerRequestGetArchivedClick();
@@ -205,6 +233,11 @@ public class ContactDetailActivity extends BaseActivity
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
+
+        TabLayout.Tab selectedTab = tabLayout.getTabAt(selectedTabIndex);
+        if(selectedTab != null) {
+            selectedTab.select();
+        }
     }
 
     private void initList() {
@@ -229,8 +262,13 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     private void showContactDetailEditView() {
-        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newEditInstance(contact, contactPresenter);
+        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newEditInstance(contact);
         addEditContactDialogFragment.show(getSupportFragmentManager(), "EditContactDialogFragment");
+    }
+
+    @Override
+    public void onContactSaveClick(Contact contact) {
+        contactPresenter.onContactSaveClick(contact);
     }
 
     private void showDeleteContactDialog() {

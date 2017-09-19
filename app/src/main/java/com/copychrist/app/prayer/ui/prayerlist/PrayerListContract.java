@@ -18,7 +18,6 @@ public class PrayerListContract {
         void showPrayerListDialogEdit(PrayerList prayerList);
         void showPrayerListTabs(List<PrayerList> prayerLists, PrayerList selectedList);
         void showPrayerListRequests(List<PrayerListRequest> prayerListRequests);
-
         void showPrayerRequestAddDialog(PrayerList prayerListKey);
         void showPrayerRequestEdit(PrayerRequest prayerRequest);
         void showPrayerRequestAdd();

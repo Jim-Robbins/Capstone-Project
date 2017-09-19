@@ -11,40 +11,49 @@ import android.widget.EditText;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
-import com.copychrist.app.prayer.ui.contactgroups.ContactGroupContract;
 
 /**
  * Created by jim on 8/16/17.
  */
 
 public class AddEditContactDialogFragment extends AppCompatDialogFragment {
+    private static final String CONTACT = "AddEditContactDialogFragment_Contact";
+    private static final String CONTACT_GROUP = "AddEditContactDialogFragment_Contact_Group";
     private Contact contact;
-    private ContactGroupContract.Presenter contactsPresenter;
-    private ContactContract.Presenter contactPresenter;
     private ContactGroup contactGroup;
 
     private EditText txtFirstName, txtLastName;
 
-    public static AddEditContactDialogFragment newEditInstance(Contact contact,
-                                                               ContactContract.Presenter contactPresenter) {
+    public interface AddEditContactDialogListener {
+        void onContactSaveClick(Contact contact);
+    }
+
+    public static AddEditContactDialogFragment newEditInstance(Contact contact) {
         AddEditContactDialogFragment frag = new AddEditContactDialogFragment();
         frag.contact = contact;
-        frag.contactPresenter = contactPresenter;
         return frag;
     }
 
-    public static AddEditContactDialogFragment newAddInstance(ContactGroup contactGroup,
-                                                              ContactGroupContract.Presenter contactsPresenter) {
+    public static AddEditContactDialogFragment newAddInstance(ContactGroup contactGroup) {
         AddEditContactDialogFragment frag = new AddEditContactDialogFragment();
         frag.contact = null;
         frag.contactGroup = contactGroup;
-        frag.contactsPresenter = contactsPresenter;
         return frag;
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(CONTACT, contact);
+        outState.putParcelable(CONTACT_GROUP, contactGroup);
+    }
 
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            contact = savedInstanceState.getParcelable(CONTACT);
+            contactGroup = savedInstanceState.getParcelable(CONTACT_GROUP);
+        }
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         // Inflate custom view
         View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_save_contact, null);
@@ -98,12 +107,12 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         contact.setLastName(txtLastName.getText().toString());
         contact.setContactGroupKey(contactGroup.getKey());
         contact.setContactGroup(contactGroup);
-        contactsPresenter.onContactSaveClick(contact);
+        ((AddEditContactDialogListener) getActivity()).onContactSaveClick(contact);
     }
 
     private void editContact() {
         contact.setFirstName(txtFirstName.getText().toString());
         contact.setLastName(txtLastName.getText().toString());
-        contactPresenter.onContactSaveClick(contact);
+        ((AddEditContactDialogListener) getActivity()).onContactSaveClick(contact);
     }
 }

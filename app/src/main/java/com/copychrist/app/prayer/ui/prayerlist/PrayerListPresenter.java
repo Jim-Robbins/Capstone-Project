@@ -5,6 +5,7 @@ import android.content.Context;
 import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.model.PresenterState;
 import com.copychrist.app.prayer.util.Utils;
 
 import java.util.ArrayList;
@@ -18,12 +19,13 @@ import timber.log.Timber;
 
 public class PrayerListPresenter implements PrayerListContract.Presenter {
     private final PrayerListService dataService;
+    private Context context;
+    private PrayerListContract.View prayerListView;
 
     private PrayerList selectedPrayerList;
-    private PrayerListContract.View prayerListView;
-    private Context context;
     private List<PrayerListRequest> currentListPrayerListRequests;
     private List<PrayerListRequest> unselectedPrayerListRequests;
+    private List<PrayerList> prayerLists;
 
     public PrayerListPresenter(PrayerListService prayerListService, Context context, PrayerList prayerList) {
         this.dataService = prayerListService;
@@ -34,7 +36,29 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
     @Override
     public void setView(PrayerListContract.View view) {
         this.prayerListView = view;
-        dataService.getPrayerListValues(this);
+        dataService.setPresenter(this);
+        dataService.getPrayerListValues();
+    }
+
+    @Override
+    public void saveState() {
+        PresenterState.PrayerListState.currentListPrayerListRequests = this.currentListPrayerListRequests;
+        PresenterState.PrayerListState.unselectedPrayerListRequests = this.unselectedPrayerListRequests;
+        PresenterState.PrayerListState.prayerLists = this.prayerLists;
+        PresenterState.PrayerListState.selectedPrayerList = this.selectedPrayerList;
+    }
+
+    @Override
+    public void resetView(PrayerListContract.View view) {
+        this.prayerListView = view;
+        dataService.setPresenter(this);
+        this.currentListPrayerListRequests = PresenterState.PrayerListState.currentListPrayerListRequests;
+        this.unselectedPrayerListRequests = PresenterState.PrayerListState.unselectedPrayerListRequests;
+        this.prayerLists = PresenterState.PrayerListState.prayerLists;
+        this.selectedPrayerList = PresenterState.PrayerListState.selectedPrayerList;
+
+        prayerListView.showPrayerListTabs(prayerLists, selectedPrayerList);
+        prayerListView.showPrayerListRequests(currentListPrayerListRequests);
     }
 
     @Override
@@ -66,6 +90,7 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
 
     @Override
     public void onPrayerListResults(List<PrayerList> prayerLists, PrayerList selectedList) {
+        this.prayerLists = prayerLists;
         this.selectedPrayerList = selectedList;
         prayerListView.showPrayerListTabs(prayerLists, selectedPrayerList);
     }
@@ -84,7 +109,8 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
     public void onPrayerRequestResults(List<PrayerRequest> listRequests, List<PrayerRequest> nonListPrayerRequests) {
         // Store copy of list filtered by current prayer list
         currentListPrayerListRequests = mapRequestsToListRequests(listRequests);
-        prayerListView.showPrayerListRequests(currentListPrayerListRequests);
+        if(prayerListView != null)
+            prayerListView.showPrayerListRequests(currentListPrayerListRequests);
         
         // Store copy of full list
         unselectedPrayerListRequests = mapRequestsToListRequests(nonListPrayerRequests);

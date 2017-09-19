@@ -88,6 +88,7 @@ public class PrayerRequestSelectableRVAdapter extends RecyclerView.Adapter<Praye
         animationItemsIndex = new SparseBooleanArray();
     }
 
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())

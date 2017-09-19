@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,7 +20,6 @@ import com.copychrist.app.prayer.BuildConfig;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.BibleBooksSpinnerArrayAdapter;
 import com.copychrist.app.prayer.model.BiblePassage;
-import com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestContract;
 import com.faithcomesbyhearing.dbt.Dbt;
 import com.faithcomesbyhearing.dbt.model.Book;
 
@@ -32,8 +32,8 @@ import java.util.List;
 public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
         implements DbtService.DtbServiceListener {
 
+    private static final String FRAG_BIBLE_FINDER = "BiblePassageFinderDialogFragment";
     private static DbtService dbtService;
-    private PrayerRequestContract.Presenter presenter;
 
     private Context context;
     private Spinner booksSpinner;
@@ -42,16 +42,37 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
     private ImageButton btnFind;
     private TextView txtSearchResults;
 
-    public static BiblePassageFinderDialogFragment newInstance(PrayerRequestContract.Presenter presenter) {
+    private int savedBookPos;
+    private int savedChapterPos;
+    private String savedVerses;
+    private String savedText;
+
+    public interface BiblePassageFinderDialogListener {
+        void onBiblePassageSave(BiblePassage biblePassage);
+    }
+
+    public static BiblePassageFinderDialogFragment newInstance() {
         BiblePassageFinderDialogFragment frag = new BiblePassageFinderDialogFragment();
-        frag.presenter = presenter;
 
         return frag;
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+        outState.putInt(FRAG_BIBLE_FINDER+"Book", booksSpinner.getSelectedItemPosition());
+        outState.putInt(FRAG_BIBLE_FINDER+"chapter", chaptersSpinner.getSelectedItemPosition());
+        savedVerses = txtVerses.getText().toString();
+        if(!TextUtils.isEmpty(savedVerses))
+            outState.putString(FRAG_BIBLE_FINDER+"verses", savedVerses);
+        savedText = txtSearchResults.getText().toString();
+        if(!TextUtils.isEmpty(savedText))
+            outState.putString(FRAG_BIBLE_FINDER+"text", savedText);
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dbt.setApiKey(BuildConfig.DBT_API_KEY);
         dbtService = new DbtService(this);
 
@@ -70,6 +91,14 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
         txtSearchResults.setMovementMethod(new ScrollingMovementMethod());
         btnFind = dialogView.findViewById(R.id.btn_find);
 
+        if(savedInstanceState != null) {
+            savedBookPos = savedInstanceState.getInt(FRAG_BIBLE_FINDER+"Book");
+            savedChapterPos = savedInstanceState.getInt(FRAG_BIBLE_FINDER+"chapter");
+            savedVerses = savedInstanceState.getString(FRAG_BIBLE_FINDER+"verses");
+            txtVerses.setText(savedVerses);
+            savedText = savedInstanceState.getString(FRAG_BIBLE_FINDER+"text");
+            txtSearchResults.setText(savedText);
+        }
         // Setup Confirm button
         alertDialogBuilder.setPositiveButton(R.string.btn_add, new DialogInterface.OnClickListener() {
             @Override
@@ -104,7 +133,7 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
         BiblePassage biblePassage = new BiblePassage(book, chapter, verses);
         biblePassage.setText(txtSearchResults.getText().toString());
 
-        presenter.onBiblePassageSave(biblePassage);
+        ((BiblePassageFinderDialogListener) getActivity()).onBiblePassageSave(biblePassage);
     }
 
     @Override
@@ -125,6 +154,7 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
         BibleBooksSpinnerArrayAdapter bibleBooksAdapter = new BibleBooksSpinnerArrayAdapter(context,
                 layoutRes, textViewRes, bookList);
         booksSpinner.setAdapter(bibleBooksAdapter);
+        booksSpinner.setSelection(savedBookPos);
 
         booksSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
@@ -133,6 +163,7 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
                 Integer[] items = createChaptersArray(book.getNumberOfChapters());
                 ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(context, layoutRes, textViewRes, items);
                 chaptersSpinner.setAdapter(adapter);
+                chaptersSpinner.setSelection(savedChapterPos);
             }
 
             @Override

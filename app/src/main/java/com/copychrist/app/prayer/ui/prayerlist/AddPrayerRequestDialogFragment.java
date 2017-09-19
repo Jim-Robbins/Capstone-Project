@@ -9,12 +9,15 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerRequestSelectableRVAdapter;
 import com.copychrist.app.prayer.model.PrayerListRequest;
+import com.copychrist.app.prayer.model.PrayerRequest;
+import com.copychrist.app.prayer.model.PresenterState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +30,20 @@ import timber.log.Timber;
  */
 
 public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment implements PrayerRequestSelectableRVAdapter.PrayerRequestSelectableListener {
+    private static final String SELECTED_ITEMS = "APRDF_SELECTED_ITEMS";
     private List<PrayerListRequest> prayerListRequests;
     private List<String> selectedPrayerRequestKeys = new ArrayList<>();
-    private PrayerListContract.Presenter presenter;
     private PrayerRequestSelectableRVAdapter prayerRequestsListAdapter;
+    private String selectedItemsToRestore;
 
-    public static AddPrayerRequestDialogFragment newAddInstance(PrayerListContract.Presenter presenter) {
-        AddPrayerRequestDialogFragment frag = new AddPrayerRequestDialogFragment();
-        frag.presenter = presenter;
-        return frag;
+    public static AddPrayerRequestDialogFragment newAddInstance() {
+        return new AddPrayerRequestDialogFragment();
+    }
+
+    public interface AddPrayerRequestDialogListener {
+        void onPrayerRequestEditClick(PrayerRequest prayerRequest);
+        void onPrayerRequestsAddToList(List<String> selectedPrayerRequestKeys);
+        void onPrayerRequestsAddNewRequest();
     }
 
     @Override
@@ -46,7 +54,14 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
     @Override
     public void onSelectionRowLongClicked(int position) {
         PrayerListRequest prayerListRequest = prayerListRequests.get(position);
-        presenter.onPrayerRequestEditClick(prayerListRequest.getPrayerRequest());
+        ((AddPrayerRequestDialogListener) getActivity()).onPrayerRequestEditClick(prayerListRequest.getPrayerRequest());
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        selectedItemsToRestore = prayerRequestsListAdapter.getSelectedItems().toString();
+        outState.putString(SELECTED_ITEMS, selectedItemsToRestore);
     }
 
     View.OnClickListener onCreateClick = new View.OnClickListener() {
@@ -59,6 +74,12 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            selectedItemsToRestore = savedInstanceState.getString(SELECTED_ITEMS);
+            selectedItemsToRestore = selectedItemsToRestore.substring(1, selectedItemsToRestore.length()-1).replaceAll(" ","");
+            prayerListRequests = PresenterState.PrayerListState.unselectedPrayerListRequests;
+        }
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
         // Inflate custom view
@@ -67,19 +88,9 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
 
         alertDialogBuilder.setTitle(R.string.dialog_prayer_list_add_request_title);
 
-        RecyclerView recyclerView = dialogView.findViewById(R.id.recycler_view);
+        initAdapter((RecyclerView) dialogView.findViewById(R.id.recycler_view));
         RelativeLayout btnCreateNew = dialogView.findViewById(R.id.btn_add);
         btnCreateNew.setOnClickListener(onCreateClick);
-
-        prayerRequestsListAdapter = new PrayerRequestSelectableRVAdapter(this.getContext(), this);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(prayerRequestsListAdapter);
-
-        prayerListRequests = presenter.getUnselectedPrayerListRequests();
-        prayerRequestsListAdapter.setAdpaterData(prayerListRequests);
 
         // Setup Confirm button
         alertDialogBuilder.setPositiveButton(R.string.btn_add, new DialogInterface.OnClickListener() {
@@ -107,13 +118,36 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
         return alertDialogBuilder.create();
     }
 
+    private void initAdapter(RecyclerView recyclerView) {
+        prayerRequestsListAdapter = new PrayerRequestSelectableRVAdapter(this.getContext(), this);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(prayerRequestsListAdapter);
+
+        prayerRequestsListAdapter.setAdpaterData(prayerListRequests);
+
+        // If presenter is null we must be restoring from rotation
+        if(!TextUtils.isEmpty(selectedItemsToRestore)) {
+            Timber.d(selectedItemsToRestore);
+            for (String s : selectedItemsToRestore.split(",")) {
+                toggleSelection(Integer.parseInt(s));
+            }
+        }
+    }
+
+    public void setData(List<PrayerListRequest> prayerListRequests) {
+        this.prayerListRequests = prayerListRequests;
+    }
+
     private void savePrayerRequestsToList() {
         List<Integer> selectedRows = prayerRequestsListAdapter.getSelectedItems();
         for (int position : selectedRows) {
             PrayerListRequest prayerListRequest = prayerListRequests.get(position);
             selectedPrayerRequestKeys.add(prayerListRequest.getKey());
         }
-        presenter.onPrayerRequestsAddToList(selectedPrayerRequestKeys);
+        ((AddPrayerRequestDialogListener) getActivity()).onPrayerRequestsAddToList(selectedPrayerRequestKeys);
     }
 
     private void toggleSelection(int position) {
@@ -121,7 +155,7 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
     }
 
     private void editPrayerRequest() {
-        presenter.onPrayerRequestsAddNewRequest();
+        ((AddPrayerRequestDialogListener) getActivity()).onPrayerRequestsAddNewRequest();
     }
 
 }

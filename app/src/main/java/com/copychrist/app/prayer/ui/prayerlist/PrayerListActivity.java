@@ -33,7 +33,10 @@ import timber.log.Timber;
 
 public class PrayerListActivity extends BaseActivity implements PrayerListContract.View,
         PrayerListRequestSelectableSwipeableAdapter.PrayerListRequestAdapterListener,
-        DeleteDialogFragment.DeleteActionDialogListener {
+        DeleteDialogFragment.DeleteActionDialogListener,
+        AddPrayerRequestDialogFragment.AddPrayerRequestDialogListener,
+        AddEditPrayerListDialogFragment.AddEditPrayerListDialogListener,
+        ViewPrayerRequestDialogFragment.ViewPrayerRequestDialogListener {
 
     private static final String TAG = "PrayerListActivity";
 
@@ -47,6 +50,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     public static String EXTRA_PRAYER_LIST = "extra_prayer_list";
 
     private  List<PrayerListRequest> prayerListRequests;
+    private boolean retoreView = false;
 
     public static Intent getStartIntent(final Context context, final PrayerList prayerList) {
         Intent intent = new Intent(context, PrayerListActivity.class);
@@ -115,12 +119,6 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        prayerListPresenter.setView(this);
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         prayerListPresenter.clearView();
@@ -129,11 +127,22 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        prayerListPresenter.saveState();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        retoreView = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(retoreView)
+            prayerListPresenter.resetView(this);
+        else
+            prayerListPresenter.setView(this);
     }
 
     @Override
@@ -162,6 +171,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
                 if (tab.getTag() != null) {
                     Timber.d(TAG, tab.getText() + ":" + tab.getTag().toString());
                     selectedPrayerList = (PrayerList) tab.getTag();
+                    selectedTabIndex = tab.getPosition();
                     prayerListPresenter.onPrayerListClick(selectedPrayerList);
                 }
             }
@@ -183,15 +193,35 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     @Override
     public void showPrayerListDialogAdd() {
         AddEditPrayerListDialogFragment addPrayerListDialogFragment =
-                AddEditPrayerListDialogFragment.newInstance(null, prayerListPresenter, tabLayoutPrayerList.getTabCount());
+                AddEditPrayerListDialogFragment.newInstance(null, tabLayoutPrayerList.getTabCount());
         addPrayerListDialogFragment.show(getSupportFragmentManager(), "AddPrayerListDialog");
     }
 
     @Override
     public void showPrayerListDialogEdit(PrayerList prayerList) {
         AddEditPrayerListDialogFragment addPrayerListDialogFragment =
-                AddEditPrayerListDialogFragment.newInstance(prayerList, prayerListPresenter, tabLayoutPrayerList.getTabCount());
+                AddEditPrayerListDialogFragment.newInstance(prayerList, tabLayoutPrayerList.getTabCount());
         addPrayerListDialogFragment.show(getSupportFragmentManager(), "EditPrayerListDialog");
+    }
+
+    @Override
+    public void onPrayerListSaveClick(PrayerList prayerList) {
+        prayerListPresenter.onPrayerListSaveClick(prayerList);
+    }
+
+    @Override
+    public void onPrayerRequestEditClick(PrayerRequest prayerRequest) {
+        prayerListPresenter.onPrayerRequestEditClick(prayerRequest);
+    }
+
+    @Override
+    public void onPrayerRequestsAddToList(List<String> selectedPrayerRequestKeys) {
+        prayerListPresenter.onPrayerRequestsAddToList(selectedPrayerRequestKeys);
+    }
+
+    @Override
+    public void onPrayerRequestsAddNewRequest() {
+        prayerListPresenter.onPrayerRequestsAddNewRequest();
     }
 
     @Override
@@ -223,9 +253,9 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     @Override
     public void showPrayerRequestAddDialog(PrayerList prayerListKey) {
-        AddPrayerRequestDialogFragment addPrayerRequestDialogFragment =
-                AddPrayerRequestDialogFragment.newAddInstance(prayerListPresenter);
-        addPrayerRequestDialogFragment.show(getSupportFragmentManager(), "AddContactDialogFragment");
+        AddPrayerRequestDialogFragment fragment = AddPrayerRequestDialogFragment.newAddInstance();
+        fragment.setData(prayerListPresenter.getUnselectedPrayerListRequests());
+        fragment.show(getSupportFragmentManager(), "AddContactDialogFragment");
     }
 
     @Override
@@ -249,9 +279,13 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         prayerRequestsListAdapter.notifyDataSetChanged();
 
         ViewPrayerRequestDialogFragment viewPrayerRequestDialog =
-                ViewPrayerRequestDialogFragment.newAddInstance(prayerListRequest,
-                        prayerListPresenter, position);
+                ViewPrayerRequestDialogFragment.newAddInstance(prayerListRequest, position);
         viewPrayerRequestDialog.show(getSupportFragmentManager(), "ViewPrayerRequestDialogFragment");
+    }
+
+    @Override
+    public void onPrayerCardPrayedForClick(int position) {
+        prayerListPresenter.onPrayerCardPrayedForClick(position);
     }
 
     @Override

@@ -104,8 +104,11 @@ public class ContactService {
         };
     }
 
-    public void getContact(ContactContract.Presenter presenter,
-                           Contact contact,
+    public void setPresenter(ContactContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public void getContact(Contact contact,
                            boolean showActiveRequests) {
 
         Timber.d("getContact() called with: contactKey = [" + contact.getKey() + "]");

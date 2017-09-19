@@ -46,7 +46,9 @@ import butterknife.OnClick;
 
 public class PrayerRequestDetailActivity extends BaseActivity implements PrayerRequestContract.View,
         BiblePassageFinderSelectableAdapter.BiblePassageAdapterListener,
-        BiblePassageSwipableAdapter.BiblePassageAdapterListener {
+        BiblePassageSwipableAdapter.BiblePassageAdapterListener,
+        BiblePassageFinderDialogFragment.BiblePassageFinderDialogListener,
+        ViewBiblePassagesDialogFragment.ViewBiblePassagesDialogListener {
 
     public static String EXTRA_LIST_KEY = "extra_list_key";
     public static String EXTRA_CONTACT = "extra_contact";
@@ -310,7 +312,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         btnBiblePassageFinder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewBiblePassagesDialogFragment = ViewBiblePassagesDialogFragment.newInstance(addPrayerRequestPresenter, nonListResults);
+                viewBiblePassagesDialogFragment = ViewBiblePassagesDialogFragment.newInstance(nonListResults);
                 viewBiblePassagesDialogFragment.show(getSupportFragmentManager(), "ViewBiblePassagesDialogFragment");
             }
         });
@@ -318,11 +320,16 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
 
     @Override
     public void showBiblePassageAddDialog() {
-        BiblePassageFinderDialogFragment biblePassageFinderDialogFragment = BiblePassageFinderDialogFragment.newInstance(addPrayerRequestPresenter);
+        BiblePassageFinderDialogFragment biblePassageFinderDialogFragment = BiblePassageFinderDialogFragment.newInstance();
         biblePassageFinderDialogFragment.show(getSupportFragmentManager(), "BiblePassageFinderDialogFragment");
     }
 
-//    @Override
+    @Override
+    public void onBiblePassageSave(BiblePassage biblePassage) {
+        addPrayerRequestPresenter.onBiblePassageSave(biblePassage);
+    }
+
+    //    @Override
 //    public void showPrayerListSelector(List<PrayerList> prayerLists) {
 //        final int layoutRes = R.layout.item_spinner;
 //        final int textViewRes = R.id.text_spinner_item;
@@ -344,5 +351,15 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
     @Override
     public void onRemoveClicked(int position) {
         addPrayerRequestPresenter.onBiblePassageRemove(selectedVerses.get(position));
+    }
+
+    @Override
+    public void onBiblePassagesAddedToPrayerRequest(List<String> selectedPassageKeys) {
+        addPrayerRequestPresenter.onBiblePassagesAddedToPrayerRequest(selectedPassageKeys);
+    }
+
+    @Override
+    public void onBiblePassageAddNew() {
+        addPrayerRequestPresenter.onBiblePassageAddNew();
     }
 }

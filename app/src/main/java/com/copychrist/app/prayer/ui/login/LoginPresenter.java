@@ -15,6 +15,16 @@ public class LoginPresenter implements LoginContract.Presenter {
     }
 
     @Override
+    public void resetView(LoginContract.View view) {
+
+    }
+
+    @Override
+    public void saveState() {
+
+    }
+
+    @Override
     public void clearView() {
 
     }

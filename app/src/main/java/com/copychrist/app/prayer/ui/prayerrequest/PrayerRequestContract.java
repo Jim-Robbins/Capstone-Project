@@ -56,5 +56,6 @@ public class PrayerRequestContract {
         void onPrayerRequestUnarchive(PrayerRequest prayerRequest);
         void onPrayerRequestDelete(PrayerRequest prayerRequest);
         void onDestroy();
+        void setPresenter(PrayerRequestContract.Presenter prayerRequestPresenter);
     }
 }
