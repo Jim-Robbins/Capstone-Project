@@ -16,7 +16,7 @@
         <item name="lime_400" type="color">@color/lime_400</item>
         <item name="yellow_400" type="color">@color/yellow_400</item>
         <item name="orange_400" type="color">@color/orange_400</item>
-        <item name="deep_orange_400" type="color">@color/deep_purple_400</item>
+        <item name="deep_orange_400" type="color">@color/deep_orange_400</item>
         <item name="brown_400" type="color">@color/brown_400</item>
         <item name="grey_400" type="color">@color/green_400</item>
         <item name="blue_grey_400" type="color">@color/blue_grey_400</item>
