@@ -10,6 +10,7 @@
       "$uid": {
         ".read": "auth.uid == $uid",
         ".write": "auth.uid == $uid",
+        ".indexOn": ["dateCreated"],
         "$contactGroupKey": {
           "name": {
             ".validate": "newData.isString() && newData.val().length < 20"
@@ -27,6 +28,7 @@
       "$uid": {
         ".read": "auth.uid == $uid",
         ".write": "auth.uid == $uid",
+        ".indexOn": ["contactGroupKey","dateCreated","contact"],
         "$contactKey": {
           "firstName": {
             ".validate": "newData.isString() && newData.val().length < 20"
@@ -44,6 +46,7 @@
       "$uid": {
         ".read": "auth.uid == $uid",
         ".write": "auth.uid == $uid",
+        ".indexOn": ["dateCreated"],
         "$prayerListKey": {
           "name": {
             ".validate": "newData.isString() && newData.val().length < 20"
@@ -61,6 +64,7 @@
       "$uid": {
         ".read": "auth.uid == $uid",
         ".write": "auth.uid == $uid",
+        ".indexOn": ["dateCreated","contactKey"],
         "$prayerRequestKey": {
           "title": {
             ".validate": "newData.isString() && newData.val().length < 40"
@@ -73,15 +77,16 @@
         ".read": "auth.uid == $uid",
         ".write": "auth.uid == $uid",
         "$biblePassageKey": {
+          ".validate": "newData.hasChildren(['book', 'chapter'])",
           "book": {
             ".validate": "newData.isString() && newData.val().length < 16"
           },
           "chapter": {
-            ".validate": "newData.isNumber() && newData.val() < 151"
+            ".validate": "newData.isString() && newData.val() > '0' && newData.val().length < 4 && newData.val().matches(/\\d*/)"
           },
           "verse": {
-            ".validate": "newData.isNumber() && newData.val() < 177"
-          }
+            ".validate": "newData.isString() && newData.val() > '0' && newData.val().matches(/^(\\d*)|(\\d*-\\d*)$/)"
+          },
         }
       }
     }

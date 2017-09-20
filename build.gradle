@@ -9,7 +9,7 @@ buildscript {
         'minSdk': 19,
         'targetSdk': 25,
 
-        'supportLibrary': '26+',
+        'supportLibrary': '26.0.1',
         'gson': '2.6.2',
         'okhttp': '3.8.1',
         'glide': '3.7.0',
@@ -17,7 +17,8 @@ buildscript {
         'dagger': '1.2.5',
         'butterKnife': '8.7.0',
         'leakCanary': '1.5.1',
-        'stetho': '1.5.0',
+        'firebase': '11.2.0',
+        'firebaseUI': '2.3.0',
         'timber': '4.5.1',
         'espresso': '2.2.2',
         'junit': '4.12',
@@ -35,8 +36,6 @@ buildscript {
                     'constraintLayout': "com.android.support.constraint:constraint-layout:1.0.2",
             ],
             'glide': "com.github.bumptech.glide:glide:${versions.glide}",
-            'okhttp': "com.squareup.okhttp3:okhttp:${versions.okhttp}",
-            'okdownloader': "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0",
             'gson': "com.google.code.gson:gson:${versions.gson}",
             'retrofit': [
                     'core': "com.squareup.retrofit2:retrofit:${versions.retrofit}",
@@ -65,11 +64,10 @@ buildscript {
                     'core': "com.android.support.test.espresso:espresso-core:${versions.espresso}",
                     'contrib': "com.android.support.test.espresso:espresso-contrib:${versions.espresso}",
             ],
-            'stetho': [
-                    'stetho': "com.facebook.stetho:stetho:${versions.stetho}",
-                    'okhttp3': "com.facebook.stetho:stetho-okhttp3:${versions.stetho}",
-                    'okhttp': "com.facebook.stetho:stetho-okhttp:${versions.stetho}",
-                    'urlconnection': "com.facebook.stetho:stetho-urlconnection:${versions.stetho}",
+            'firebase': [
+                    'database': "com.google.firebase:firebase-database:${versions.firebase}",
+                    'auth': "com.google.firebase:firebase-auth:${versions.firebase}",
+                    'ui': "com.firebaseui:firebase-ui:${versions.firebaseUI}",
             ],
     ]
 

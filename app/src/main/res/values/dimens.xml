@@ -16,7 +16,7 @@
 
     <!-- Homepage icons -->
     <dimen name="home_icon_width_height">100dp</dimen>
-    <dimen name="home_icon_width_height_plus">135dp</dimen>
+    <dimen name="home_icon_width_height_plus">125dp</dimen>
 
     <!-- Adapter Row Item Sizes -->
     <dimen name="item_top_bottom_padding">8dp</dimen>

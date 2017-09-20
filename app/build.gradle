@@ -20,14 +20,14 @@ android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
 
-//    signingConfigs {
-//        copychrist {
-//            storeFile rootProject.file('copychrist.keystore')
-//            storePassword 'android'
-//            keyAlias 'android'
-//            keyPassword 'android'
-//        }
-//    }
+    signingConfigs {
+        copychrist {
+            storeFile rootProject.file('/keystore/copychrist.keystore')
+            storePassword 'C@pst0n3'
+            keyAlias 'captstone'
+            keyPassword 'pr@y3r'
+        }
+    }
 
     defaultConfig {
         applicationId "com.copychrist.app.prayer"
@@ -36,8 +36,6 @@ android {
 
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
-
-        //signingConfig signingConfigs.app
 
         vectorDrawables.useSupportLibrary = true;
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -49,10 +47,15 @@ android {
         }
 
         release {
+            signingConfig signingConfigs.copychrist
             minifyEnabled false
             buildConfigField("String", "DBT_API_KEY", dbtApiKey)
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    lintOptions {
+        disable 'MissingTranslation'
     }
 
     productFlavors {
@@ -85,6 +88,11 @@ dependencies {
     compile deps.gson
     compile deps.glide
 
+    compile deps.firebase.database
+    compile deps.firebase.auth
+    compile deps.firebase.ui
+
+    compile deps.timber
     compile deps.dagger.dagger
     compile deps.dagger.compiler
 
@@ -100,6 +108,7 @@ dependencies {
     testCompile deps.mockito.core
 
     compile 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.0'
+    compile 'com.faithcomesbyhearing:dbt:1.0.1'
 
     androidTestCompile deps.junit
     androidTestCompile deps.mockito.android
@@ -109,8 +118,6 @@ dependencies {
     androidTestCompile('com.android.support.test:runner:0.3') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    compile 'com.google.firebase:firebase-database:11.2.0'
-    compile 'com.google.firebase:firebase-auth:11.2.0'
-    compile 'com.faithcomesbyhearing:dbt:1.0.1'
+
 }
 apply plugin: 'com.google.gms.google-services'

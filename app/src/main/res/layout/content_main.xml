@@ -8,14 +8,37 @@
     tools:context="com.copychrist.app.prayer.ui.home.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <TextView
+        android:id="@+id/txt_app_title"
+        android:layout_width="315dp"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Headline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingTop="@dimen/normal_space"
+        />
+    <ImageView
+        android:id="@+id/img_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_app_title"
+        android:layout_margin="@dimen/large_space"
+        android:contentDescription="@string/praying_with_dedication_logo_acc"
+        />
+
     <RelativeLayout
         android:id="@+id/icon_container_prayer_lists"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginTop="@dimen/xxlarge_space"
+        app:layout_constraintTop_toBottomOf="@+id/img_logo">
 
         <RelativeLayout
             android:id="@+id/icon_back_prayer_lists"
@@ -27,13 +50,14 @@
                 android:layout_width="@dimen/home_icon_width_height_plus"
                 android:layout_height="@dimen/home_icon_width_height_plus"
                 android:src="@drawable/bg_circle"
-                android:tint="#03a9f4" />
+                android:tint="@color/indigo_500" />
 
             <ImageView
                 android:layout_width="@dimen/home_icon_width_height_plus"
                 android:layout_height="@dimen/home_icon_width_height_plus"
                 android:layout_centerInParent="true"
                 android:padding="16dp"
+                android:contentDescription="@string/btn_prayer_list_acc"
                 android:src="@drawable/ic_storage_24dp" />
         </RelativeLayout>
 
@@ -44,40 +68,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/icon_container_prayer_lists"
-        app:layout_constraintStart_toEndOf="@+id/icon_container_prayer_lists">
+        app:layout_constraintStart_toEndOf="@+id/icon_container_prayer_lists"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="@dimen/xxxlarge_space"
+        >
 
         <RelativeLayout
             android:id="@+id/icon_back_prayer_requests"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="@dimen/home_icon_width_height"
-                android:layout_height="@dimen/home_icon_width_height"
-                android:src="@drawable/bg_circle"
-                android:tint="@color/orange_400" />
-
-            <ImageView
-                android:layout_width="@dimen/home_icon_width_height"
-                android:layout_height="@dimen/home_icon_width_height"
-                android:layout_centerInParent="true"
-                android:padding="16dp"
-                android:src="@drawable/ic_question_answer_24dp" />
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/icon_container_contact_groups"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/icon_container_prayer_lists"
-        app:layout_constraintEnd_toStartOf="@+id/icon_container_prayer_lists">
-
-        <RelativeLayout
-            android:id="@+id/icon_back_contact_groups"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -92,7 +89,41 @@
                 android:layout_height="@dimen/home_icon_width_height"
                 android:layout_centerInParent="true"
                 android:padding="16dp"
-                android:src="@drawable/ic_group_24dp" />
+                android:src="@drawable/ic_question_answer_24dp"
+                android:contentDescription="@string/btn_prayer_requests"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/icon_container_contact_groups"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@+id/icon_container_prayer_lists"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="@dimen/xxxlarge_space">
+
+        <RelativeLayout
+            android:id="@+id/icon_back_contact_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:src="@drawable/bg_circle"
+                android:tint="@color/teal_400" />
+
+            <ImageView
+                android:layout_width="@dimen/home_icon_width_height"
+                android:layout_height="@dimen/home_icon_width_height"
+                android:padding="16dp"
+                android:src="@drawable/ic_group_24dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@string/btn_contact_groups"/>
         </RelativeLayout>
 
 
@@ -104,25 +135,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintStart_toEndOf="@+id/icon_container_prayer_lists"
-        app:layout_constraintTop_toBottomOf="@+id/icon_container_prayer_lists">
+        app:layout_constraintTop_toBottomOf="@+id/icon_container_prayer_lists"
+        tools:layout_editor_absoluteX="260dp">
 
         <RelativeLayout
             android:id="@+id/icon_back_bible_verses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="@dimen/home_icon_width_height"
-                android:layout_height="@dimen/home_icon_width_height"
-                android:src="@drawable/bg_circle"
-                android:tint="@color/deep_purple_500" />
-
-            <ImageView
-                android:layout_width="@dimen/home_icon_width_height"
-                android:layout_height="@dimen/home_icon_width_height"
-                android:layout_centerInParent="true"
-                android:padding="16dp"
-                android:src="@drawable/ic_import_contacts_24dp" />
         </RelativeLayout>
 
 
@@ -134,24 +154,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@+id/icon_container_prayer_lists"
-        app:layout_constraintTop_toBottomOf="@+id/icon_container_prayer_lists">
+        app:layout_constraintTop_toBottomOf="@+id/icon_container_prayer_lists"
+        tools:layout_editor_absoluteX="125dp">
 
         <RelativeLayout
             android:id="@+id/icon_back_contacts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="@dimen/home_icon_width_height"
-                android:layout_height="@dimen/home_icon_width_height"
-                android:src="@drawable/bg_circle" />
-
-            <ImageView
-                android:layout_width="@dimen/home_icon_width_height"
-                android:layout_height="@dimen/home_icon_width_height"
-                android:layout_centerInParent="true"
-                android:padding="16dp"
-                android:src="@drawable/ic_account_circle_24dp" />
         </RelativeLayout>
 
     </RelativeLayout>
@@ -162,26 +172,57 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <RelativeLayout
             android:id="@+id/icon_back_logout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
 
             <ImageView
-                android:layout_width="@dimen/item_icon_width_height"
-                android:layout_height="@dimen/item_icon_width_height"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="86dp"
+                android:layout_marginTop="10dp"
                 android:src="@drawable/bg_circle"
-                android:tint="@color/colorPrimaryDark" />
+                android:tint="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_log_out"
+                android:layout_marginLeft="@dimen/xlarge_space"
+                android:layout_marginTop="10dp"
+                android:paddingTop="@dimen/small_space"
+                android:paddingBottom="@dimen/small_space"
+                android:paddingStart="@dimen/normal_space"
+                android:paddingEnd="@dimen/small_space"
+                android:textAppearance="@android:style/TextAppearance.Material.Body1"
+                android:textColor="@color/color_white"
+                android:textStyle="bold"
+                android:background="@color/colorPrimary"
+                />
 
             <ImageView
                 android:layout_width="@dimen/item_icon_width_height"
                 android:layout_height="@dimen/item_icon_width_height"
-                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/xxlarge_space"
+                android:src="@drawable/bg_circle"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:layout_width="@dimen/item_icon_width_height"
+                android:layout_height="@dimen/item_icon_width_height"
+
                 android:padding="4dp"
+                android:layout_marginRight="@dimen/xxlarge_space"
                 android:src="@drawable/ic_settings_24dp" />
+
+
         </RelativeLayout>
 
     </RelativeLayout>

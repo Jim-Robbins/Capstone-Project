@@ -105,4 +105,10 @@
     <string name="item_unselected_acc">Item Not Selected</string>
     <string name="btn_edit">Edit</string>
     <string name="item_more_requests">More Requests...</string>
+    <string name="praying_with_dedication_logo_acc">Praying With Dedication Logo</string>
+    <string name="btn_prayer_list_acc">Prayer Lists</string>
+    <string name="btn_contact_groups">Contact Groups</string>
+    <string name="btn_prayer_requests">Prayer Requests</string>
+    <string name="btn_log_out">Logout</string>
+    <string name="btn_forgot_password">Forgot Password?</string>
 </resources>
