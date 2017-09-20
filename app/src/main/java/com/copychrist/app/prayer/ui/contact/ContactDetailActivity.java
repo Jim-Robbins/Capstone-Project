@@ -113,17 +113,11 @@ public class ContactDetailActivity extends BaseActivity
     @Override
     public void onRemoveClicked(int position) {
         PrayerRequest prayerRequest = prayerRequests.get(position);
-        Timber.d(prayerRequest.toString());
+        showDeletePrayerRequestDialog(position);
     }
 
     @Override
     public void onArchiveClicked(int position) {
-        PrayerRequest prayerRequest = prayerRequests.get(position);
-        Timber.d(prayerRequest.toString());
-    }
-
-    @Override
-    public void onMoreClicked(int position) {
         PrayerRequest prayerRequest = prayerRequests.get(position);
         Timber.d(prayerRequest.toString());
     }
@@ -277,6 +271,14 @@ public class ContactDetailActivity extends BaseActivity
                     contact.getFirstName() + " " + contact.getLastName()
             );
             deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
+    }
+
+    private void showDeletePrayerRequestDialog(int position) {
+        DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
+                getString(R.string.dialog_delete_prayer_request_title),
+                prayerRequests.get(position).getTitle()
+        );
+        deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
     }
 
 }

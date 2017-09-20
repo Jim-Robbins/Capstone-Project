@@ -10,19 +10,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Spinner
             android:id="@+id/spinner_books"
-            android:layout_width="110dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:tooltipText="@string/spinner_books_hint"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:tooltipText="@string/spinner_books_hint" />
 
         <Spinner
             android:id="@+id/spinner_chapters"
-            android:layout_width="95dp"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            />
+            android:layout_gravity="center_vertical" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="80dp"
@@ -36,12 +36,14 @@
                 android:inputType="text"
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
+
         <ImageButton
-            style="@style/Dialog_Search_Btn"
             android:id="@+id/btn_find"
+            style="@style/Dialog_Search_Btn"
             android:layout_width="@dimen/dialog_search_btn_width_height"
-            android:layout_height="@dimen/dialog_search_btn_width_height"/>
+            android:layout_height="@dimen/dialog_search_btn_width_height" />
     </LinearLayout>
+
     <TextView
         style="@style/Required_Field"
         android:layout_width="wrap_content"

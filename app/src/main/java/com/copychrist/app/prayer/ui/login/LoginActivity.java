@@ -154,6 +154,28 @@ public class LoginActivity extends BaseActivity {
                 });
     }
 
+    @OnClick(R.id.btn_forgot_password)
+    protected void getPassword() {
+        if (!validateEmailForPassword()) {
+            return;
+        }
+
+        showProgressDialog();
+        String email = textEmail.getText().toString();
+
+        firebaseAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Email sent.");
+                            Toast.makeText(LoginActivity.this, "Email sent.", Toast.LENGTH_SHORT).show();
+                            hideProgressDialog();
+                        }
+                    }
+                });
+    }
+
     private void onAuthSuccess(FirebaseUser user) {
         String username = usernameFromEmail(user.getEmail());
 
@@ -187,6 +209,18 @@ public class LoginActivity extends BaseActivity {
             result = false;
         } else {
             textPassword.setError(null);
+        }
+
+        return result;
+    }
+
+    private boolean validateEmailForPassword() {
+        boolean result = true;
+        if (TextUtils.isEmpty(textEmail.getText().toString())) {
+            textEmail.setError(getString(R.string.login_error_required));
+            result = false;
+        } else {
+            textEmail.setError(null);
         }
 
         return result;

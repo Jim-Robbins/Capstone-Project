@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.copychrist.app.prayer.ui.BaseActivity;
 import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
 import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
 import com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestDetailActivity;
+import com.copychrist.app.prayer.util.Utils;
 
 import java.util.List;
 
@@ -39,6 +41,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         ViewPrayerRequestDialogFragment.ViewPrayerRequestDialogListener {
 
     private static final String TAG = "PrayerListActivity";
+    private static final String SELECTED_ITEMS = TAG+"_SELECTED_ITEMS";
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.tab_layout_prayer_list) TabLayout tabLayoutPrayerList;
@@ -51,6 +54,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     private  List<PrayerListRequest> prayerListRequests;
     private boolean retoreView = false;
+    private String selectedItemsToRestore;
 
     public static Intent getStartIntent(final Context context, final PrayerList prayerList) {
         Intent intent = new Intent(context, PrayerListActivity.class);
@@ -127,12 +131,16 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        selectedItemsToRestore = prayerRequestsListAdapter.getSelectedItems().toString();
+        outState.putString(SELECTED_ITEMS, selectedItemsToRestore);
         prayerListPresenter.saveState();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        selectedItemsToRestore = savedInstanceState.getString(SELECTED_ITEMS);
+        selectedItemsToRestore = selectedItemsToRestore.substring(1, selectedItemsToRestore.length()-1).replaceAll(" ","");
         retoreView = true;
     }
 
@@ -149,6 +157,14 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     public void showPrayerListRequests(List<PrayerListRequest> prayerListRequests) {
         this.prayerListRequests = prayerListRequests;
         prayerRequestsListAdapter.setAdpaterData(prayerListRequests);
+
+        // If presenter is null we must be restoring from rotation
+        if(!TextUtils.isEmpty(selectedItemsToRestore)) {
+            List<Integer> positions = Utils.parseIntListString(selectedItemsToRestore);
+            for (Integer position : positions) {
+                toggleSelection(position);
+            }
+        }
     }
 
     @Override
@@ -276,6 +292,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         PrayerListRequest prayerListRequest = prayerListRequests.get(position);
         prayerListRequest.setPrayedFor(true);
         prayerListRequests.set(position, prayerListRequest);
+        prayerRequestsListAdapter.toggleSelection(position);
         prayerRequestsListAdapter.notifyDataSetChanged();
 
         ViewPrayerRequestDialogFragment viewPrayerRequestDialog =

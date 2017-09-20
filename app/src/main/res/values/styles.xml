@@ -210,8 +210,8 @@
     </style>
 
     <style name="Fab" parent="Widget.Design.FloatingActionButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/fab_button_size</item>
+        <item name="android:layout_height">@dimen/fab_button_size</item>
         <item name="android:layout_gravity">bottom|end</item>
         <item name="android:layout_margin">@dimen/fab_margin</item>
     </style>
@@ -233,4 +233,6 @@
         <item name="itemIconTint">@android:color/white</item>
         <item name="itemTextColor">@android:color/white</item>
     </style>
+
+    <dimen name="fab_button_size">56dp</dimen>
 </resources>

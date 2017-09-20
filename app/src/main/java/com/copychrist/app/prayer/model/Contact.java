@@ -40,6 +40,10 @@ public class Contact implements Parcelable {
     private String pictureUrl;
     public static final String CHILD_PICTURE_URL = "pictureUrl";
 
+    @Nullable
+    private int profileColor;
+    public static final String CHILD_PROFILE_COLOR = "profileColor";
+
     public Contact() {
         // Default constructor required for calls to DataSnapshot.getContact()
     }
@@ -112,6 +116,10 @@ public class Contact implements Parcelable {
         this.pictureUrl = pictureUrl;
     }
 
+    @Nullable
+    public int getProfileColor() { return profileColor; }
+    public void setProfileColor(@Nullable int profileColor) { this.profileColor = profileColor; }
+
     @Exclude
     @Override
     public String toString() {
@@ -135,6 +143,7 @@ public class Contact implements Parcelable {
         firstName = in.readString();
         lastName = in.readString();
         pictureUrl = in.readString();
+        profileColor = in.readInt();
     }
 
     @Override
@@ -156,6 +165,7 @@ public class Contact implements Parcelable {
         dest.writeString(firstName);
         dest.writeString(lastName);
         dest.writeString(pictureUrl);
+        dest.writeInt(profileColor);
     }
 
     @SuppressWarnings("unused")
@@ -170,8 +180,4 @@ public class Contact implements Parcelable {
             return new Contact[size];
         }
     };
-
-    public int getColor() {
-        return 0;
-    }
 }

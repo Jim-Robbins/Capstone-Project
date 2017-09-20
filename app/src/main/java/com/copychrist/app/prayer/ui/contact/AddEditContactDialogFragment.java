@@ -11,6 +11,7 @@ import android.widget.EditText;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
+import com.copychrist.app.prayer.util.Utils;
 
 /**
  * Created by jim on 8/16/17.
@@ -107,6 +108,7 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         contact.setLastName(txtLastName.getText().toString());
         contact.setContactGroupKey(contactGroup.getKey());
         contact.setContactGroup(contactGroup);
+        contact.setProfileColor(Utils.getRandomMaterialColor(getContext(), "400"));
         ((AddEditContactDialogListener) getActivity()).onContactSaveClick(contact);
     }
 

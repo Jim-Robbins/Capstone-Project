@@ -92,8 +92,10 @@ public class PrayerListRequestSelectableSwipeableAdapter extends RecyclerView.Ad
                 txtTimeStamp.setText(dateFormat.format(prayerListRequest.getEndDate()));
             }
 
-            // displaying the first letter of From in icon text
-            txtIconText.setText(prayerListRequest.getContactName().substring(0, 1));
+            // displaying the first letter of contact first and last name in icon text
+            String initials = Utils.getInitials(prayerListRequest.getContact().getFirstName(),
+                    prayerListRequest.getContact().getLastName());
+            txtIconText.setText(initials);
         }
     }
 
@@ -183,6 +185,13 @@ public class PrayerListRequestSelectableSwipeableAdapter extends RecyclerView.Ad
         clearSelections();
     }
     private void applyClickEvents(ViewHolder holder, final int position) {
+
+        holder.iconContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prayerListRequestAdapterListener.onIconClicked(position);
+            }
+        });
 
         holder.itemContainer.setOnClickListener(new View.OnClickListener() {
             @Override

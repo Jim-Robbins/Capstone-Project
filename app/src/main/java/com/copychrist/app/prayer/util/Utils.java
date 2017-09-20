@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -12,8 +14,12 @@ import com.copychrist.app.prayer.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import timber.log.Timber;
 
 /**
  * Created by jim on 8/26/17.
@@ -87,5 +93,32 @@ public class Utils {
             colors.recycle();
         }
         return returnColor;
+    }
+
+    public static String getInitials(@NonNull String firstName, @Nullable String lastName) {
+        String initials = firstName.substring(0,1);
+        if(!TextUtils.isEmpty(lastName)) initials += lastName.substring(0,1);
+        return initials;
+    }
+
+    public static List<Integer> parseIntListString(String listString) {
+        List<Integer> list = new ArrayList<>();
+        listString = listString.replaceAll("\\[", "");
+        listString = listString.replaceAll(" ", "");
+        listString = listString.replaceAll("\\]", "");
+        Timber.d(listString);
+        String[] sList = listString.split(",");
+        for (String s: sList) {
+            try {
+                int i = Integer.parseInt(s);
+                list.add(i);
+            } catch(NumberFormatException e) {
+                Timber.d("Bad value: " + s);
+            } catch(NullPointerException e) {
+                Timber.d("Null value");
+            }
+        }
+
+        return list;
     }
 }

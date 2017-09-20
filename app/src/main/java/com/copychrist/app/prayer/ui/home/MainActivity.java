@@ -23,8 +23,6 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     @BindView(R.id.icon_container_prayer_lists) RelativeLayout iconPrayerLists;
     @BindView(R.id.icon_container_contact_groups) RelativeLayout iconContactGroups;
     @BindView(R.id.icon_container_prayer_requests) RelativeLayout iconPrayerRequests;
-    @BindView(R.id.icon_container_contacts) RelativeLayout iconContacts;
-    @BindView(R.id.icon_container_bible_verses) RelativeLayout iconBibleVerses;
     @BindView(R.id.icon_container_logout) RelativeLayout iconLogout;
 
     @Inject MainContract.Presenter mainPresenter;
@@ -71,18 +69,6 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     @OnClick(R.id.icon_container_contact_groups)
     public void onContactGroupsClick() {
         startActivity(ContactGroupActivity.getStartIntent(this, null));
-    }
-
-    @OnClick(R.id.icon_container_contacts)
-    public void onContactsClick() {
-        //TODO :: hook up a simple presenter to save verses
-//        BiblePassageFinderDialogFragment biblePassageFinderDialogFragment = BiblePassageFinderDialogFragment.newInstance();
-//        biblePassageFinderDialogFragment.show(getSupportFragmentManager(), "BiblePassageFinderDialogFragment");
-    }
-
-    @OnClick(R.id.icon_container_bible_verses)
-    public void onBibleVersesClick() {
-        //startActivity(BibleVerseActivity.getStartIntent(this, null));
     }
 
     @OnClick(R.id.icon_container_logout)

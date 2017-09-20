@@ -13,20 +13,8 @@
 
     <LinearLayout
         android:id="@+id/layout_swipeable_menu"
-        android:layout_width="@dimen/item_swipe_tri_button"
+        android:layout_width="@dimen/item_swipe_dual_button"
         android:layout_height="@dimen/item_swipeable_row_height">
-
-        <RelativeLayout
-            android:id="@+id/swipe_btn_edit"
-            style="@style/Swipe_Btn_Edit_Container"
-            android:layout_alignParentEnd="true">
-
-            <ImageView style="@style/Swipe_Btn_Edit_Icon" />
-
-            <TextView
-                style="@style/Swipe_Btn_Text"
-                android:text="@string/btn_edit" />
-        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/swipe_btn_archive"

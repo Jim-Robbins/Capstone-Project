@@ -47,6 +47,7 @@
     <dimen name="spinner_font_size">16sp</dimen>
     <dimen name="dialog_search_result_font_size">16sp</dimen>
 
+
     <!-- Widget Sizes -->
     <dimen name="widget_margin">4dp</dimen>
     <dimen name="widget_icon">48dp</dimen>
@@ -59,4 +60,5 @@
     <dimen name="dialog_search_btn_width_height">50dp</dimen>
     <dimen name="prayer_request_detail_icon_size">48dp</dimen>
     <dimen name="toolbar_icon_size">40dp</dimen>
+    <dimen name="tab_height">50dp</dimen>
 </resources>

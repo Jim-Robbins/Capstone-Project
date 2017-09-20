@@ -19,6 +19,7 @@ import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.util.CircleTransform;
+import com.copychrist.app.prayer.util.Utils;
 
 import java.util.List;
 
@@ -63,6 +64,10 @@ public class ContactsSwipeableSelectableRVAdapter extends RecyclerView.Adapter<C
             layoutItem.setTag(contact);
             textFirstName.setText(contact.getFirstName());
             textLastName.setText(contact.getLastName());
+
+            // displaying the first letter of contact first and last name in icon text
+            String initials = Utils.getInitials(contact.getFirstName(), contact.getLastName());
+            txtIconText.setText(initials);
         }
     }
 
@@ -222,11 +227,11 @@ public class ContactsSwipeableSelectableRVAdapter extends RecyclerView.Adapter<C
                     .transform(new CircleTransform(context))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.imgProfile);
-            holder.imgProfile.setColorFilter(contact.getColor());
+            holder.imgProfile.setColorFilter(contact.getProfileColor());
             holder.txtIconText.setVisibility(View.GONE);
         } else {
             holder.imgProfile.setImageResource(R.drawable.bg_circle);
-            holder.imgProfile.setColorFilter(contact.getColor());
+            holder.imgProfile.setColorFilter(contact.getProfileColor());
             holder.txtIconText.setVisibility(View.VISIBLE);
         }
     }

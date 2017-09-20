@@ -18,6 +18,7 @@ import com.copychrist.app.prayer.adapter.PrayerRequestSelectableRVAdapter;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.model.PresenterState;
+import com.copychrist.app.prayer.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,9 +131,9 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
 
         // If presenter is null we must be restoring from rotation
         if(!TextUtils.isEmpty(selectedItemsToRestore)) {
-            Timber.d(selectedItemsToRestore);
-            for (String s : selectedItemsToRestore.split(",")) {
-                toggleSelection(Integer.parseInt(s));
+            List<Integer> positions = Utils.parseIntListString(selectedItemsToRestore);
+            for (Integer position : positions) {
+                toggleSelection(position);
             }
         }
     }

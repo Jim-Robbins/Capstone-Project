@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.BiblePassageFinderSelectableAdapter;
 import com.copychrist.app.prayer.model.BiblePassage;
+import com.copychrist.app.prayer.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,9 +97,9 @@ public class ViewBiblePassagesDialogFragment extends AppCompatDialogFragment
 
         // If presenter is null we must be restoring from rotation
         if(!TextUtils.isEmpty(selectedItemsToRestore)) {
-            Timber.d(selectedItemsToRestore);
-            for (String s : selectedItemsToRestore.split(",")) {
-                toggleSelection(Integer.parseInt(s));
+            List<Integer> positions = Utils.parseIntListString(selectedItemsToRestore);
+            for (Integer position : positions) {
+                toggleSelection(position);
             }
         }
 

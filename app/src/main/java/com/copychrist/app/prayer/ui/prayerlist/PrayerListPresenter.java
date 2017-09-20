@@ -6,7 +6,6 @@ import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.model.PresenterState;
-import com.copychrist.app.prayer.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +142,7 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
             prayerListRequest.setContact(prayerRequest.getContact());
             prayerListRequest.setGroup(prayerRequest.getContactGroup());
             prayerListRequest.setPrayerRequest(prayerRequest);
-            prayerListRequest.setColor(Utils.getRandomMaterialColor(context, "400"));
+            prayerListRequest.setColor(prayerListRequest.getContact().getProfileColor());
             prayerListRequests.add(prayerListRequest);
         }
 

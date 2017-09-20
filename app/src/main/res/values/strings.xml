@@ -111,4 +111,8 @@
     <string name="btn_prayer_requests">Prayer Requests</string>
     <string name="btn_log_out">Logout</string>
     <string name="btn_forgot_password">Forgot Password?</string>
+    <string name="profile_icon_acc">Profile Icon</string>
+    <string name="fab_btn_add_request">Add Request</string>
+    <string name="fab_add_contact">Add New Contact</string>
+    <string name="dialog_delete_prayer_request_title">Delete Prayer Request</string>
 </resources>

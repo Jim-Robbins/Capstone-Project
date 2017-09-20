@@ -119,12 +119,19 @@ public class DbtService {
     }
 
     private String getBookDamId(Book bookItem) {
-        int bookOrder = Integer.parseInt(bookItem.getBookOrder());
-        if (bookOrder > 54) {
-            return getBaseDamId() + NT + V2_ETEXT;
-        } else {
-            return getBaseDamId() + OT + V2_ETEXT;
+        try {
+            int bookOrder = Integer.parseInt(bookItem.getBookOrder());
+            if (bookOrder > 54) {
+                return getBaseDamId() + NT + V2_ETEXT;
+            } else {
+                return getBaseDamId() + OT + V2_ETEXT;
+            }
+        } catch(NumberFormatException e) {
+            Timber.d("Bad value: " + bookItem);
+        } catch(NullPointerException e) {
+            Timber.d("Null value");
         }
+        return null;
     }
 
     private Book findBookListItem(@NonNull String bookName, @Nullable String chapter) {

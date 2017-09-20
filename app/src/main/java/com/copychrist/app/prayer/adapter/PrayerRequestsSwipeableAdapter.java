@@ -31,7 +31,6 @@ public class PrayerRequestsSwipeableAdapter extends RecyclerView.Adapter<PrayerR
 
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.layout_swipeable_item_container) SwipeRevealLayout swipeLayout;
-        @BindView(R.id.swipe_btn_edit) RelativeLayout btnEdit;
         @BindView(R.id.swipe_btn_archive) RelativeLayout btnArchive;
         @BindView(R.id.swipe_btn_remove) RelativeLayout btnRemove;
         @BindView(R.id.layout_item_container) RelativeLayout layoutItem;
@@ -58,7 +57,6 @@ public class PrayerRequestsSwipeableAdapter extends RecyclerView.Adapter<PrayerR
         void onPrayerRequestClick(int request);
         void onRemoveClicked(int position);
         void onArchiveClicked(int position);
-        void onMoreClicked(int position);
         void onRowLongClicked(int position);
     }
 
@@ -131,16 +129,6 @@ public class PrayerRequestsSwipeableAdapter extends RecyclerView.Adapter<PrayerR
                 closeSwipeLayout(position);
                 if (prayerRequestClickListener != null) {
                     prayerRequestClickListener.onRemoveClicked(position);
-                }
-            }
-        });
-
-        holder.btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeSwipeLayout(position);
-                if (prayerRequestClickListener != null) {
-                    prayerRequestClickListener.onMoreClicked(position);
                 }
             }
         });

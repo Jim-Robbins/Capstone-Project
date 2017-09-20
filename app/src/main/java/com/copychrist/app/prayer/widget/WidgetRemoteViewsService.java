@@ -85,7 +85,7 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                 prayerListRequest.setContact(prayerRequest.getContact());
                 prayerListRequest.setGroup(prayerRequest.getContactGroup());
                 prayerListRequest.setPrayerRequest(prayerRequest);
-                prayerListRequest.setColor(Utils.getRandomMaterialColor(context, "400"));
+                prayerListRequest.setColor(prayerRequest.getContact().getProfileColor());
                 prayerListRequests.add(prayerListRequest);
             }
             countDownLatch.countDown();
