@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <RelativeLayout
+        style="@style/Item_Add_Container"
+        android:id="@+id/btn_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/item_add_top_bottom_padding"
+        android:paddingStart="@dimen/item_start_end_padding"
+        android:paddingTop="@dimen/item_add_top_bottom_padding">
+
+        <ImageView
+            style="@style/Item_Add_Circle"
+            android:id="@+id/img_icon_circle"
+            android:layout_width="@dimen/item_icon_width_height"
+            android:layout_height="@dimen/item_icon_width_height" />
+
+        <ImageView
+            style="@style/Item_Add_Icon"
+            android:layout_width="@dimen/item_icon_width_height"
+            android:layout_height="@dimen/item_icon_width_height" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/item_start_end_padding"
+            android:layout_toEndOf="@id/img_icon_circle"
+            android:text="@string/dialog_bible_passage_add" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_add"
+        android:scrollbars="vertical" />
+
+</RelativeLayout>

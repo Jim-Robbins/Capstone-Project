@@ -1,11 +1,9 @@
 package com.copychrist.app.prayer.ui.contact;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.LoaderManager;
-
 import com.copychrist.app.prayer.ApplicationModule;
-import com.copychrist.app.prayer.data.AppRepository;
-import com.copychrist.app.prayer.data.LoaderProvider;
+import com.copychrist.app.prayer.model.Contact;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,27 +14,19 @@ import dagger.Provides;
 @Module(injects = ContactDetailActivity.class, addsTo = ApplicationModule.class)
 public class ContactModule {
 
-    private final long contactId;
-    private final LoaderProvider loaderProvider;
-    private final AppRepository appRepository;
-    private final LoaderManager loaderManager;
-    private final ContactContract.View view;
+    private final Contact contact;
 
-    public ContactModule(@NonNull LoaderProvider loaderProvider,
-                         @NonNull LoaderManager loaderManager,
-                         @NonNull AppRepository repository,
-                         @NonNull ContactContract.View view,
-                         @NonNull long contactId) {
-        this.contactId = contactId;
-        this.loaderProvider = loaderProvider;
-        this.loaderManager = loaderManager;
-        this.appRepository = repository;
-        this.view = view;
+    public ContactModule(final Contact contact) {
+        this.contact = contact;
     }
 
     @Provides
-    ContactContract.Presenter provideContactPresenter() {
-        return new ContactPresenter(loaderProvider, loaderManager,
-                appRepository, view, contactId);
+    protected ContactService provideContactService(FirebaseDatabase database, FirebaseUser user) {
+        return new ContactService(database, user);
+    }
+
+    @Provides
+    protected ContactContract.Presenter provideContactPresenter(final ContactService contactService) {
+        return new ContactPresenter(contactService, contact);
     }
 }

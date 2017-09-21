@@ -2,12 +2,11 @@ package com.copychrist.app.prayer;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.copychrist.app.prayer.data.AppRepository;
 import com.copychrist.app.prayer.util.ReleaseTree;
-import com.facebook.stetho.Stetho;
-import com.squareup.leakcanary.LeakCanary;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 
 import dagger.ObjectGraph;
 import timber.log.Timber;
@@ -21,18 +20,9 @@ public class PrayingWithDedicationApplication extends Application {
         super.onCreate();
 
         instance = this;
-        Stetho.initializeWithDefaults(this);
-
-        initMemoryLeakCheck();
         initLogger();
+        initDb();
         initApplicationGraph();
-    }
-
-    private void initMemoryLeakCheck() {
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
-        LeakCanary.install(this);
     }
 
     private void initLogger() {
@@ -53,6 +43,15 @@ public class PrayingWithDedicationApplication extends Application {
         }
     }
 
+    private void initDb() {
+        FirebaseDatabase.getInstance().setLogLevel(Logger.Level.INFO);
+        if (!FirebaseApp.getApps(this).isEmpty()) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            FirebaseDatabase.getInstance().getReference().keepSynced(true);
+        }
+
+    }
+
     private void initApplicationGraph() {
         appGraph = ObjectGraph.create(new ApplicationModule(this));
     }
@@ -60,5 +59,4 @@ public class PrayingWithDedicationApplication extends Application {
     public static void injectModules(@NonNull final Object object, final Object... modules) {
         instance.appGraph.plus(modules).inject(object);
     }
-
 }

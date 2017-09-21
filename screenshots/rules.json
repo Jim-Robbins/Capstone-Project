@@ -1,0 +1,94 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+      }
+    },
+    "contactGroups": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        ".indexOn": ["dateCreated"],
+        "$contactGroupKey": {
+          "name": {
+            ".validate": "newData.isString() && newData.val().length < 20"
+          },
+          "dateCreated": {
+            ".validate": "newData.isNumber()"
+          },
+          "sortOrder": {
+            ".validate": "newData.isNumber()"
+          }
+        }
+      }
+    },
+    "contacts": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        ".indexOn": ["contactGroupKey","dateCreated","contact"],
+        "$contactKey": {
+          "firstName": {
+            ".validate": "newData.isString() && newData.val().length < 20"
+          },
+          "lastName": {
+            ".validate": "newData.isString() && newData.val().length < 30"
+          },
+          "dateCreated": {
+            ".validate": "newData.isNumber()"
+          }
+        }
+      }
+    },
+    "prayerLists": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        ".indexOn": ["dateCreated"],
+        "$prayerListKey": {
+          "name": {
+            ".validate": "newData.isString() && newData.val().length < 20"
+          },
+          "dateCreated": {
+            ".validate": "newData.isNumber()"
+          },
+          "sortOrder": {
+            ".validate": "newData.isNumber()"
+          }
+        }
+      }
+    },
+    "prayerRequests": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        ".indexOn": ["dateCreated","contactKey"],
+        "$prayerRequestKey": {
+          "title": {
+            ".validate": "newData.isString() && newData.val().length < 40"
+          },
+        }
+      }
+    },
+    "biblePassages": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid",
+        "$biblePassageKey": {
+          ".validate": "newData.hasChildren(['book', 'chapter'])",
+          "book": {
+            ".validate": "newData.isString() && newData.val().length < 16"
+          },
+          "chapter": {
+            ".validate": "newData.isString() && newData.val() > '0' && newData.val().length < 4 && newData.val().matches(/\\d*/)"
+          },
+          "verse": {
+            ".validate": "newData.isString() && newData.val() > '0' && newData.val().matches(/^(\\d*)|(\\d*-\\d*)$/)"
+          }
+        }
+      }
+    }
+  }
+}

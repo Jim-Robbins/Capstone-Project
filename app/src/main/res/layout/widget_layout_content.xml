@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/widget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorPrimaryDark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/widget_margin">
+
+            <ImageView
+                android:id="@+id/widget_icon"
+                android:layout_width="@dimen/widget_icon"
+                android:layout_height="@dimen/widget_icon"
+                android:layout_margin="@dimen/widget_margin"
+                android:layout_centerVertical="true"
+                android:scaleType="centerInside"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/widget_title"
+                android:layout_marginStart="@dimen/normal_space"
+                android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Title"/>
+        </LinearLayout>
+
+        <ListView
+            android:background="@color/color_white"
+            android:id="@+id/widget_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/widget_item_prayer_request" />
+
+        <TextView
+            android:id="@+id/widget_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            android:visibility="gone"
+            tools:text="Error message" />
+
+    </LinearLayout>
+</FrameLayout>

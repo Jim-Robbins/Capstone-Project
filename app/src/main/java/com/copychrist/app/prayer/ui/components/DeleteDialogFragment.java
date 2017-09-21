@@ -13,36 +13,33 @@ import com.copychrist.app.prayer.util.Utils;
 
 /**
  * Created by jim on 8/26/17.
+ *
  */
 
 public class DeleteDialogFragment extends AppCompatDialogFragment {
 
     private static String TITLE = "title";
-    private static String ITEM_ID = "itemId";
     private static String ITEM_NAME = "itemName";
 
     private DeleteActionDialogListener listener;
-    private long itemId;
 
     /**
      * Public interface to listen for Confirm button clicked
      */
     public interface DeleteActionDialogListener {
-        void onConfirmedDeleteDialog(long itemId);
+        void onConfirmedDeleteDialog();
     }
 
     /**
      * New Instance creates the dialog fragment, and allows us to pass some values in.
-     * @param title
-     * @param itemId
-     * @param itemName
-     * @return
+     * @param title     Title of the dialog
+     * @param itemName  Name of the Item to delete
+     * @return DeleteDialogFragment
      */
-    public static DeleteDialogFragment newInstance(String title, long itemId, String itemName) {
+    public static DeleteDialogFragment newInstance(String title, String itemName) {
         DeleteDialogFragment frag = new DeleteDialogFragment();
         Bundle args = new Bundle();
         args.putString(TITLE, title);
-        args.putLong(ITEM_ID, itemId);
         args.putString(ITEM_NAME, itemName);
         frag.setArguments(args);
         return frag;
@@ -53,7 +50,6 @@ public class DeleteDialogFragment extends AppCompatDialogFragment {
         // Get params we passed to newInstance
         String title = getArguments().getString(TITLE);
         String itemName = getArguments().getString(ITEM_NAME);
-        itemId = getArguments().getLong(ITEM_ID);
 
         // Create alert dialog
         Resources res = getActivity().getResources();
@@ -67,7 +63,7 @@ public class DeleteDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onConfirmedDeleteDialog(itemId);
+                listener.onConfirmedDeleteDialog();
                 if (dialog != null) {
                     dialog.dismiss();
                 }
