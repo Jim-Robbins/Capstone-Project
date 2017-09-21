@@ -5,8 +5,8 @@ package com.copychrist.app.prayer.ui;
  */
 
 public interface BasePresenter<T> {
-//    void setView(T view);
-//    void clearView();
-
-    void start();
+    void setView(T view);
+    void resetView(T view);
+    void saveState();
+    void clearView();
 }

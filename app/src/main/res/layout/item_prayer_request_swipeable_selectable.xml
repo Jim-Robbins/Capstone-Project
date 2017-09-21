@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?><!-- https://www.androidhive.info/2017/02/android-creating-gmail-like-inbox-using-recyclerview/ -->
+<com.chauthai.swipereveallayout.SwipeRevealLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_swipeable_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_swipeable_row_height"
+    android:background="@drawable/bg_list_row"
+    android:clickable="true"
+    android:focusable="true"
+    app:dragEdge="right"
+    app:mode="same_level">
+
+    <LinearLayout
+        android:id="@+id/layout_swipeable_menu"
+        android:layout_width="@dimen/item_swipe_tri_button"
+        android:layout_height="@dimen/item_swipeable_row_height">
+
+        <RelativeLayout
+            style="@style/Swipe_Btn_Edit_Container"
+            android:id="@+id/swipe_btn_edit"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                style="@style/Swipe_Btn_Edit_Icon" />
+
+            <TextView
+                style="@style/Swipe_Btn_Text"
+                android:text="@string/btn_edit" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/Swipe_Btn_Archive_Container"
+            android:id="@+id/swipe_btn_archive" >
+
+            <ImageView
+                style="@style/Swipe_Btn_Archive_Icon" />
+
+            <TextView
+                style="@style/Swipe_Btn_Text"
+                android:text="@string/btn_archive" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/swipe_btn_remove"
+            style="@style/Swipe_Btn_Remove_Container">
+
+            <ImageView
+                style="@style/Swipe_Btn_Remove_Icon" />
+
+            <TextView
+                style="@style/Swipe_Btn_Text"
+                android:text="@string/btn_remove" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_swipeable_row_height"
+        android:paddingBottom="@dimen/item_top_bottom_padding"
+        android:paddingStart="@dimen/item_start_end_padding"
+        android:paddingEnd="@dimen/item_start_end_padding"
+        android:paddingTop="@dimen/item_top_bottom_padding">
+
+        <LinearLayout
+            android:id="@+id/layout_item_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/item_start_end_padding"
+            android:paddingStart="@dimen/item_content_start_padding">
+
+            <TextView
+                style="@style/Item_Primary"
+                android:id="@+id/txt_contact_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                tools:text="Jim Robbins" />
+
+            <TextView
+                style="@style/Item_Secondary"
+                android:id="@+id/txt_request_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                tools:text="Wisdom for working on project" />
+
+            <TextView
+                style="@style/Item_Sub_Secondary"
+                android:id="@+id/txt_request_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                tools:text="Diligence, determination, and peace." />
+
+        </LinearLayout>
+
+        <TextView
+            style="@style/Item_Timestamp"
+            android:id="@+id/txt_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            tools:text="Sept 17,2017" />
+
+        <RelativeLayout
+            android:id="@+id/layout_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/profile_icon_acc">
+
+            <RelativeLayout
+                android:id="@+id/layout_icon_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    style="@style/Item_Selected"
+                    android:layout_width="@dimen/item_icon_width_height"
+                    android:layout_height="@dimen/item_icon_width_height" />
+
+                <ImageView
+                    style="@style/Item_Select_Icon"
+                    android:layout_width="@dimen/item_icon_inner_width_height"
+                    android:layout_height="@dimen/item_icon_inner_width_height" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_icon_front"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    style="@style/Item_UnSelected"
+                    android:id="@+id/img_icon_profile"
+                    android:layout_width="@dimen/item_icon_width_height"
+                    android:layout_height="@dimen/item_icon_width_height"/>
+
+                <TextView
+                    style="@style/Item_Icon_Text"
+                    android:id="@+id/txt_icon_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

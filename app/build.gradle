@@ -20,14 +20,14 @@ android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
 
-//    signingConfigs {
-//        copychrist {
-//            storeFile rootProject.file('copychrist.keystore')
-//            storePassword 'android'
-//            keyAlias 'android'
-//            keyPassword 'android'
-//        }
-//    }
+    signingConfigs {
+        copychrist {
+            storeFile file('Capstone.jks')
+            storePassword 'C@pst0n3'
+            keyAlias 'capstone'
+            keyPassword 'pr@y3r'
+        }
+    }
 
     defaultConfig {
         applicationId "com.copychrist.app.prayer"
@@ -37,43 +37,28 @@ android {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
-        //signingConfig signingConfigs.u2020
-
         vectorDrawables.useSupportLibrary = true;
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
-            applicationIdSuffix '.debug'
-//            buildConfigField "String", "OBJECT_SERVER_IP", "192.168.1.64"
-            buildConfigField 'String', 'BIBLES_ORG_API_KEY', BiblesOrgApiKey
+            buildConfigField("String", "DBT_API_KEY", dbtApiKey)
         }
 
         release {
+            signingConfig signingConfigs.copychrist
             minifyEnabled false
-//            buildConfigField "String", "OBJECT_SERVER_IP", "(live-host)"
-            buildConfigField 'String', 'BIBLES_ORG_API_KEY', BiblesOrgApiKey
+            buildConfigField("String", "DBT_API_KEY", dbtApiKey)
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
-    productFlavors {
-        flavorDimensions 'environment'
-
-        internal {
-            dimension 'environment'
-            applicationIdSuffix 'internal'
-        }
-        production {
-            dimension 'environment'
-        }
+    lintOptions {
+        disable 'MissingTranslation'
     }
-}
 
-//realm {
-//    syncEnabled = true
-//}
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -86,38 +71,30 @@ dependencies {
     compile deps.support.cardView
     compile deps.support.constraintLayout
 
-    compile deps.gson
-    compile deps.picasso
-
-    compile deps.okhttp
-    compile deps.okdownloader
-    compile deps.retrofit.core
-    compile deps.retrofit.gson
-
-    compile deps.stetho.stetho
-    compile deps.stetho.okhttp
+    compile deps.butterKnife.runtime
+    annotationProcessor deps.butterKnife.compiler
 
     compile deps.dagger.dagger
     compile deps.dagger.compiler
 
-    compile deps.butterKnife.runtime
-    annotationProcessor deps.butterKnife.compiler
+    compile deps.firebase.database
+    compile deps.firebase.auth
+    compile deps.firebase.ui
+    compile deps.firebase.analytics
+
+    compile deps.gson
+    compile deps.glide
 
     compile deps.timber
 
-    internalCompile deps.leakCanary.real
-    productionCompile deps.leakCanary.noOp
-
     testCompile deps.junit
-    testCompile deps.mockito.core
+
+    compile 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.0'
+    compile 'com.faithcomesbyhearing:dbt:1.0.1'
 
     androidTestCompile deps.junit
-    androidTestCompile deps.mockito.android
     androidTestCompile(deps.espresso.core, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile('com.android.support.test:runner:0.3') {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 }
+apply plugin: 'com.google.gms.google-services'

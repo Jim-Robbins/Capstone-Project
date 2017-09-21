@@ -1,35 +1,33 @@
 package com.copychrist.app.prayer.ui.contact;
 
-import android.database.Cursor;
-
-import com.copychrist.app.prayer.data.model.Contact;
+import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BasePresenter;
-import com.copychrist.app.prayer.ui.BaseView;
+
+import java.util.List;
 
 /**
- * Created by jim on 9/4/17.
+ * Created by jim on 9/8/17.
  */
 
 public class ContactContract {
-    public interface View extends BaseView<Presenter> {
-        void showPrayerRequests(Cursor requests);
-        void showPrayerRequestDetailView(long id);
-        void showAddNewPrayerRequestView(long contactId);
-        void showContactDetail(Cursor contactData);
-        void showContactDetailEditView(long contactId);
-        void showDBResultMessage(String message);
-        void showDeleteContactDialog(Contact myContact);
+    public interface View {
+        void showContactDetail(Contact contact);
+        void showDatabaseResultMessage(String message);
+        void showDatabaseResultMessage(int messageResId);
+        void showPrayerRequests(List<PrayerRequest> prayerRequests);
         void finish();
     }
 
-    public interface Presenter extends BasePresenter {
-        void onPrayerRequestClick(long requestId);
-        void onAddNewRequestClick();
-        void onActiveRequestsClick();
-        void onArchiveClick();
-        void onContactEditClick(long contactId);
-        void onEditClick(long contactId, String firstName, String lastName, String pictureUrl);
-        void onContactDeleteClick(long id);
-        void onDeleteConfirm(long id);
+    public interface Presenter extends BasePresenter<ContactContract.View> {
+        void onContactDeleteCompleted();
+        void onContactDeleteConfirm();
+        void onContactSaveClick(Contact contact);
+        void onContactUpdated(Contact contact);
+        void onDataResultMessage(String message);
+        void onDataResultMessage(int messageResId);
+        void onPrayerRequestGetActiveClick();
+        void onPrayerRequestGetArchivedClick();
+        void onPrayerRequestResults(List<PrayerRequest> prayerRequests);
     }
 }

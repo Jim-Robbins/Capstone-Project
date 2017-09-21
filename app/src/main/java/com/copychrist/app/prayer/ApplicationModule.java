@@ -1,13 +1,13 @@
 package com.copychrist.app.prayer;
 
+import android.app.Application;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.content.res.Resources;
 
-import com.copychrist.app.prayer.data.AppRepository;
-import com.copychrist.app.prayer.data.local.AppLocalDataSource;
-import com.copychrist.app.prayer.data.remote.AppRemoteDataSource;
-
-import javax.inject.Singleton;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,27 +19,34 @@ import dagger.Provides;
 
 @Module(injects = PrayingWithDedicationApplication.class, library = true)
 public class ApplicationModule {
-    PrayingWithDedicationApplication application;
+    private Application application;
 
-    public ApplicationModule(PrayingWithDedicationApplication application) {
+    public ApplicationModule(Application application) {
         this.application = application;
     }
 
-    @Provides @Singleton
-    public Context provideApplicationContext() {
-        return application;
+    @Provides
+    FirebaseApp provideFirebaseApp() {
+        return FirebaseApp.getInstance();
     }
 
-    @Provides @Singleton
-    public AppRepository provideAppRepository() {
-        return new AppRepository( provideRemoteDataSource(), provideLocalDataSource(provideApplicationContext()));
+    @Provides
+    FirebaseDatabase provideFirebaseDatabase() {
+        return FirebaseDatabase.getInstance(provideFirebaseApp());
     }
 
-    public AppRemoteDataSource provideRemoteDataSource() {
-        return new AppRemoteDataSource();
+    @Provides
+    FirebaseUser provideFirebaseUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public AppLocalDataSource provideLocalDataSource(@NonNull Context context) {
-        return new AppLocalDataSource(context.getContentResolver());
+    @Provides
+    Resources provideResources() {
+        return application.getResources();
+    }
+
+    @Provides
+    Context provideContext() {
+        return application.getBaseContext();
     }
 }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gist.github.com/daniellevass/b0b8cfa773488e138037 -->
+<resources>
+    <array name="mdcolor_400">
+        <item name="red_400" type="color">@color/red_400</item>
+        <item name="pink_400" type="color">@color/pink_400</item>
+        <item name="purple_400" type="color">@color/purple_400</item>
+        <item name="deep_purple_400" type="color">@color/deep_purple_400</item>
+        <item name="indigo_400" type="color">@color/indigo_400</item>
+        <item name="blue_400" type="color">@color/blue_400</item>
+        <item name="light_blue_400" type="color">@color/light_blue_400</item>
+        <item name="cyan_400" type="color">@color/cyan_400</item>
+        <item name="teal_400" type="color">@color/teal_400</item>
+        <item name="green_400" type="color">@color/green_400</item>
+        <item name="light_green_400" type="color">@color/light_blue_400</item>
+        <item name="lime_400" type="color">@color/lime_400</item>
+        <item name="yellow_400" type="color">@color/yellow_400</item>
+        <item name="orange_400" type="color">@color/orange_400</item>
+        <item name="deep_orange_400" type="color">@color/deep_orange_400</item>
+        <item name="brown_400" type="color">@color/brown_400</item>
+        <item name="grey_400" type="color">@color/green_400</item>
+        <item name="blue_grey_400" type="color">@color/blue_grey_400</item>
+    </array>
+    <array name="mdcolor_500">
+        <item name="red_500" type="color">@color/red_500</item>
+        <item name="pink_500" type="color">@color/pink_500</item>
+        <item name="purple_500" type="color">@color/purple_500</item>
+        <item name="deep_purple_500" type="color">@color/deep_purple_500</item>
+        <item name="indigo_500" type="color">@color/indigo_500</item>
+        <item name="blue_500" type="color">@color/blue_500</item>
+        <item name="light_blue_500" type="color">@color/light_blue_500</item>
+        <item name="cyan_500" type="color">@color/cyan_500</item>
+        <item name="teal_500" type="color">@color/teal_500</item>
+        <item name="green_500" type="color">@color/green_500</item>
+        <item name="light_green_500" type="color">@color/light_green_500</item>
+        <item name="lime_500" type="color">@color/lime_500</item>
+        <item name="yellow_500" type="color">@color/yellow_500</item>
+        <item name="orange_500" type="color">@color/orange_500</item>
+        <item name="deep_orange_500" type="color">@color/deep_orange_500</item>
+        <item name="brown_500" type="color">@color/brown_500</item>
+        <item name="grey_500" type="color">@color/grey_500</item>
+        <item name="blue_grey_500" type="color">@color/blue_grey_500</item>
+    </array>
+</resources>

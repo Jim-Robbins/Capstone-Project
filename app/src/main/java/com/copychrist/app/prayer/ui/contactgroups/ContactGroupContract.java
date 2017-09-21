@@ -1,50 +1,45 @@
 package com.copychrist.app.prayer.ui.contactgroups;
 
-import android.database.Cursor;
-import android.support.annotation.NonNull;
-
-import com.copychrist.app.prayer.data.model.Contact;
-import com.copychrist.app.prayer.data.model.ContactGroup;
-import com.copychrist.app.prayer.data.model.PrayerRequest;
+import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.ContactGroup;
+import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BasePresenter;
-import com.copychrist.app.prayer.ui.BaseView;
+
+import java.util.List;
+
 
 /**
- * Created by jim on 9/3/17.
+ * Created by jim on 8/14/17.
  */
 
 public class ContactGroupContract {
-
-    public interface View extends BaseView<Presenter> {
-        void setLoadingIndicator(boolean active);
-        void showContactGroupsTabs (Cursor contactGroups, ContactGroup selectedGroup);
-        void showContacts(Cursor contacts);
-        void showAddContactGroupDialog();
-        void showEditContactGroupDialog(ContactGroup contactGroup);
-        void showDeleteContactGroupDialog(ContactGroup contactGroup);
-        void showAddNewContactView(long groupId);
-        void showContactDetailView(@NonNull Contact contact);
-        void showPrayerRequestDetailView(long contactId);
-        void showLoadingError();
-        void showNoContactGroups();
-        void showSuccessfullySavedMessage();
+    public interface View {
+        void showContactGroupDialogAdd();
+        void showContactGroupDialogDelete(ContactGroup contactGroup);
+        void showContactGroupDialogEdit(ContactGroup contactGroup);
+        void showContactGroupsTabs(List<ContactGroup> contactGroups, final ContactGroup selectedGroup);
+        void showContactAddDialog(ContactGroup contactGroup);
+        void showContacts(List<Contact> contacts, List<PrayerRequest> prayerRequests);
+        void showDatabaseResultMessage(String message);
+        void showDatabaseResultMessage(int messageResId);
     }
 
-    public interface Presenter extends BasePresenter {
-        void loadContactGroups(boolean forceUpdate);
-        void setContactGroup(@NonNull ContactGroup contactGroup);
-        void addNewContactGroup();
-        void openContactGroupDetails();
-        void saveContactGroup(@NonNull ContactGroup contactGroup);
-        void deleteContactGroup(@NonNull ContactGroup contactGroup);
-        void deleteContactGroupConfirm();
+    public interface Presenter extends BasePresenter<ContactGroupContract.View> {
+        void onContactGroupAddClick();
+        void onContactGroupClicked(ContactGroup contactGroup);
+        void onContactGroupDeleteClick();
+        void onContactGroupDeleteConfirmed();
+        void onContactGroupEditClick();
+        void onContactGroupResults(List<ContactGroup> results, ContactGroup selectedContactGroup);
+        void onContactGroupSaveClick(ContactGroup contactGroup);
+        void onContactAddClick();
+        void onContactDeleteConfirmed(Contact contact);
+        void onContactResults(List<Contact> results);
+        void onContactSaveClick(Contact contact);
+        void onDataResultMessage(String message);
+        void onDataResultMessage(int messageResId);
 
-        void loadContacts();
-        void addNewContact();
-        void saveContact(@NonNull Contact contact);
-        void openContactDetails(@NonNull Contact contact);
-
-        void openPrayerRequestDetails(@NonNull PrayerRequest prayerRequest);
+        void onPrayerRequestResults(List<PrayerRequest> prayerRequests);
     }
 
 }

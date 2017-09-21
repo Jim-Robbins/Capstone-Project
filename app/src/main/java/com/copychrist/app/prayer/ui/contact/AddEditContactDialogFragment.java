@@ -9,57 +9,64 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.data.model.Contact;
-import com.copychrist.app.prayer.ui.contactgroups.ContactGroupContract;
-import com.copychrist.app.prayer.ui.contactgroups.ContactsPresenter;
+import com.copychrist.app.prayer.model.Contact;
+import com.copychrist.app.prayer.model.ContactGroup;
+import com.copychrist.app.prayer.util.Utils;
 
 /**
  * Created by jim on 8/16/17.
  */
 
 public class AddEditContactDialogFragment extends AppCompatDialogFragment {
+    private static final String CONTACT = "AddEditContactDialogFragment_Contact";
+    private static final String CONTACT_GROUP = "AddEditContactDialogFragment_Contact_Group";
     private Contact contact;
-    private ContactGroupContract.Presenter contactsPresenter;
-    private ContactContract.Presenter contactPresenter;
-    private long contactId = -1;
-    private long groupId = -1;
+    private ContactGroup contactGroup;
 
     private EditText txtFirstName, txtLastName;
 
-    public static AddEditContactDialogFragment newEditInstance(Contact contact,
-                                                               ContactContract.Presenter contactPresenter) {
+    public interface AddEditContactDialogListener {
+        void onContactSaveClick(Contact contact);
+    }
+
+    public static AddEditContactDialogFragment newEditInstance(Contact contact) {
         AddEditContactDialogFragment frag = new AddEditContactDialogFragment();
         frag.contact = contact;
-        frag.contactPresenter = contactPresenter;
         return frag;
     }
 
-    public static AddEditContactDialogFragment newAddInstance(long groupId,
-                                                              ContactGroupContract.Presenter contactsPresenter) {
+    public static AddEditContactDialogFragment newAddInstance(ContactGroup contactGroup) {
         AddEditContactDialogFragment frag = new AddEditContactDialogFragment();
         frag.contact = null;
-        frag.groupId = groupId;
-        frag.contactsPresenter = contactsPresenter;
+        frag.contactGroup = contactGroup;
         return frag;
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(CONTACT, contact);
+        outState.putParcelable(CONTACT_GROUP, contactGroup);
+    }
 
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            contact = savedInstanceState.getParcelable(CONTACT);
+            contactGroup = savedInstanceState.getParcelable(CONTACT_GROUP);
+        }
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         // Inflate custom view
         View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_save_contact, null);
         alertDialogBuilder.setView(dialogView);
 
-        txtFirstName = dialogView.findViewById(R.id.text_contact_first_name);
-        txtLastName = dialogView.findViewById(R.id.text_contact_last_name);
+        txtFirstName = dialogView.findViewById(R.id.txt_contact_first_name);
+        txtLastName = dialogView.findViewById(R.id.txt_contact_last_name);
 
         if(contact != null) {
             alertDialogBuilder.setTitle(R.string.dialog_edit_contact_title);
             txtFirstName.setText(contact.getFirstName());
             txtLastName.setText(contact.getLastName());
-            contactId = contact.getId();
-            groupId = contact.getGroupId();
         } else {
             alertDialogBuilder.setTitle(R.string.dialog_add_contact_title);
         }
@@ -68,7 +75,11 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                saveContact();
+                if (contact == null) {
+                    addContact();
+                } else  {
+                    editContact();
+                }
 
                 if (dialog != null) {
                     dialog.dismiss();
@@ -91,12 +102,19 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         return alertDialogBuilder.create();
     }
 
-    private void saveContact() {
-        contactsPresenter.saveContact(new Contact(
-                contactId,
-                groupId,
-                txtFirstName.getText().toString(),
-                txtLastName.getText().toString(),
-                ""));
+    private void addContact() {
+        contact = new Contact();
+        contact.setFirstName(txtFirstName.getText().toString());
+        contact.setLastName(txtLastName.getText().toString());
+        contact.setContactGroupKey(contactGroup.getKey());
+        contact.setContactGroup(contactGroup);
+        contact.setProfileColor(Utils.getRandomMaterialColor(getContext(), "400"));
+        ((AddEditContactDialogListener) getActivity()).onContactSaveClick(contact);
+    }
+
+    private void editContact() {
+        contact.setFirstName(txtFirstName.getText().toString());
+        contact.setLastName(txtLastName.getText().toString());
+        ((AddEditContactDialogListener) getActivity()).onContactSaveClick(contact);
     }
 }
