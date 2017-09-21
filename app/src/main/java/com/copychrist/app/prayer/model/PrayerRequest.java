@@ -18,7 +18,6 @@ public class PrayerRequest implements Parcelable {
     public static final String DB_NAME = "prayerRequests";
 
     @Exclude
-    @NonNull
     private String key;
 
     @NonNull private String contactKey;
@@ -62,7 +61,7 @@ public class PrayerRequest implements Parcelable {
     @Exclude public String getKey() {
         return key;
     }
-    public void setKey(String key) {
+    @Exclude public void setKey(String key) {
         this.key = key;
     }
 

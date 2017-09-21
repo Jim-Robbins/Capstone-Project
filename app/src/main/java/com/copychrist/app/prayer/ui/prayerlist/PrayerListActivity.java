@@ -173,7 +173,6 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         if(prayerListRequests.isEmpty()) {
             txtEmpty.setText(getString(R.string.empty_prayer_requests));
             txtEmpty.setVisibility(View.VISIBLE);
-            return;
         } else {
             txtEmpty.setVisibility(View.GONE);
         }
@@ -196,7 +195,6 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
             listsReady = false;
             txtEmpty.setText(getString(R.string.empty_prayer_lists));
             txtEmpty.setVisibility(View.VISIBLE);
-            return;
         } else {
             listsReady = true;
             txtEmpty.setVisibility(View.GONE);

@@ -176,8 +176,12 @@ public class ContactDetailActivity extends BaseActivity
     @Override
     public void showContactDetail(final Contact contact) {
         this.contact = contact;
-        txtFirstName.setText(contact.getFirstName());
-        txtLastName.setText(contact.getLastName());
+        if(contact == null) {
+            finish();
+        } else {
+            txtFirstName.setText(contact.getFirstName());
+            txtLastName.setText(contact.getLastName());
+        }
     }
 
     @Override

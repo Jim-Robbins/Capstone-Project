@@ -35,6 +35,7 @@ import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
 import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
 import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
 import com.copychrist.app.prayer.ui.contactgroups.ContactGroupActivity;
+import com.copychrist.app.prayer.ui.home.MainActivity;
 import com.copychrist.app.prayer.util.Utils;
 
 import java.text.SimpleDateFormat;
@@ -114,6 +115,10 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         return intent;
     }
 
+    public static Intent getStartAddIntent(final Context context) {
+        return new Intent(context, PrayerRequestDetailActivity.class);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,11 +139,6 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return false;
-    }
-
     private void initToolbar() {
         this.setSupportActionBar(toolbar);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -148,6 +148,30 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         } else {
             toolbarIcon.setVisibility(View.GONE);
             this.getSupportActionBar().setDisplayShowTitleEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_archive:
+                addPrayerRequestPresenter.onPrayerRequestArchive();
+                finish();
+                return true;
+            case R.id.action_unarchive:
+                addPrayerRequestPresenter.onPrayerRequestUnarchive();
+                finish();
+                return true;
+            case R.id.action_delete:
+                addPrayerRequestPresenter.onPrayerRequestDelete();
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -175,6 +199,8 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         } else if (getIntent().hasExtra(EXTRA_LIST_KEY)) {
             viewMode = new ViewMode(ViewMode.FULL_ADD_MODE);
             prayerListKey = getIntent().getExtras().getString(EXTRA_LIST_KEY);
+        } else {
+            viewMode = new ViewMode(ViewMode.FULL_ADD_MODE);
         }
 
         return new PrayerRequestModule(contact, selectedPrayerRequest, prayerListKey);
@@ -237,7 +263,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         }
 
         if (viewMode.equals(ViewMode.FULL_ADD_MODE)) {
-            selectedPrayerRequest.getPrayerLists().put(prayerListKey, true);
+            if (prayerListKey != null) selectedPrayerRequest.getPrayerLists().put(prayerListKey, true);
             contact = (Contact) spinnerContacts.getSelectedItem();
         }
 

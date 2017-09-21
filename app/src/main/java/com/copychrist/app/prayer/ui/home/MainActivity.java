@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.icon_container_prayer_requests)
     public void onPrayerRequestsClick() {
         logEvent("Add Request From Home", null, null);
-        startActivity(PrayerRequestDetailActivity.getStartAddIntent(this, ""));
+        startActivity(PrayerRequestDetailActivity.getStartAddIntent(this));
     }
 
     @OnClick(R.id.icon_container_contact_groups)

@@ -41,7 +41,8 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
         ContactsSwipeableSelectableRVAdapter.ContactSwipeableSelectableRVListener,
         DeleteDialogFragment.DeleteActionDialogListener,
         AddContactGroupDialogFragment.AddContactGroupDialogListener,
-        AddEditContactDialogFragment.AddEditContactDialogListener {
+        AddEditContactDialogFragment.AddEditContactDialogListener,
+        MessageDialogFragment.MessageActionDialogListener {
 
     private static final String TAG = "ContactGroupActivity";
 
@@ -160,7 +161,6 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
         if(contacts.isEmpty()) {
             txtEmpty.setText(getString(R.string.empty_contacts));
             txtEmpty.setVisibility(View.VISIBLE);
-            return;
         } else {
             txtEmpty.setVisibility(View.GONE);
         }
@@ -173,7 +173,6 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
         if(contactGroups.isEmpty()) {
             txtEmpty.setText(getString(R.string.empty_contact_groups));
             txtEmpty.setVisibility(View.VISIBLE);
-            return;
         } else {
             txtEmpty.setVisibility(View.GONE);
         }
@@ -305,6 +304,11 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
             dialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
         }
 
+    }
+
+    @Override
+    public void onDialogConfirmClicked() {
+        Timber.d("Nothing to see here");
     }
 
     @Override
