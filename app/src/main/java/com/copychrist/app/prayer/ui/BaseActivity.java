@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public abstract class BaseActivity extends AppCompatActivity {
     protected FirebaseAnalytics firebaseAnalytics;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -29,8 +30,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
-
-    private ProgressDialog progressDialog;
 
     public void showProgressDialog() {
         if (progressDialog == null) {

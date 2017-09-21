@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 
 import com.copychrist.app.prayer.util.Utils;
 
-import java.util.Date;
-
 import timber.log.Timber;
 
 /**

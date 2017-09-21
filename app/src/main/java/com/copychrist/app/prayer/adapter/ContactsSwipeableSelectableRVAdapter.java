@@ -56,8 +56,8 @@ public class ContactsSwipeableSelectableRVAdapter extends RecyclerView.Adapter<C
         @BindView(R.id.item3) protected TextView textItem3;
         @BindView(R.id.more_items) protected TextView textMoreItems;
 
-        @BindView(R.id.swipe_btn_remove) RelativeLayout btnRemove;
-        @BindView(R.id.swipe_btn_edit) RelativeLayout btnEdit;
+        @BindView(R.id.swipe_btn_remove) protected RelativeLayout btnRemove;
+        @BindView(R.id.swipe_btn_edit) protected RelativeLayout btnEdit;
 
         ViewHolder(final View itemView) {
             super(itemView);

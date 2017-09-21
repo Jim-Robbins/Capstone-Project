@@ -90,7 +90,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected Object getModule() {
-        return null;
+        return new LoginModule();
     }
 
     @OnClick(R.id.btn_sign_in)

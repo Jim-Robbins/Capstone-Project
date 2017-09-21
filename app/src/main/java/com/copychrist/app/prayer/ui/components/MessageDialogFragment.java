@@ -1,15 +1,12 @@
 package com.copychrist.app.prayer.ui.components;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 
 import com.copychrist.app.prayer.R;
-import com.copychrist.app.prayer.util.Utils;
 
 /**
  * Created by jim on 8/26/17.
@@ -42,7 +39,6 @@ public class MessageDialogFragment extends AppCompatDialogFragment {
         String message = getArguments().getString(MESSAGE);
 
         // Create alert dialog
-        Resources res = getActivity().getResources();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
         // Set Dialog text

@@ -323,7 +323,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     @Override
     public void onRowLongClicked(int position) {
-        PrayerListRequest prayerListRequest = prayerListRequests.get(position);
+        //PrayerListRequest prayerListRequest = prayerListRequests.get(position);
         //Todo: Hook up ability to drag sort
     }
 

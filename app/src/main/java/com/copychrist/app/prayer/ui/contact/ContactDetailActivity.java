@@ -272,13 +272,4 @@ public class ContactDetailActivity extends BaseActivity
             );
             deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
     }
-
-    private void showDeletePrayerRequestDialog(int position) {
-        DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
-                getString(R.string.dialog_delete_prayer_request_title),
-                prayerRequests.get(position).getTitle()
-        );
-        deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
-    }
-
 }

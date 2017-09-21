@@ -32,7 +32,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected Object getModule() {
-        return null;
+        return new MainModule();
     }
 
     @Override

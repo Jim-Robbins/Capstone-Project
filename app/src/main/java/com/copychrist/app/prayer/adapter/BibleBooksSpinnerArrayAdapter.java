@@ -39,15 +39,15 @@ public class BibleBooksSpinnerArrayAdapter extends ArrayAdapter<Book>{
     @Override
     public View getDropDownView(int position, @Nullable View convertView,
                                 @NonNull ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, parent);
     }
 
     @Override
     public @NonNull View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, parent);
     }
 
-    private View createItemView(int position, View convertView, ViewGroup parent){
+    private View createItemView(int position, ViewGroup parent){
         final View view = layoutInflater.inflate(resource, parent, false);
 
         Book book = list.get(position);

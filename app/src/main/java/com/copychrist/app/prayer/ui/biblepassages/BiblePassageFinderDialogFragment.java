@@ -142,11 +142,6 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
     }
 
     @Override
-    public void onGetDataFailure(String error) {
-        txtSearchResults.setText(error);
-    }
-
-    @Override
     public void onServiceReady(final List<Book> bookList) {
         final int layoutRes = R.layout.item_spinner;
         final int textViewRes = R.id.text_spinner_item;

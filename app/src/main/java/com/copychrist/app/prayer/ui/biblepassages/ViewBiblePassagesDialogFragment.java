@@ -45,7 +45,7 @@ public class ViewBiblePassagesDialogFragment extends AppCompatDialogFragment
         //void onBiblePassageLongClick(BiblePassage biblePassage);
     }
 
-    View.OnClickListener onCreateClick = new View.OnClickListener() {
+    protected View.OnClickListener onCreateClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Timber.d("Add a new request");
