@@ -134,4 +134,5 @@
     <string name="empty_prayer_lists">To get started, add a new prayer list by selecting the \'Add Prayer List\' button in the main menu.</string>
     <string name="empty_prayer_requests">This Prayer List needs some prayer requests. Add them by clicking the floating action button at the bottom.</string>
     <string name="not_yet">You can\'t do that yet. Follow the help on the main screen.</string>
+    <string name="email_sent">Email sent.</string>
 </resources>

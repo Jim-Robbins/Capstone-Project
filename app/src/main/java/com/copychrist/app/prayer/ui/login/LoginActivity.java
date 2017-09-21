@@ -163,7 +163,7 @@ public class LoginActivity extends BaseActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Email sent.");
-                            Toast.makeText(LoginActivity.this, "Email sent.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, R.string.email_sent, Toast.LENGTH_SHORT).show();
                             hideProgressDialog();
                         }
                     }
