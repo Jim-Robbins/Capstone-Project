@@ -23,7 +23,6 @@ import java.util.List;
 public class ContactsSpinnerPrayerRequestArrayAdapter extends ArrayAdapter<Contact>{
 
     private final LayoutInflater layoutInflater;
-    private final Context context;
     private final List<Contact> items;
     private final int resource;
     private final int txtViewId;
@@ -31,7 +30,6 @@ public class ContactsSpinnerPrayerRequestArrayAdapter extends ArrayAdapter<Conta
     public ContactsSpinnerPrayerRequestArrayAdapter(@NonNull Context context, @LayoutRes int resource, @IdRes int textViewResourceId, @NonNull List<Contact> objects) {
         super(context, resource, textViewResourceId, objects);
 
-        this.context = context;
         layoutInflater = LayoutInflater.from(context);
         this.resource = resource;
         this.txtViewId = textViewResourceId;
@@ -41,20 +39,20 @@ public class ContactsSpinnerPrayerRequestArrayAdapter extends ArrayAdapter<Conta
     @Override
     public View getDropDownView(int position, @Nullable View convertView,
                                 @NonNull ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, parent);
     }
 
     @Override
     public @NonNull View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, parent);
     }
 
-    private View createItemView(int position, View convertView, ViewGroup parent){
+    private View createItemView(int position, ViewGroup parent){
         final View view = layoutInflater.inflate(resource, parent, false);
 
         Contact contact = items.get(position);
 
-        TextView txtItem = (TextView) view.findViewById(txtViewId);
+        TextView txtItem = view.findViewById(txtViewId);
         txtItem.setText(contact.getContactGroup().getName() + " : " + contact.getFirstName() + " " + contact.getLastName());
         return view;
     }

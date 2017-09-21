@@ -200,7 +200,7 @@ public class ContactGroupService {
         presenter = contactGroupPresenter;
     }
 
-    void getContactGroupValues() {
+    public void getContactGroupValues() {
         Timber.d("getContactGroupValues()");
 
         contactGroupsRef.orderByChild(ContactGroup.CHILD_SORT_ORDER).addValueEventListener(contactGroupDataListener);
@@ -210,7 +210,7 @@ public class ContactGroupService {
         contactGroupsQuery.addChildEventListener(queryAddContactGroupChildEventListener);
     }
 
-    void saveContactGroupValue(final ContactGroup contactGroup) {
+    public void saveContactGroupValue(final ContactGroup contactGroup) {
         if(contactGroup.getKey() == null) {
             // Add Contact Group
             contactGroupsRef.push().setValue(contactGroup);
@@ -220,7 +220,7 @@ public class ContactGroupService {
         }
     }
 
-    void deleteContactGroup() {
+    public void deleteContactGroup() {
         Query qry = contactGroupsRef.child(Contact.CHILD_CONTACT_GROUP)
                                     .orderByChild(Contact.CHILD_CONTACT_GROUP)
                                     .startAt(selectedContactGroup.getKey())
@@ -251,7 +251,7 @@ public class ContactGroupService {
         prayerRequestsRef.orderByChild(PrayerRequest.CHILD_ANSWERED).addValueEventListener(prayerRequestsValueEventListener);
     }
 
-    void saveContactValue(Contact contact) {
+    public void saveContactValue(Contact contact) {
         Timber.d("saveContactValue() called with: contact = [" + contact + "]");
         contactsRef.removeEventListener(contactChildEventListener);
         contactsRef.orderByChild(Contact.CHILD_DATE_CREATED)
@@ -288,7 +288,7 @@ public class ContactGroupService {
         presenter.onPrayerRequestResults(prayerRequests);
     }
 
-    void destroy() {
+    public void destroy() {
         contactGroupsRef.removeEventListener(contactGroupDataListener);
         contactGroupsRef.removeEventListener(contactGroupEditDeleteChildEventListener);
         if(contactGroupsQuery != null) contactGroupsQuery.removeEventListener(queryAddContactGroupChildEventListener);

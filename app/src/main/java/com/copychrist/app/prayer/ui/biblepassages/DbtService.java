@@ -36,7 +36,7 @@ public class DbtService {
 
     public interface DtbServiceListener {
         void onGetVerseSuccess(String passage);
-        void onGetDataFailure(String error);
+//        void onGetDataFailure(String error);
         void onServiceReady(List<Book> bookList);
     }
 
@@ -145,10 +145,6 @@ public class DbtService {
             }
         }
         return null;
-    }
-
-    public void searchText() {
-
     }
 
     protected String getSelectedLanguage() {

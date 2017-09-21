@@ -50,10 +50,9 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     private ContactGroup selectedContactGroup;
     public static String EXTRA_CONTACT_GROUP = "extra_contact_group";
     private List<Contact> contacts;
-    private List<PrayerRequest> prayerRequests;
     private String deleteType;
     private Contact contact;
-    private boolean retoreView;
+    private boolean restoreView;
 
     public static Intent getStartIntent(final Context context, final ContactGroup contactGroup) {
         Intent intent = new Intent(context, ContactGroupActivity.class);
@@ -138,13 +137,13 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        retoreView = true;
+        restoreView = true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(retoreView)
+        if(restoreView)
             contactsPresenter.resetView(this);
         else
             contactsPresenter.setView(this);
@@ -153,7 +152,6 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     @Override
     public void showContacts(List<Contact> contacts, List<PrayerRequest> prayerRequests) {
         this.contacts = contacts;
-        this.prayerRequests = prayerRequests;
         contactsSwipeableSelectableRVAdapter.setAdpaterData(contacts, prayerRequests);
     }
 

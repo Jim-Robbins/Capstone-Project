@@ -127,7 +127,7 @@ public class ContactService {
         presenter.onPrayerRequestResults(prayerRequests);
     }
 
-    void saveContact(Contact contact) {
+    public void saveContact(Contact contact) {
         if (contact != null && contact.getKey() == null) {
             contactsRef.push().setValue(contact);
         } else {
@@ -135,7 +135,7 @@ public class ContactService {
         }
     }
 
-    void deleteContact(Contact contact) {
+    public void deleteContact(Contact contact) {
         this.selectedContact = contact;
         contactsRef.orderByChild(PrayerRequest.CHILD_CONTACT)
                 .startAt(contact.getKey())

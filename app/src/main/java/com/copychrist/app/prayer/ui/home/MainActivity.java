@@ -12,20 +12,16 @@ import com.copychrist.app.prayer.ui.prayerrequest.PrayerRequestDetailActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity implements MainContract.View {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.icon_container_prayer_lists) protected RelativeLayout iconPrayerLists;
     @BindView(R.id.icon_container_contact_groups) protected RelativeLayout iconContactGroups;
     @BindView(R.id.icon_container_prayer_requests) protected RelativeLayout iconPrayerRequests;
     @BindView(R.id.icon_container_logout) protected RelativeLayout iconLogout;
-
-    @Inject protected MainContract.Presenter mainPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,24 +32,17 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
     @Override
     protected Object getModule() {
-        return new MainModule();
-    }
-
-    @Override
-    public void showLogin() {
-
+        return null;
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mainPresenter.setView(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mainPresenter.clearView();
     }
 
     @OnClick(R.id.icon_container_prayer_lists)

@@ -86,7 +86,7 @@
           },
           "verse": {
             ".validate": "newData.isString() && newData.val() > '0' && newData.val().matches(/^(\\d*)|(\\d*-\\d*)$/)"
-          },
+          }
         }
       }
     }

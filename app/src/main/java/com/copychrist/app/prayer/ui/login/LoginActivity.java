@@ -21,8 +21,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -36,9 +34,6 @@ public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.text_email) protected EditText textEmail;
     @BindView(R.id.text_password) protected EditText textPassword;
-
-    @Inject
-    LoginContract.Presenter loginPresenter;
 
     public static Intent getStartIntent(final Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -95,7 +90,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected Object getModule() {
-        return new LoginModule();
+        return null;
     }
 
     @OnClick(R.id.btn_sign_in)

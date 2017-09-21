@@ -166,10 +166,10 @@ class PrayerListService {
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     BiblePassage biblePassage = snapshot.getValue(BiblePassage.class);
                     biblePassage.setKey();
-                    if (biblePassage != null) {
-                        if(selectedPassages != null && selectedPassages.contains(biblePassage.getPassageReference())) {
+                    if (biblePassage != null &&
+                        selectedPassages != null &&
+                        selectedPassages.contains(biblePassage.getPassageReference())) {
                             listResults.add(biblePassage);
-                        }
                     }
                 }
                 sendBiblePassagesResult(listResults);

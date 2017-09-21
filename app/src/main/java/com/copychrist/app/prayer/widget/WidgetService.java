@@ -41,7 +41,7 @@ public class WidgetService {
                         HashMap<String, Boolean> prayerList = prayerRequest.getPrayerLists();
                         if (selectedPrayerList == null) {
                             listResults.add(prayerRequest);
-                        } else if(prayerList.containsKey(selectedPrayerList.getKey()) == true) {
+                        } else if(prayerList.containsKey(selectedPrayerList.getKey())) {
                             listResults.add(prayerRequest);
                         }
                     }
@@ -76,7 +76,4 @@ public class WidgetService {
         viewService.onDataResultMessage(message);
     }
 
-    public void destroy() {
-        prayerRequestsRef.removeEventListener(prayerRequestValueEventListener);
-    }
 }

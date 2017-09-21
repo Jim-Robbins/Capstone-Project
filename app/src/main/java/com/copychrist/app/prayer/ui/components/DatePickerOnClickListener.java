@@ -10,8 +10,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static java.lang.reflect.Array.set;
-
 /**
  * Created by jim on 8/22/17.
  */
@@ -29,7 +27,9 @@ public class DatePickerOnClickListener implements View.OnClickListener {
         final EditText editText = (EditText) v;
         final Calendar calendarSelection = Calendar.getInstance();
         Calendar calendarToday = Calendar.getInstance();
-        int calYear, calMonth, calDay;
+        int calYear;
+        int calMonth;
+        int calDay;
 
         String currentDate = editText.getText().toString();
 

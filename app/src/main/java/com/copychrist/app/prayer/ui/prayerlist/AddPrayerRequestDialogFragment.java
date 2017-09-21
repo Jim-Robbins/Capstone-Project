@@ -65,7 +65,7 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
         outState.putString(SELECTED_ITEMS, selectedItemsToRestore);
     }
 
-    View.OnClickListener onCreateClick = new View.OnClickListener() {
+    private View.OnClickListener onCreateClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Timber.d("Add a new request");

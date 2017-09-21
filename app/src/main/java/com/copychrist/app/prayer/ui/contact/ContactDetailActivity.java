@@ -44,8 +44,8 @@ public class ContactDetailActivity extends BaseActivity
     @BindView(R.id.fab) protected FloatingActionButton fab;
     @BindView(R.id.tabLayout) protected TabLayout tabLayout;
 
-    PrayerRequestsSwipeableAdapter prayerRequestsSwipeableAdapter;
-    @Inject ContactContract.Presenter contactPresenter;
+    protected PrayerRequestsSwipeableAdapter prayerRequestsSwipeableAdapter;
+    @Inject protected ContactContract.Presenter contactPresenter;
 
     public static String CONTACT_VIEW = "ContactDetailActivity_View";
     public static String EXTRA_CONTACT = "extra_contact";
