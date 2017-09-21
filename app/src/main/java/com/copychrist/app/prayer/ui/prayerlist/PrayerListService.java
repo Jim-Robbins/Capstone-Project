@@ -119,7 +119,7 @@ class PrayerListService {
                     if (prayerRequest != null && prayerRequest.getAnswered() == null) {
                         prayerRequest.setKey(snapshot.getKey());
                         HashMap<String, Boolean> prayerList = prayerRequest.getPrayerLists();
-                        if(prayerList.containsKey(selectedPrayerList.getKey()) == true) {
+                        if(prayerList.containsKey(selectedPrayerList.getKey())) {
                             listResults.add(prayerRequest);
                         } else {
                             nonListResults.add(prayerRequest);

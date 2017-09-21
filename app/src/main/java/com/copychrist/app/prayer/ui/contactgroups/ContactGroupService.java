@@ -237,7 +237,7 @@ public class ContactGroupService {
         contactsRef.child(contactKey).removeValue();
     }
 
-    void getContactValues(ContactGroup contactGroup) {
+    public void getContactValues(ContactGroup contactGroup) {
         Timber.d("getContactValues() called with: contactGroup = [" + contactGroup + "]");
         selectedContactGroup = contactGroup;
         contactsRef.removeEventListener(contactValueEventListener);

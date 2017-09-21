@@ -34,7 +34,6 @@ public class CardViewPrayerRequestDialogFragment extends AppCompatDialogFragment
 
     private PrayerListRequest prayerListRequest;
     private BiblePassageSwipableAdapter bibleVerseAdapter;
-    private RecyclerView recyclerView;
 
     private int position;
 
@@ -80,7 +79,7 @@ public class CardViewPrayerRequestDialogFragment extends AppCompatDialogFragment
         TextView txtDesc = dialogView.findViewById(R.id.txt_request_desc);
         TextView txtEndDate = dialogView.findViewById(R.id.txt_timestamp);
         RelativeLayout layoutContactItem = dialogView.findViewById(R.id.layout_contact_container);
-        recyclerView = dialogView.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = dialogView.findViewById(R.id.recycler_view);
 
         txtGroupName.setText(prayerListRequest.getGroupName());
         txtFirstName.setText(prayerListRequest.getContact().getFirstName());
