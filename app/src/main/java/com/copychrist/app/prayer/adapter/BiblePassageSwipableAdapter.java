@@ -30,10 +30,10 @@ public class BiblePassageSwipableAdapter extends RecyclerView.Adapter<BiblePassa
     private ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.layout_swipeable_item_container) SwipeRevealLayout swipeLayout;
-        @BindView(R.id.swipe_btn_remove) RelativeLayout btnRemove;
-        @BindView(R.id.txt_bible_passage) TextView biblePassage;
-        @BindView(R.id.txt_verse_text) TextView verseText;
+        @BindView(R.id.layout_swipeable_item_container) protected SwipeRevealLayout swipeLayout;
+        @BindView(R.id.swipe_btn_remove) protected RelativeLayout btnRemove;
+        @BindView(R.id.txt_bible_passage) protected TextView biblePassage;
+        @BindView(R.id.txt_verse_text) protected TextView verseText;
 
         ViewHolder(View itemView) {
             super(itemView);

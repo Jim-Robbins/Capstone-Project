@@ -21,12 +21,12 @@ public class PrayerListModule {
     }
 
     @Provides
-    PrayerListService providePrayerListService(FirebaseDatabase firebaseDatabase, FirebaseUser user) {
+    protected PrayerListService providePrayerListService(FirebaseDatabase firebaseDatabase, FirebaseUser user) {
         return new PrayerListService(firebaseDatabase, user);
     }
 
     @Provides
-    PrayerListContract.Presenter providePresenter(PrayerListService prayerListService) {
+    protected PrayerListContract.Presenter providePresenter(PrayerListService prayerListService) {
         return new PrayerListPresenter(prayerListService, prayerList);
     }
 }

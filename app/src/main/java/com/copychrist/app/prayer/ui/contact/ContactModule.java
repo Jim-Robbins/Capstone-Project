@@ -21,12 +21,12 @@ public class ContactModule {
     }
 
     @Provides
-    ContactService provideContactService(FirebaseDatabase database, FirebaseUser user) {
+    protected ContactService provideContactService(FirebaseDatabase database, FirebaseUser user) {
         return new ContactService(database, user);
     }
 
     @Provides
-    ContactContract.Presenter provideContactPresenter(final ContactService contactService) {
+    protected ContactContract.Presenter provideContactPresenter(final ContactService contactService) {
         return new ContactPresenter(contactService, contact);
     }
 }

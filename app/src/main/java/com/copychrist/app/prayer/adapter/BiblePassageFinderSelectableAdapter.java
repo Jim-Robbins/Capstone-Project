@@ -42,12 +42,12 @@ public class BiblePassageFinderSelectableAdapter extends RecyclerView.Adapter<Bi
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.layout_item_container) RelativeLayout itemContainer;
-        @BindView(R.id.txt_bible_passage) TextView biblePassage;
-        @BindView(R.id.txt_verse_text) TextView verseText;
-        @BindView(R.id.layout_item_icon) RelativeLayout iconContainer;
-        @BindView(R.id.layout_icon_back) RelativeLayout iconBack;
-        @BindView(R.id.layout_icon_front) RelativeLayout iconFront;
+        @BindView(R.id.layout_item_container) protected RelativeLayout itemContainer;
+        @BindView(R.id.txt_bible_passage) protected TextView biblePassage;
+        @BindView(R.id.txt_verse_text) protected TextView verseText;
+        @BindView(R.id.layout_item_icon) protected RelativeLayout iconContainer;
+        @BindView(R.id.layout_icon_back) protected RelativeLayout iconBack;
+        @BindView(R.id.layout_icon_front) protected RelativeLayout iconFront;
 
         ViewHolder(View itemView) {
             super(itemView);

@@ -37,12 +37,12 @@ public class ContactDetailActivity extends BaseActivity
         DeleteDialogFragment.DeleteActionDialogListener,
         AddEditContactDialogFragment.AddEditContactDialogListener {
 
-    @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    @BindView(R.id.txt_contact_first_name) TextView txtFirstName;
-    @BindView(R.id.txt_contact_last_name) TextView txtLastName;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.fab) FloatingActionButton fab;
-    @BindView(R.id.tabLayout) TabLayout tabLayout;
+    @BindView(R.id.recycler_view) protected RecyclerView recyclerView;
+    @BindView(R.id.txt_contact_first_name) protected TextView txtFirstName;
+    @BindView(R.id.txt_contact_last_name)protected  TextView txtLastName;
+    @BindView(R.id.toolbar) protected Toolbar toolbar;
+    @BindView(R.id.fab) protected FloatingActionButton fab;
+    @BindView(R.id.tabLayout) protected TabLayout tabLayout;
 
     PrayerRequestsSwipeableAdapter prayerRequestsSwipeableAdapter;
     @Inject ContactContract.Presenter contactPresenter;

@@ -13,12 +13,12 @@ import dagger.Provides;
 @Module(injects = MainActivity.class, addsTo = ApplicationModule.class)
 public class MainModule {
     @Provides
-    MainService provideMainService(FirebaseDatabase firebaseDatabase, FirebaseUser user) {
+    protected MainService provideMainService(FirebaseDatabase firebaseDatabase, FirebaseUser user) {
         return new MainService(firebaseDatabase, user);
     }
 
     @Provides
-    MainContract.Presenter providePresenter(MainService mainService) {
+    protected MainContract.Presenter providePresenter(MainService mainService) {
         return new MainPresenter(mainService);
     }
 }

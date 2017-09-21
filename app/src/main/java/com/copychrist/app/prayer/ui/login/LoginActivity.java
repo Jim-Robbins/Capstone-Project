@@ -34,8 +34,8 @@ public class LoginActivity extends BaseActivity {
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
 
-    @BindView(R.id.text_email) EditText textEmail;
-    @BindView(R.id.text_password) EditText textPassword;
+    @BindView(R.id.text_email) protected EditText textEmail;
+    @BindView(R.id.text_password) protected EditText textPassword;
 
     @Inject
     LoginContract.Presenter loginPresenter;

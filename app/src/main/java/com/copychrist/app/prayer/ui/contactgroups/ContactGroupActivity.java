@@ -41,9 +41,9 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     private static final String TAG = "ContactGroupActivity";
 
-    @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    @BindView(R.id.tab_layout_groups) TabLayout tabLayoutGroups;
-    @Inject ContactGroupContract.Presenter contactsPresenter;
+    @BindView(R.id.recycler_view) protected RecyclerView recyclerView;
+    @BindView(R.id.tab_layout_groups) protected TabLayout tabLayoutGroups;
+    @Inject protected ContactGroupContract.Presenter contactsPresenter;
 
     private ContactsSwipeableSelectableRVAdapter contactsSwipeableSelectableRVAdapter;
     private int selectedTabIndex = 0;

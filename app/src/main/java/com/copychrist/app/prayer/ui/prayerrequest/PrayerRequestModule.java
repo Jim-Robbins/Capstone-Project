@@ -32,12 +32,12 @@ public class PrayerRequestModule {
 
     @Provides
     @Singleton
-    PrayerRequestService providePrayerRequestService(FirebaseDatabase database, FirebaseUser user) {
+    protected PrayerRequestService providePrayerRequestService(FirebaseDatabase database, FirebaseUser user) {
         return new PrayerRequestService(database, user);
     }
 
     @Provides
-    PrayerRequestContract.Presenter providePrayerRequestPresenter(final PrayerRequestService dataService) {
+    protected PrayerRequestContract.Presenter providePrayerRequestPresenter(final PrayerRequestService dataService) {
         return new PrayerRequestPresenter(dataService, contact, prayerRequest, prayerListKey);
     }
 }

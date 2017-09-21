@@ -45,16 +45,16 @@ public class ContactsSwipeableSelectableRVAdapter extends RecyclerView.Adapter<C
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.layout_swipeable_item_container) SwipeRevealLayout swipeLayout;
-        @BindView(R.id.layout_contact_container) RelativeLayout layoutItem;
-        @BindView(R.id.txt_contact_first_name) TextView textFirstName;
-        @BindView(R.id.txt_contact_last_name) TextView textLastName;
-        @BindView(R.id.img_icon_profile) ImageView imgProfile;
-        @BindView(R.id.txt_icon_text) TextView txtIconText;
-        @BindView(R.id.item1) TextView textItem1;
-        @BindView(R.id.item2) TextView textItem2;
-        @BindView(R.id.item3) TextView textItem3;
-        @BindView(R.id.more_items) TextView textMoreItems;
+        @BindView(R.id.layout_swipeable_item_container) protected SwipeRevealLayout swipeLayout;
+        @BindView(R.id.layout_contact_container) protected RelativeLayout layoutItem;
+        @BindView(R.id.txt_contact_first_name) protected TextView textFirstName;
+        @BindView(R.id.txt_contact_last_name) protected TextView textLastName;
+        @BindView(R.id.img_icon_profile) protected ImageView imgProfile;
+        @BindView(R.id.txt_icon_text) protected TextView txtIconText;
+        @BindView(R.id.item1) protected TextView textItem1;
+        @BindView(R.id.item2) protected TextView textItem2;
+        @BindView(R.id.item3) protected TextView textItem3;
+        @BindView(R.id.more_items) protected TextView textMoreItems;
 
         @BindView(R.id.swipe_btn_remove) RelativeLayout btnRemove;
         @BindView(R.id.swipe_btn_edit) RelativeLayout btnEdit;

@@ -55,22 +55,22 @@ public class PrayerListRequestSelectableSwipeableAdapter extends RecyclerView.Ad
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.layout_swipeable_item_container) SwipeRevealLayout swipeLayout;
-        @BindView(R.id.layout_swipeable_menu) LinearLayout deleteLayout;
-        @BindView(R.id.swipe_btn_archive) RelativeLayout btnArchive;
-        @BindView(R.id.swipe_btn_remove) RelativeLayout btnRemove;
-        @BindView(R.id.swipe_btn_edit) RelativeLayout btnEdit;
+        @BindView(R.id.layout_swipeable_item_container) protected SwipeRevealLayout swipeLayout;
+        @BindView(R.id.layout_swipeable_menu) protected LinearLayout deleteLayout;
+        @BindView(R.id.swipe_btn_archive) protected RelativeLayout btnArchive;
+        @BindView(R.id.swipe_btn_remove) protected RelativeLayout btnRemove;
+        @BindView(R.id.swipe_btn_edit) protected RelativeLayout btnEdit;
 
-        @BindView(R.id.layout_item_content) LinearLayout itemContainer;
-        @BindView(R.id.layout_item_icon) RelativeLayout iconContainer;
-        @BindView(R.id.layout_icon_back) RelativeLayout iconBack;
-        @BindView(R.id.layout_icon_front) RelativeLayout iconFront;
-        @BindView(R.id.txt_contact_name) TextView txtContactName;
-        @BindView(R.id.txt_request_title) TextView txtRequestTitle;
-        @BindView(R.id.txt_request_details) TextView txtRequestDesc;
-        @BindView(R.id.txt_icon_text) TextView txtIconText;
-        @BindView(R.id.txt_timestamp) TextView txtTimeStamp;
-        @BindView(R.id.img_icon_profile) ImageView imgProfile;
+        @BindView(R.id.layout_item_content) protected LinearLayout itemContainer;
+        @BindView(R.id.layout_item_icon) protected RelativeLayout iconContainer;
+        @BindView(R.id.layout_icon_back) protected RelativeLayout iconBack;
+        @BindView(R.id.layout_icon_front) protected RelativeLayout iconFront;
+        @BindView(R.id.txt_contact_name) protected TextView txtContactName;
+        @BindView(R.id.txt_request_title) protected TextView txtRequestTitle;
+        @BindView(R.id.txt_request_details) protected TextView txtRequestDesc;
+        @BindView(R.id.txt_icon_text) protected TextView txtIconText;
+        @BindView(R.id.txt_timestamp) protected TextView txtTimeStamp;
+        @BindView(R.id.img_icon_profile) protected ImageView imgProfile;
 
         ViewHolder(final View itemView) {
             super(itemView);

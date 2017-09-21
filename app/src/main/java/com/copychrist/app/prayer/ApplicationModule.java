@@ -26,27 +26,27 @@ public class ApplicationModule {
     }
 
     @Provides
-    FirebaseApp provideFirebaseApp() {
+    protected FirebaseApp provideFirebaseApp() {
         return FirebaseApp.getInstance();
     }
 
     @Provides
-    FirebaseDatabase provideFirebaseDatabase() {
+    protected FirebaseDatabase provideFirebaseDatabase() {
         return FirebaseDatabase.getInstance(provideFirebaseApp());
     }
 
     @Provides
-    FirebaseUser provideFirebaseUser() {
+    protected FirebaseUser provideFirebaseUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Provides
-    Resources provideResources() {
+    protected Resources provideResources() {
         return application.getResources();
     }
 
     @Provides
-    Context provideContext() {
+    protected Context provideContext() {
         return application.getBaseContext();
     }
 }

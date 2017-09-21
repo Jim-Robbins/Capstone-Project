@@ -55,7 +55,8 @@ public class ContactGroupsSpinnerArrayAdapter extends ArrayAdapter<ContactGroup>
     }
 
     class ViewHolder {
-        @BindView(R.id.text_spinner_item) TextView textItem;
+        @BindView(R.id.text_spinner_item)
+        public TextView textItem;
 
         private ViewHolder(final View itemView) {
             ButterKnife.bind(this, itemView);

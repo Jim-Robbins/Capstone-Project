@@ -15,12 +15,12 @@ import dagger.Provides;
 public class LoginModule {
 
     @Provides
-    LoginService provideLoginService(FirebaseDatabase database, FirebaseUser user) {
+    protected LoginService provideLoginService(FirebaseDatabase database, FirebaseUser user) {
         return new LoginService(database, user);
     }
 
     @Provides
-    LoginContract.Presenter provideMyListPresenter(final LoginService loginService) {
+    protected LoginContract.Presenter provideMyListPresenter(final LoginService loginService) {
         return new LoginPresenter(loginService);
     }
 }

@@ -22,12 +22,12 @@ public class ContactGroupModule {
     }
 
     @Provides
-    ContactGroupService provideContactGroupService(FirebaseDatabase firebaseDatabase, FirebaseUser user) {
+    protected ContactGroupService provideContactGroupService(FirebaseDatabase firebaseDatabase, FirebaseUser user) {
         return new ContactGroupService(firebaseDatabase, user);
     }
 
     @Provides
-    ContactGroupContract.Presenter provideMyListPresenter(ContactGroupService contactGroupService) {
+    protected ContactGroupContract.Presenter provideMyListPresenter(ContactGroupService contactGroupService) {
         return new ContactGroupPresenter(contactGroupService, contactGroup);
     }
 }

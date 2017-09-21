@@ -14,7 +14,7 @@ import dagger.Provides;
 @Module(injects = WidgetRemoteViewsService.class, addsTo = ApplicationModule.class)
 public class WidgetModule {
     @Provides
-    WidgetService provideWidgetService(FirebaseDatabase firebaseDatabase, FirebaseUser user) {
+    protected WidgetService provideWidgetService(FirebaseDatabase firebaseDatabase, FirebaseUser user) {
         return new WidgetService(firebaseDatabase, user);
     }
 }

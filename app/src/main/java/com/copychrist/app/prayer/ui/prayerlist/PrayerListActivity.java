@@ -44,9 +44,9 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     private static final String TAG = "PrayerListActivity";
     private static final String SELECTED_ITEMS = TAG+"_SELECTED_ITEMS";
 
-    @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    @BindView(R.id.tab_layout_prayer_list) TabLayout tabLayoutPrayerList;
-    @Inject PrayerListContract.Presenter prayerListPresenter;
+    @BindView(R.id.recycler_view) protected RecyclerView recyclerView;
+    @BindView(R.id.tab_layout_prayer_list) protected TabLayout tabLayoutPrayerList;
+    @Inject protected PrayerListContract.Presenter prayerListPresenter;
 
     private PrayerListRequestSelectableSwipeableAdapter prayerRequestsListAdapter;
     private int selectedTabIndex = 0;

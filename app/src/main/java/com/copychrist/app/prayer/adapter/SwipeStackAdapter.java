@@ -57,15 +57,15 @@ public class SwipeStackAdapter extends BaseAdapter {
 
     class ViewHolder {
 
-        @BindView(R.id.txt_group_name) TextView txtGroupName;
-        @BindView(R.id.txt_contact_first_name) TextView txtFirstName;
-        @BindView(R.id.txt_contact_last_name) TextView txtLastName;
-        @BindView(R.id.txt_request_title) TextView txtTitle;
-        @BindView(R.id.txt_request_desc) TextView txtDesc;
-//        @BindView(R.id.txt_passage) TextView txtPassage;
-        @BindView(R.id.txt_timestamp) TextView txtEndDate;
+        @BindView(R.id.txt_group_name) protected TextView txtGroupName;
+        @BindView(R.id.txt_contact_first_name) protected TextView txtFirstName;
+        @BindView(R.id.txt_contact_last_name) protected TextView txtLastName;
+        @BindView(R.id.txt_request_title) protected TextView txtTitle;
+        @BindView(R.id.txt_request_desc) protected TextView txtDesc;
+//        @BindView(R.id.txt_passage) protected TextView txtPassage;
+        @BindView(R.id.txt_timestamp) protected TextView txtEndDate;
 
-        @BindView(R.id.profile_icon) ImageView profile_icon;
+        @BindView(R.id.profile_icon) protected ImageView profile_icon;
 
         ViewHolder(View itemView, final PrayerListRequest prayerListRequest) {
             ButterKnife.bind(this, itemView);

@@ -20,12 +20,12 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity implements MainContract.View {
 
-    @BindView(R.id.icon_container_prayer_lists) RelativeLayout iconPrayerLists;
-    @BindView(R.id.icon_container_contact_groups) RelativeLayout iconContactGroups;
-    @BindView(R.id.icon_container_prayer_requests) RelativeLayout iconPrayerRequests;
-    @BindView(R.id.icon_container_logout) RelativeLayout iconLogout;
+    @BindView(R.id.icon_container_prayer_lists) protected RelativeLayout iconPrayerLists;
+    @BindView(R.id.icon_container_contact_groups) protected RelativeLayout iconContactGroups;
+    @BindView(R.id.icon_container_prayer_requests) protected RelativeLayout iconPrayerRequests;
+    @BindView(R.id.icon_container_logout) protected RelativeLayout iconLogout;
 
-    @Inject MainContract.Presenter mainPresenter;
+    @Inject protected MainContract.Presenter mainPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

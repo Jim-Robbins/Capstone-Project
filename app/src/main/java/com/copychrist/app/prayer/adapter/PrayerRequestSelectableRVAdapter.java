@@ -44,14 +44,14 @@ public class PrayerRequestSelectableRVAdapter extends RecyclerView.Adapter<Praye
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.layout_item_content) LinearLayout itemContainer;
-        @BindView(R.id.txt_contact_name) TextView txtContactName;
-        @BindView(R.id.txt_request_title) TextView txtRequestTitle;
-        @BindView(R.id.txt_request_details) TextView txtRequestDesc;
-        @BindView(R.id.txt_timestamp) TextView txtTimeStamp;
-        @BindView(R.id.layout_item_icon) RelativeLayout iconContainer;
-        @BindView(R.id.layout_icon_back) RelativeLayout iconBack;
-        @BindView(R.id.layout_icon_front) RelativeLayout iconFront;
+        @BindView(R.id.layout_item_content) protected LinearLayout itemContainer;
+        @BindView(R.id.txt_contact_name) protected TextView txtContactName;
+        @BindView(R.id.txt_request_title) protected TextView txtRequestTitle;
+        @BindView(R.id.txt_request_details) protected TextView txtRequestDesc;
+        @BindView(R.id.txt_timestamp) protected TextView txtTimeStamp;
+        @BindView(R.id.layout_item_icon) protected RelativeLayout iconContainer;
+        @BindView(R.id.layout_icon_back) protected RelativeLayout iconBack;
+        @BindView(R.id.layout_icon_front) protected RelativeLayout iconFront;
 
         ViewHolder(View itemView) {
             super(itemView);
