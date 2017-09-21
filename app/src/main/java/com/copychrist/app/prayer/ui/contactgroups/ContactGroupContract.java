@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.ui.contactgroups;
 
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
+import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.ui.BasePresenter;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class ContactGroupContract {
         void showContactGroupDialogEdit(ContactGroup contactGroup);
         void showContactGroupsTabs(List<ContactGroup> contactGroups, final ContactGroup selectedGroup);
         void showContactAddDialog(ContactGroup contactGroup);
-        void showContacts(List<Contact> contacts);
+        void showContacts(List<Contact> contacts, List<PrayerRequest> prayerRequests);
         void showDatabaseResultMessage(String message);
         void showDatabaseResultMessage(int messageResId);
     }
@@ -37,6 +38,8 @@ public class ContactGroupContract {
         void onContactSaveClick(Contact contact);
         void onDataResultMessage(String message);
         void onDataResultMessage(int messageResId);
+
+        void onPrayerRequestResults(List<PrayerRequest> prayerRequests);
     }
 
 }

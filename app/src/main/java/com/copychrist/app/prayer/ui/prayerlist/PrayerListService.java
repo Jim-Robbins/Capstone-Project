@@ -1,6 +1,7 @@
 package com.copychrist.app.prayer.ui.prayerlist;
 
 import com.copychrist.app.prayer.R;
+import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.util.Utils;
@@ -29,21 +30,25 @@ class PrayerListService {
 
     private final DatabaseReference prayerListsRef;
     private final DatabaseReference prayerRequestsRef;
-    
+    private final DatabaseReference biblePassagesRef;
+
     private final ValueEventListener prayerListDataListener;
     private final ValueEventListener prayerListDeleteSingleEventListener;
     private final ChildEventListener prayerListEditDeleteChildEventListener;
     private final ChildEventListener queryAddPrayerListChildEventListener;
     private final ValueEventListener prayerRequestValueEventListener;
+    private final ValueEventListener biblePassageDataListener;
     private final DatabaseReference.CompletionListener prayerRequestUpdateCompletionListener;
     private Query prayerListsQuery;
 
     private PrayerList selectedPrayerList;
     private PrayerListContract.Presenter presenter;
+    private List<String> selectedPassages;
 
     PrayerListService(FirebaseDatabase database, FirebaseUser currentUser) {
         prayerListsRef = database.getReference(PrayerList.DB_NAME).child(currentUser.getUid());
         prayerRequestsRef = database.getReference(PrayerRequest.DB_NAME).child(currentUser.getUid());
+        biblePassagesRef = database.getReference(BiblePassage.DB_NAME).child(currentUser.getUid());
 
         // initialize PrayerRequest Group event listeners
         prayerListDataListener = new ValueEventListener() {
@@ -153,6 +158,28 @@ class PrayerListService {
                 }
             }
         };
+
+        biblePassageDataListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<BiblePassage> listResults = new ArrayList<>();
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    BiblePassage biblePassage = snapshot.getValue(BiblePassage.class);
+                    biblePassage.setKey();
+                    if (biblePassage != null) {
+                        if(selectedPassages != null && selectedPassages.contains(biblePassage.getPassageReference())) {
+                            listResults.add(biblePassage);
+                        }
+                    }
+                }
+                sendBiblePassagesResult(listResults);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                sendDataResultMessage(databaseError.getMessage());
+            }
+        };
     }
 
     public void setPresenter(PrayerListContract.Presenter presenter) {
@@ -201,6 +228,11 @@ class PrayerListService {
 
     }
 
+    public void onBiblePassagesLoad(List<String> selectedPassages) {
+        this.selectedPassages = selectedPassages;
+        biblePassagesRef.addValueEventListener(biblePassageDataListener);
+    }
+
     public void updatePrayerRequestWithList(List<String> prayerRequestKeys, String prayerListKey) {
         Timber.d("updatePrayerRequestWithList() called with: prayerRequestKeys = [" + prayerRequestKeys + "]");
 
@@ -238,6 +270,10 @@ class PrayerListService {
 
     private void sendPrayerRequestResults(List<PrayerRequest> filteredResults, List<PrayerRequest> nonListResults) {
         presenter.onPrayerRequestResults(filteredResults, nonListResults);
+    }
+
+    private void sendBiblePassagesResult(List<BiblePassage> listResults) {
+        presenter.onBiblePassageResults(listResults);
     }
 
     public void destroy() {

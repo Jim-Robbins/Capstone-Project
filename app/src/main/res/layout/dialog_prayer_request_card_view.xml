@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:cardCornerRadius="2dp"
-    app:contentPadding="10dp">
-
 <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingEnd="@dimen/medium_space"
-    android:paddingStart="@dimen/medium_space">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/txt_group_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/normal_space"
         android:background="@color/colorPrimaryDark"
-        android:paddingStart="@dimen/medium_space"
-        android:paddingEnd="@dimen/medium_space"
         android:textAppearance="@android:style/TextAppearance.Material.Headline"
+        android:textColor="@color/color_white"
         tools:text="Family" />
 
     <RelativeLayout
+        android:id="@+id/layout_contact_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/colorPrimaryLight">
+        android:orientation="horizontal">
 
         <RelativeLayout
             android:id="@+id/layout_item_icon"
@@ -89,27 +80,33 @@
 
     </RelativeLayout>
 
-    <TextView
-        style="@style/Item_Primary"
-        android:id="@+id/txt_request_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/small_space"
-        tools:text="Title" />
-
-    <TextView
-        style="@style/Item_Secondary"
-        android:id="@+id/txt_request_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/small_space"
-        tools:text="Request Details" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/small_space"
-        android:scrollbars="vertical" />
+        android:padding="10dp">
+        <TextView
+            style="@style/Item_Primary"
+            android:id="@+id/txt_request_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_space"
+            tools:text="Title" />
+
+        <TextView
+            style="@style/Item_Secondary"
+            android:id="@+id/txt_request_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_space"
+            tools:text="Request Details" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/small_space"
+            android:scrollbars="vertical" />
+    </LinearLayout>
+
 </LinearLayout>
-</android.support.v7.widget.CardView>

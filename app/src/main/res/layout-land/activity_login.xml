@@ -7,25 +7,14 @@
     android:clipToPadding="false"
     tools:context="com.copychrist.app.prayer.ui.login.LoginActivity">
 
-    <ImageView
-        android:id="@+id/img_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/logo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="@dimen/large_space"
-        android:contentDescription="@string/praying_with_dedication_logo_acc"
-         />
-
     <android.support.v7.widget.CardView
+        android:id="@+id/card_view_login"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/img_logo"
-        android:layout_margin="@dimen/large_space"
+        app:layout_constraintStart_toStartOf="parent"
         app:cardBackgroundColor="@color/card_login_color"
         app:cardCornerRadius="2dp"
         app:contentPadding="10dp">
@@ -116,5 +105,17 @@
 
 
     </android.support.v7.widget.CardView>
+
+    <ImageView
+        android:id="@+id/img_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        app:layout_constraintEnd_toStartOf="@id/card_view_login"
+        app:layout_constraintTop_toTopOf="@id/card_view_login"
+        app:layout_constraintBottom_toBottomOf="@id/card_view_login"
+        android:layout_margin="@dimen/large_space"
+        android:contentDescription="@string/praying_with_dedication_logo_acc"
+        />
 
 </android.support.constraint.ConstraintLayout>

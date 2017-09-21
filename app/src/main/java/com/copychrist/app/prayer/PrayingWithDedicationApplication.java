@@ -7,7 +7,6 @@ import com.copychrist.app.prayer.util.ReleaseTree;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Logger;
-import com.squareup.leakcanary.LeakCanary;
 
 import dagger.ObjectGraph;
 import timber.log.Timber;
@@ -21,17 +20,9 @@ public class PrayingWithDedicationApplication extends Application {
         super.onCreate();
 
         instance = this;
-        initMemoryLeakCheck();
         initLogger();
         initDb();
         initApplicationGraph();
-    }
-
-    private void initMemoryLeakCheck() {
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
-        LeakCanary.install(this);
     }
 
     private void initLogger() {

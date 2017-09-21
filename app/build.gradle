@@ -22,9 +22,9 @@ android {
 
     signingConfigs {
         copychrist {
-            storeFile rootProject.file('/keystore/copychrist.keystore')
+            storeFile file('Capstone.jks')
             storePassword 'C@pst0n3'
-            keyAlias 'captstone'
+            keyAlias 'capstone'
             keyPassword 'pr@y3r'
         }
     }
@@ -58,21 +58,7 @@ android {
         disable 'MissingTranslation'
     }
 
-    productFlavors {
-        flavorDimensions 'environment'
-
-        internal {
-            dimension 'environment'
-        }
-        production {
-            dimension 'environment'
-        }
-    }
 }
-
-//realm {
-//    syncEnabled = true
-//}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -85,39 +71,30 @@ dependencies {
     compile deps.support.cardView
     compile deps.support.constraintLayout
 
-    compile deps.gson
-    compile deps.glide
+    compile deps.butterKnife.runtime
+    annotationProcessor deps.butterKnife.compiler
+
+    compile deps.dagger.dagger
+    compile deps.dagger.compiler
 
     compile deps.firebase.database
     compile deps.firebase.auth
     compile deps.firebase.ui
+    compile deps.firebase.analytics
+
+    compile deps.gson
+    compile deps.glide
 
     compile deps.timber
-    compile deps.dagger.dagger
-    compile deps.dagger.compiler
-
-    compile deps.butterKnife.runtime
-    annotationProcessor deps.butterKnife.compiler
-
-    compile deps.timber
-
-    internalCompile deps.leakCanary.real
-    productionCompile deps.leakCanary.noOp
 
     testCompile deps.junit
-    testCompile deps.mockito.core
 
     compile 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.0'
     compile 'com.faithcomesbyhearing:dbt:1.0.1'
 
     androidTestCompile deps.junit
-    androidTestCompile deps.mockito.android
     androidTestCompile(deps.espresso.core, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile('com.android.support.test:runner:0.3') {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
-
 }
 apply plugin: 'com.google.gms.google-services'

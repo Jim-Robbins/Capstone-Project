@@ -54,25 +54,36 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
     public static String EXTRA_CONTACT = "extra_contact";
     public static String EXTRA_REQUEST = "extra_request";
 
-    @BindView(R.id.add_layout_container) LinearLayout layoutContainer;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.edit_request_title) EditText editRequestTitle;
-    @BindView(R.id.edit_request_desc) EditText editRequestDesc;
-    @BindView(R.id.edit_end_date) EditText editEndDate;
-    @BindView(R.id.txt_contact_first_name) TextView txtFirstName;
-    @BindView(R.id.txt_contact_last_name) TextView txtLastName;
-    @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    @BindView(R.id.btn_bible_passage_finder) ImageView btnBiblePassageFinder;
-    @BindView(R.id.contact_container) LinearLayout layoutContactContainer;
-    @BindView(R.id.spinner_contacts) Spinner spinnerContacts;
-    @BindView(R.id.profile_icon) ImageView toolbarIcon;
-//    @BindView(R.id.spinner_prayer_lists) Spinner spinnerPrayerLists;
+    @BindView(R.id.add_layout_container)
+    protected LinearLayout layoutContainer;
+    @BindView(R.id.toolbar)
+    protected Toolbar toolbar;
+    @BindView(R.id.edit_request_title)
+    protected EditText editRequestTitle;
+    @BindView(R.id.edit_request_desc)
+    protected EditText editRequestDesc;
+    @BindView(R.id.edit_end_date)
+    protected EditText editEndDate;
+    @BindView(R.id.txt_contact_first_name)
+    protected TextView txtFirstName;
+    @BindView(R.id.txt_contact_last_name)
+    protected TextView txtLastName;
+    @BindView(R.id.recycler_view)
+    protected RecyclerView recyclerView;
+    @BindView(R.id.btn_bible_passage_finder)
+    protected ImageView btnBiblePassageFinder;
+    @BindView(R.id.contact_container)
+    protected LinearLayout layoutContactContainer;
+    @BindView(R.id.spinner_contacts)
+    protected Spinner spinnerContacts;
+    @BindView(R.id.profile_icon)
+    protected ImageView toolbarIcon;
 
     @Inject
-    PrayerRequestContract.Presenter addPrayerRequestPresenter;
+    protected PrayerRequestContract.Presenter addPrayerRequestPresenter;
 
-    BiblePassageSwipableAdapter bibleVerseAdapter;
-    SimpleDateFormat dateFormat;
+    private BiblePassageSwipableAdapter bibleVerseAdapter;
+    private SimpleDateFormat dateFormat;
 
     private Contact contact;
     private PrayerRequest selectedPrayerRequest;
@@ -126,18 +137,21 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
             case android.R.id.home:
                 onNavUp();
                 return true;
-            case R.id.action_schedule:
-                addPrayerRequestPresenter.onPrayerRequestScheduleReminderClick();
-                return true;
+//            case R.id.action_schedule:
+//                addPrayerRequestPresenter.onPrayerRequestScheduleReminderClick();
+//                return true;
             case R.id.action_archive:
+                logEvent("Archive Request", null, "menu button");
                 addPrayerRequestPresenter.onPrayerRequestArchive();
                 onNavUp();
                 return true;
             case R.id.action_unarchive:
+                logEvent("Unarchive Request", null, "menu button");
                 addPrayerRequestPresenter.onPrayerRequestUnarchive();
                 onNavUp();
                 return true;
             case R.id.action_delete:
+                logEvent("Delete Request", null, "menu button");
                 addPrayerRequestPresenter.onPrayerRequestDelete();
                 onNavUp();
                 return true;
@@ -326,17 +340,9 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
 
     @Override
     public void onBiblePassageSave(BiblePassage biblePassage) {
+        logEvent("Save Bible Passage", biblePassage.getPassageReference(), null);
         addPrayerRequestPresenter.onBiblePassageSave(biblePassage);
     }
-
-    //    @Override
-//    public void showPrayerListSelector(List<PrayerList> prayerLists) {
-//        final int layoutRes = R.layout.item_spinner;
-//        final int textViewRes = R.id.text_spinner_item;
-//
-//        PrayerListsSpinnerArrayAdapter prayerListsListAdapter = new PrayerListsSpinnerArrayAdapter(this, layoutRes, textViewRes, prayerLists);
-//        spinnerPrayerLists.setAdapter(prayerListsListAdapter);
-//    }
 
     @Override
     public void onRowClicked(int position) {
@@ -350,6 +356,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
 
     @Override
     public void onRemoveClicked(int position) {
+        logEvent("Delete Request", null, "swipe");
         addPrayerRequestPresenter.onBiblePassageRemove(selectedVerses.get(position));
     }
 
@@ -360,6 +367,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
 
     @Override
     public void onBiblePassageAddNew() {
+        logEvent("Add Verses", null, "button");
         addPrayerRequestPresenter.onBiblePassageAddNew();
     }
 }

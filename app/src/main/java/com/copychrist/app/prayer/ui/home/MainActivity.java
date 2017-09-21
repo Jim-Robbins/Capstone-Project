@@ -63,7 +63,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
     @OnClick(R.id.icon_container_prayer_requests)
     public void onPrayerRequestsClick() {
-        startActivity(PrayerRequestDetailActivity.getStartAddIntent(this, "zzz"));
+        logEvent("Add Request From Home", null, null);
+        startActivity(PrayerRequestDetailActivity.getStartAddIntent(this, ""));
     }
 
     @OnClick(R.id.icon_container_contact_groups)
@@ -75,6 +76,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     public void setIconLogoutClick() {
         FirebaseDatabase.getInstance().goOffline();
         FirebaseAuth.getInstance().signOut();
+        logEvent("logout", null, null);
         startActivity(LoginActivity.getStartIntent(this));
     }
 }

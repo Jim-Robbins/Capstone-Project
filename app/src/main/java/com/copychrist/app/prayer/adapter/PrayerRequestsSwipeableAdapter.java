@@ -6,11 +6,10 @@ import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.PrayerRequest;
 
@@ -27,16 +26,17 @@ import butterknife.ButterKnife;
 public class PrayerRequestsSwipeableAdapter extends RecyclerView.Adapter<PrayerRequestsSwipeableAdapter.ViewHolder> {
     private List<PrayerRequest> prayerRequests;
     private PrayerRequestSwipeableListener prayerRequestClickListener;
-    private ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+    //private ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.layout_swipeable_item_container) SwipeRevealLayout swipeLayout;
-        @BindView(R.id.swipe_btn_archive) RelativeLayout btnArchive;
-        @BindView(R.id.swipe_btn_remove) RelativeLayout btnRemove;
-        @BindView(R.id.layout_item_container) RelativeLayout layoutItem;
-        @BindView(R.id.txt_request_title) TextView txtRequestTitle;
-        @BindView(R.id.txt_request_desc) TextView txtRequestDesc;
-        @BindView(R.id.txt_verse) TextView txtVerse;
+        @BindView(R.id.layout_swipeable_item_container)
+        protected LinearLayout swipeLayout;
+//        @BindView(R.id.swipe_btn_archive) protected RelativeLayout btnArchive;
+//        @BindView(R.id.swipe_btn_remove) protected RelativeLayout btnRemove;
+        @BindView(R.id.layout_item_container) protected RelativeLayout layoutItem;
+        @BindView(R.id.txt_request_title) protected TextView txtRequestTitle;
+        @BindView(R.id.txt_request_desc) protected TextView txtRequestDesc;
+        @BindView(R.id.txt_verse) protected TextView txtVerse;
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -55,14 +55,14 @@ public class PrayerRequestsSwipeableAdapter extends RecyclerView.Adapter<PrayerR
 
     public interface PrayerRequestSwipeableListener {
         void onPrayerRequestClick(int request);
-        void onRemoveClicked(int position);
-        void onArchiveClicked(int position);
+//        void onRemoveClicked(int position);
+//        void onArchiveClicked(int position);
         void onRowLongClicked(int position);
     }
 
     public PrayerRequestsSwipeableAdapter() {
         super();
-        viewBinderHelper.setOpenOnlyOne(true);
+       // viewBinderHelper.setOpenOnlyOne(true);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class PrayerRequestsSwipeableAdapter extends RecyclerView.Adapter<PrayerR
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final PrayerRequest prayerRequest = prayerRequests.get(position);
 
-        viewBinderHelper.bind(holder.swipeLayout, prayerRequest.getKey());
+        //viewBinderHelper.bind(holder.swipeLayout, prayerRequest.getKey());
 
         holder.bind(prayerRequest);
 
@@ -104,7 +104,7 @@ public class PrayerRequestsSwipeableAdapter extends RecyclerView.Adapter<PrayerR
         holder.layoutItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeSwipeLayout(position);
+                //closeSwipeLayout(position);
                 if (prayerRequestClickListener != null) {
                     prayerRequestClickListener.onPrayerRequestClick(position);
                 }
@@ -114,7 +114,7 @@ public class PrayerRequestsSwipeableAdapter extends RecyclerView.Adapter<PrayerR
         holder.layoutItem.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                closeSwipeLayout(position);
+                //closeSwipeLayout(position);
                 if (prayerRequestClickListener != null) {
                     prayerRequestClickListener.onRowLongClicked(position);
                     view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
@@ -123,30 +123,30 @@ public class PrayerRequestsSwipeableAdapter extends RecyclerView.Adapter<PrayerR
             }
         });
 
-        holder.btnRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeSwipeLayout(position);
-                if (prayerRequestClickListener != null) {
-                    prayerRequestClickListener.onRemoveClicked(position);
-                }
-            }
-        });
-
-        holder.btnArchive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeSwipeLayout(position);
-                if (prayerRequestClickListener != null) {
-                    prayerRequestClickListener.onArchiveClicked(position);
-                }
-            }
-        });
+//        holder.btnRemove.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                closeSwipeLayout(position);
+//                if (prayerRequestClickListener != null) {
+//                    prayerRequestClickListener.onRemoveClicked(position);
+//                }
+//            }
+//        });
+//
+//        holder.btnArchive.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                closeSwipeLayout(position);
+//                if (prayerRequestClickListener != null) {
+//                    prayerRequestClickListener.onArchiveClicked(position);
+//                }
+//            }
+//        });
     }
 
-    private void closeSwipeLayout(int position) {
-        PrayerRequest prayerRequest = prayerRequests.get(position);
-        viewBinderHelper.closeLayout(prayerRequest.getKey());
-    }
+//    private void closeSwipeLayout(int position) {
+//        PrayerRequest prayerRequest = prayerRequests.get(position);
+//        viewBinderHelper.closeLayout(prayerRequest.getKey());
+//    }
 
 }

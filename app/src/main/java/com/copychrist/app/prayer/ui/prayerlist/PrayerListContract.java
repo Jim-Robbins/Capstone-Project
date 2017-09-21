@@ -1,5 +1,6 @@
 package com.copychrist.app.prayer.ui.prayerlist;
 
+import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.model.PrayerRequest;
@@ -24,6 +25,7 @@ public class PrayerListContract {
         void showDatabaseResultMessage(String message);
         void showDatabaseResultMessage(int messageResId);
         void showPrayerRequestAsPrayedFor(int position);
+        void showBiblePassages(List<BiblePassage> bibleVerseResults);
     }
 
     public interface Presenter extends BasePresenter<PrayerListContract.View> {
@@ -46,5 +48,8 @@ public class PrayerListContract {
         void onPrayerRequestRemove(String prayerRequestKey);
         void onPrayerRequestPrayedFor(String prayerRequestKey);
         void onPrayerCardPrayedForClick(int position);
+
+        void onBiblePassageResults(List<BiblePassage> selectedPassages);
+        void onBiblePassageLoad(List<String> passages);
     }
 }

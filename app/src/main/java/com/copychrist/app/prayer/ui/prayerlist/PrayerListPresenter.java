@@ -1,7 +1,6 @@
 package com.copychrist.app.prayer.ui.prayerlist;
 
-import android.content.Context;
-
+import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.model.PrayerRequest;
@@ -18,17 +17,16 @@ import timber.log.Timber;
 
 public class PrayerListPresenter implements PrayerListContract.Presenter {
     private final PrayerListService dataService;
-    private Context context;
     private PrayerListContract.View prayerListView;
 
     private PrayerList selectedPrayerList;
     private List<PrayerListRequest> currentListPrayerListRequests;
     private List<PrayerListRequest> unselectedPrayerListRequests;
     private List<PrayerList> prayerLists;
+    private List<BiblePassage> bibleVerseResults;
 
-    public PrayerListPresenter(PrayerListService prayerListService, Context context, PrayerList prayerList) {
+    public PrayerListPresenter(PrayerListService prayerListService, PrayerList prayerList) {
         this.dataService = prayerListService;
-        this.context = context;
         this.selectedPrayerList = prayerList;
     }
 
@@ -44,6 +42,7 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
         PresenterState.PrayerListState.currentListPrayerListRequests = this.currentListPrayerListRequests;
         PresenterState.PrayerListState.unselectedPrayerListRequests = this.unselectedPrayerListRequests;
         PresenterState.PrayerListState.prayerLists = this.prayerLists;
+        PresenterState.PrayerListState.bibleVerseResults = this.bibleVerseResults;
         PresenterState.PrayerListState.selectedPrayerList = this.selectedPrayerList;
     }
 
@@ -54,6 +53,7 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
         this.currentListPrayerListRequests = PresenterState.PrayerListState.currentListPrayerListRequests;
         this.unselectedPrayerListRequests = PresenterState.PrayerListState.unselectedPrayerListRequests;
         this.prayerLists = PresenterState.PrayerListState.prayerLists;
+        this.bibleVerseResults = PresenterState.PrayerListState.bibleVerseResults;
         this.selectedPrayerList = PresenterState.PrayerListState.selectedPrayerList;
 
         prayerListView.showPrayerListTabs(prayerLists, selectedPrayerList);
@@ -184,5 +184,16 @@ public class PrayerListPresenter implements PrayerListContract.Presenter {
     @Override
     public void onPrayerCardPrayedForClick(int position) {
         prayerListView.showPrayerRequestAsPrayedFor(position);
+    }
+
+    @Override
+    public void onBiblePassageResults(List<BiblePassage> listResults) {
+        this.bibleVerseResults = listResults;
+        prayerListView.showBiblePassages(bibleVerseResults);
+    }
+
+    @Override
+    public void onBiblePassageLoad(List<String> passages) {
+        dataService.onBiblePassagesLoad(passages);
     }
 }

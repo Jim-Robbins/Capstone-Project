@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.PrayerListRequestSelectableSwipeableAdapter;
+import com.copychrist.app.prayer.model.BiblePassage;
 import com.copychrist.app.prayer.model.PrayerList;
 import com.copychrist.app.prayer.model.PrayerListRequest;
 import com.copychrist.app.prayer.model.PrayerRequest;
@@ -38,7 +39,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         DeleteDialogFragment.DeleteActionDialogListener,
         AddPrayerRequestDialogFragment.AddPrayerRequestDialogListener,
         AddEditPrayerListDialogFragment.AddEditPrayerListDialogListener,
-        ViewPrayerRequestDialogFragment.ViewPrayerRequestDialogListener {
+        CardViewPrayerRequestDialogFragment.ViewPrayerRequestDialogListener {
 
     private static final String TAG = "PrayerListActivity";
     private static final String SELECTED_ITEMS = TAG+"_SELECTED_ITEMS";
@@ -55,6 +56,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     private  List<PrayerListRequest> prayerListRequests;
     private boolean retoreView = false;
     private String selectedItemsToRestore;
+    private CardViewPrayerRequestDialogFragment viewPrayerRequestDialog;
 
     public static Intent getStartIntent(final Context context, final PrayerList prayerList) {
         Intent intent = new Intent(context, PrayerListActivity.class);
@@ -222,6 +224,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     @Override
     public void onPrayerListSaveClick(PrayerList prayerList) {
+        logEvent("Add New Prayer List", null, null);
         prayerListPresenter.onPrayerListSaveClick(prayerList);
     }
 
@@ -283,6 +286,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     @Override
     public void onIconClicked(int position) {
+        logEvent("Prayer Request onIconClicked", null, null);
         toggleSelection(position);
     }
 
@@ -295,14 +299,26 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         prayerRequestsListAdapter.toggleSelection(position);
         prayerRequestsListAdapter.notifyDataSetChanged();
 
-        ViewPrayerRequestDialogFragment viewPrayerRequestDialog =
-                ViewPrayerRequestDialogFragment.newAddInstance(prayerListRequest, position);
-        viewPrayerRequestDialog.show(getSupportFragmentManager(), "ViewPrayerRequestDialogFragment");
+        viewPrayerRequestDialog = CardViewPrayerRequestDialogFragment.newAddInstance(prayerListRequest, position);
+        viewPrayerRequestDialog.show(getSupportFragmentManager(), "CardViewPrayerRequestDialogFragment");
+    }
+
+    @Override
+    public void showBiblePassages(List<BiblePassage> bibleVerseResults) {
+        if(viewPrayerRequestDialog != null) {
+            viewPrayerRequestDialog.setAdapter(bibleVerseResults);
+        }
     }
 
     @Override
     public void onPrayerCardPrayedForClick(int position) {
+        logEvent("Prayer Request onPrayerCardPrayedForClick", null, null);
         prayerListPresenter.onPrayerCardPrayedForClick(position);
+    }
+
+    @Override
+    public void onBibleVersesLoad(List<String> passages) {
+        prayerListPresenter.onBiblePassageLoad(passages);
     }
 
     @Override
@@ -313,6 +329,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     @Override
     public void onRemoveClicked(int position) {
+        logEvent("Prayer Request onRemoveClicked", null, null);
         PrayerListRequest prayerListRequest = prayerListRequests.get(position);
         prayerListPresenter.onPrayerRequestRemove(prayerListRequest.getPrayerRequest().getKey());
         prayerRequestsListAdapter.notifyDataSetChanged();

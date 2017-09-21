@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.Tab;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -51,6 +50,7 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     private ContactGroup selectedContactGroup;
     public static String EXTRA_CONTACT_GROUP = "extra_contact_group";
     private List<Contact> contacts;
+    private List<PrayerRequest> prayerRequests;
     private String deleteType;
     private Contact contact;
     private boolean retoreView;
@@ -115,7 +115,6 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(contactsSwipeableSelectableRVAdapter);
     }
 
@@ -152,9 +151,10 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     }
 
     @Override
-    public void showContacts(List<Contact> contacts) {
+    public void showContacts(List<Contact> contacts, List<PrayerRequest> prayerRequests) {
         this.contacts = contacts;
-        contactsSwipeableSelectableRVAdapter.setAdpaterData(contacts);
+        this.prayerRequests = prayerRequests;
+        contactsSwipeableSelectableRVAdapter.setAdpaterData(contacts, prayerRequests);
     }
 
     @Override
@@ -210,6 +210,7 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     @Override
     public void onContactGroupSaveClick(ContactGroup contactGroup) {
+        logEvent("Save Contact Group", contactGroup.getName(), null);
         contactsPresenter.onContactGroupSaveClick(contactGroup);
     }
 
@@ -237,6 +238,7 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
             contactsPresenter.onContactDeleteConfirmed(contact);
         } else {
             contactsPresenter.onContactGroupDeleteConfirmed();
+            logEvent("Delete Contact Group", null, null);
         }
     }
 
@@ -290,7 +292,8 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     @Override
     public void onContactEditClicked(int position) {
         Contact contact = contacts.get(position);
-        startActivity(ContactDetailActivity.getStartIntent(this, contact));
+        AddEditContactDialogFragment addEditContactDialogFragment = AddEditContactDialogFragment.newEditInstance(contact);
+        addEditContactDialogFragment.show(getSupportFragmentManager(), "EditContactDialogFragment");
     }
 
     @Override

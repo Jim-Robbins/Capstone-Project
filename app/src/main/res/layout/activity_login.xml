@@ -100,11 +100,11 @@
                     android:text="@string/sign_up" />
 
                 <Button
-                    style="@style/Widget.AppCompat.Button.Colored"
                     android:id="@+id/btn_sign_in"
+                    style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="@string/sign_in" />
 
             </LinearLayout>

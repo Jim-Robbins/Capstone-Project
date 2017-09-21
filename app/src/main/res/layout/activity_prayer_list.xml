@@ -33,6 +33,7 @@
     <android.support.design.widget.FloatingActionButton
         style="@style/Fab_Add_Request"
         android:id="@+id/fab_add_request"
+        android:contentDescription="@string/fab_btn_add_request"
         />
 
 </android.support.design.widget.CoordinatorLayout>

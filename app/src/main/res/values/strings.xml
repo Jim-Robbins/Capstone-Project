@@ -112,7 +112,14 @@
     <string name="btn_log_out">Logout</string>
     <string name="btn_forgot_password">Forgot Password?</string>
     <string name="profile_icon_acc">Profile Icon</string>
-    <string name="fab_btn_add_request">Add Request</string>
+    <string name="fab_btn_add_request">Add Prayer Request</string>
     <string name="fab_add_contact">Add New Contact</string>
     <string name="dialog_delete_prayer_request_title">Delete Prayer Request</string>
+    <string name="request_add_detail">Add Prayer Request Details</string>
+    <string name="btn_date_picker">Open Date Picker Dialog</string>
+    <string name="btn_verse_selection">Open verse selection tool</string>
+    <string name="click_the_icon_to_add_verses">(Click the Icon to add verses)</string>
+    <string name="request_end_date_hint">End Date</string>
+    <string name="request_title_hint">Title</string>
+    <string name="request_details_hint">Request Details</string>
 </resources>

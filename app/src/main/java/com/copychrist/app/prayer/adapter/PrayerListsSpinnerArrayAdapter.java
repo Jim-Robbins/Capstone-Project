@@ -40,15 +40,15 @@ public class PrayerListsSpinnerArrayAdapter extends ArrayAdapter<PrayerList> {
     @Override
     public View getDropDownView(int position, @Nullable View convertView,
                                 @NonNull ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, parent);
     }
 
     @Override
     public @NonNull View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, parent);
     }
 
-    private View createItemView(int position, View convertView, ViewGroup parent){
+    private View createItemView(int position, ViewGroup parent){
         final View view = layoutInflater.inflate(resource, parent, false);
 
         PrayerList prayerList = list.get(position);

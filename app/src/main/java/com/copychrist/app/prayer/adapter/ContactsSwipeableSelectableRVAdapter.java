@@ -1,6 +1,7 @@
 package com.copychrist.app.prayer.adapter;
 
 import android.content.Context;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.HapticFeedbackConstants;
@@ -21,10 +22,12 @@ import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.util.CircleTransform;
 import com.copychrist.app.prayer.util.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Created by Jim Robbins on 8/17/17.
@@ -35,6 +38,7 @@ public class ContactsSwipeableSelectableRVAdapter extends RecyclerView.Adapter<C
     private final Context context;
     private ContactSwipeableSelectableRVListener contactClickListener;
     private List<Contact> contacts;
+    private List<PrayerRequest> prayerRequests;
 
     // array used to perform multiple animation at once
     private ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
@@ -68,6 +72,51 @@ public class ContactsSwipeableSelectableRVAdapter extends RecyclerView.Adapter<C
             // displaying the first letter of contact first and last name in icon text
             String initials = Utils.getInitials(contact.getFirstName(), contact.getLastName());
             txtIconText.setText(initials);
+            bindRequests(contact);
+        }
+
+        private void bindRequests( Contact contact) {
+            textItem1.setVisibility(View.GONE);
+            textItem2.setVisibility(View.GONE);
+            textItem3.setVisibility(View.GONE);
+
+            List<PrayerRequest> filteredRequests = getPrayerRequests(contact.getKey());
+            if(filteredRequests != null && !filteredRequests.isEmpty()) {
+                setRequestTextView(textItem1, filteredRequests.get(0));
+                if (filteredRequests.size() > 1) {
+                    setRequestTextView(textItem2, filteredRequests.get(1));
+                    if (filteredRequests.size() > 2) {
+                        setRequestTextView(textItem3, filteredRequests.get(2));
+                    }
+                }
+            }
+        }
+
+        private void setRequestTextView(final TextView text, final PrayerRequest request) {
+            text.setText(request.getTitle());
+            text.setVisibility(View.VISIBLE);
+            text.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (contactClickListener != null) {
+                        contactClickListener.onPrayerRequestClick(request);
+                    }
+                }
+            });
+        }
+
+        private List<PrayerRequest> getPrayerRequests(String key) {
+            List<PrayerRequest> topList = new ArrayList<>();
+            int requestCount = 3;
+            Timber.d("Contact Key:" + key);
+            for (PrayerRequest prayerRequest : prayerRequests) {
+                if (prayerRequest.getContactKey().equalsIgnoreCase(key) && requestCount > 0) {
+                    topList.add(prayerRequest);
+                    requestCount--;
+                }
+            }
+            Timber.d(topList.toString());
+            return topList;
         }
     }
 
@@ -103,53 +152,6 @@ public class ContactsSwipeableSelectableRVAdapter extends RecyclerView.Adapter<C
 
         holder.bind(contact);
 
-//        List<PrayerRequest> prayerRequests = contact.getPrayerRequests();
-//        if(prayerRequests != null && !prayerRequests.isEmpty()) {
-//            final PrayerRequest request1 = prayerRequests.get(0);
-//            Timber.d("0:"+request1.getTitle());
-//            holder.textItem1.setText(request1.getTitle());
-//            holder.textItem1.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (contactClickListener != null) {
-//                        contactClickListener.onPrayerRequestClick(request1);
-//                    }
-//                }
-//            });
-//            if(prayerRequests.size() > 1) {
-//                final PrayerRequest request2 = prayerRequests.get(1);
-//                Timber.d("1:"+request2.getTitle());
-//                holder.textItem2.setText(request2.getTitle());
-//                holder.textItem2.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if (contactClickListener != null) {
-//                            contactClickListener.onPrayerRequestClick(request2);
-//                        }
-//                    }
-//                });
-//                if(prayerRequests.size() > 2) {
-//                    final PrayerRequest request3 = prayerRequests.get(2);
-//                    Timber.d("2:"+request3.getTitle());
-//                    holder.textItem3.setText(request3.getTitle());
-//                    holder.textItem3.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            if (contactClickListener != null) {
-//                                contactClickListener.onPrayerRequestClick(request3);
-//                            }
-//                        }
-//                    });
-//                } else {
-                    holder.textItem3.setVisibility(View.GONE);
-//                }
-//            } else {
-                holder.textItem2.setVisibility(View.GONE);
-//            }
-//        } else {
-            holder.textItem1.setVisibility(View.GONE);
-//        }
-//
         // display profile image
         applyProfilePicture(holder, contact);
 
@@ -163,8 +165,9 @@ public class ContactsSwipeableSelectableRVAdapter extends RecyclerView.Adapter<C
         return contacts != null ? contacts.size() : 0;
     }
 
-    public void setAdpaterData(final List<Contact> contacts) {
+    public void setAdpaterData(final List<Contact> contacts, List<PrayerRequest> prayerRequests) {
         this.contacts = contacts;
+        this.prayerRequests = prayerRequests;
         notifyDataSetChanged();
     }
 
@@ -234,6 +237,8 @@ public class ContactsSwipeableSelectableRVAdapter extends RecyclerView.Adapter<C
             holder.imgProfile.setColorFilter(contact.getProfileColor());
             holder.txtIconText.setVisibility(View.VISIBLE);
         }
+        int backgroundColor = ColorUtils.setAlphaComponent(contact.getProfileColor(), 40);
+        holder.layoutItem.setBackgroundColor(backgroundColor);
     }
 
 }

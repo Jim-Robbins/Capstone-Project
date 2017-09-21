@@ -3,6 +3,7 @@ package com.copychrist.app.prayer.ui.contactgroups;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
+import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.util.Utils;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -26,6 +27,8 @@ import timber.log.Timber;
 public class ContactGroupService {
     private final DatabaseReference contactGroupsRef;
     private final DatabaseReference contactsRef;
+    private final DatabaseReference prayerRequestsRef;
+
     private Query contactGroupsQuery;
     private final ValueEventListener contactGroupDataListener;
     private final ValueEventListener contactGroupDeleteSingleEventListener;
@@ -35,6 +38,8 @@ public class ContactGroupService {
     private final ValueEventListener contactValueEventListener;
     private final ChildEventListener contactChildEventListener;
 
+    private final ValueEventListener prayerRequestsValueEventListener;
+
     private ContactGroup selectedContactGroup;
     private ContactGroupContract.Presenter presenter;
 
@@ -43,6 +48,7 @@ public class ContactGroupService {
 
         contactGroupsRef = database.getReference(ContactGroup.DB_NAME).child(currentUser.getUid());
         contactsRef = database.getReference(Contact.DB_NAME).child(currentUser.getUid());
+        prayerRequestsRef = database.getReference(PrayerRequest.DB_NAME).child(currentUser.getUid());
 
         // initialize Contact Group event listeners
         contactGroupDataListener = new ValueEventListener() {
@@ -164,6 +170,34 @@ public class ContactGroupService {
                 sendDataResultMessage(databaseError.getMessage());
             }
         };
+
+        // initialize Prayer request event listeners
+        prayerRequestsValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<PrayerRequest> results = new ArrayList<>();
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    PrayerRequest prayerRequest = snapshot.getValue(PrayerRequest.class);
+                    if (prayerRequest != null) {
+                        prayerRequest.setKey(snapshot.getKey());
+                        if(prayerRequest.getContact().getContactGroupKey().equalsIgnoreCase(selectedContactGroup.getKey())) {
+                            // Create a list of active requests
+                            results.add(prayerRequest);
+                        }
+                    }
+                }
+                sendPrayerRequestResults(results);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                sendDataResultMessage(databaseError.getMessage());
+            }
+        };
+    }
+
+    public void setPresenter(ContactGroupContract.Presenter contactGroupPresenter) {
+        presenter = contactGroupPresenter;
     }
 
     void getContactGroupValues() {
@@ -206,11 +240,15 @@ public class ContactGroupService {
     void getContactValues(ContactGroup contactGroup) {
         Timber.d("getContactValues() called with: contactGroup = [" + contactGroup + "]");
         selectedContactGroup = contactGroup;
+        contactsRef.removeEventListener(contactValueEventListener);
         contactsRef.orderByChild(Contact.CHILD_CONTACT_GROUP_KEY)
                 .startAt(contactGroup.getKey())
                 .endAt(contactGroup.getKey())
                 .addValueEventListener(contactValueEventListener);
 
+        // Have to get all requests and then filter them as they come in
+        prayerRequestsRef.removeEventListener(contactValueEventListener);
+        prayerRequestsRef.orderByChild(PrayerRequest.CHILD_ANSWERED).addValueEventListener(prayerRequestsValueEventListener);
     }
 
     void saveContactValue(Contact contact) {
@@ -245,15 +283,16 @@ public class ContactGroupService {
         presenter.onContactResults(results);
     }
 
+    private void sendPrayerRequestResults(List<PrayerRequest> prayerRequests) {
+        if(prayerRequests == null) return;
+        presenter.onPrayerRequestResults(prayerRequests);
+    }
+
     void destroy() {
         contactGroupsRef.removeEventListener(contactGroupDataListener);
         contactGroupsRef.removeEventListener(contactGroupEditDeleteChildEventListener);
         if(contactGroupsQuery != null) contactGroupsQuery.removeEventListener(queryAddContactGroupChildEventListener);
         contactsRef.removeEventListener(contactValueEventListener);
         contactsRef.removeEventListener(contactChildEventListener);
-    }
-
-    public void setPresenter(ContactGroupContract.Presenter contactGroupPresenter) {
-        presenter = contactGroupPresenter;
     }
 }

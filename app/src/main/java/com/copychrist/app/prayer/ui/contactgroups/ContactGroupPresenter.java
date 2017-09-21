@@ -2,6 +2,7 @@ package com.copychrist.app.prayer.ui.contactgroups;
 
 import com.copychrist.app.prayer.model.Contact;
 import com.copychrist.app.prayer.model.ContactGroup;
+import com.copychrist.app.prayer.model.PrayerRequest;
 import com.copychrist.app.prayer.model.PresenterState;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
     private ContactGroupService dataService;
     private List<ContactGroup> contactGroups;
     private List<Contact> contacts;
+    private List<PrayerRequest> prayerRequests;
 
     public ContactGroupPresenter(ContactGroupService dataService, ContactGroup contactGroup) {
         this.selectedContactGroup = contactGroup;
@@ -39,16 +41,18 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
         dataService.setPresenter(this);
 
         this.contacts = PresenterState.ContactGroupState.contacts;
+        this.prayerRequests = PresenterState.ContactGroupState.prayerRequests;
         this.contactGroups = PresenterState.ContactGroupState.contactGroups;
         this.selectedContactGroup = PresenterState.ContactGroupState.selectedContactGroup;
 
         contactGroupView.showContactGroupsTabs(contactGroups, selectedContactGroup);
-        contactGroupView.showContacts(contacts);
+        contactGroupView.showContacts(contacts, prayerRequests);
     }
 
     @Override
     public void saveState() {
         PresenterState.ContactGroupState.contacts = this.contacts;
+        PresenterState.ContactGroupState.prayerRequests = this.prayerRequests;
         PresenterState.ContactGroupState.contactGroups = this.contactGroups;
         PresenterState.ContactGroupState.selectedContactGroup = this.selectedContactGroup;
     }
@@ -102,27 +106,43 @@ public class ContactGroupPresenter implements ContactGroupContract.Presenter {
 
     @Override
     public void onDataResultMessage(String message) {
-        contactGroupView.showDatabaseResultMessage(message);
+        if(contactGroupView != null)
+            contactGroupView.showDatabaseResultMessage(message);
     }
 
     @Override
     public void onDataResultMessage(int messageResId) {
-        contactGroupView.showDatabaseResultMessage(messageResId);
+        if(contactGroupView != null)
+            contactGroupView.showDatabaseResultMessage(messageResId);
     }
 
     @Override
     public void onContactGroupResults(List<ContactGroup> contactGroups, ContactGroup selectedContactGroup) {
         this.selectedContactGroup = selectedContactGroup;
         this.contactGroups = contactGroups;
-        contactGroupView.showContactGroupsTabs(contactGroups, selectedContactGroup);
+        if(contactGroupView != null)
+            contactGroupView.showContactGroupsTabs(contactGroups, selectedContactGroup);
     }
 
     @Override
     public void onContactResults(List<Contact> contacts) {
         this.contacts = contacts;
-        if(contacts != null && contactGroupView != null) {
-            contactGroupView.showContacts(contacts);
+        if(contacts != null && prayerRequests != null ) {
+            processContactsAndPrayerRequests();
         }
+    }
+
+    @Override
+    public void onPrayerRequestResults(List<PrayerRequest> prayerRequests) {
+        this.prayerRequests = prayerRequests;
+        if(contacts != null && prayerRequests != null ) {
+            processContactsAndPrayerRequests();
+        }
+    }
+
+    private void processContactsAndPrayerRequests() {
+        if(contactGroupView != null)
+            contactGroupView.showContacts(contacts, prayerRequests);
     }
 
     @Override

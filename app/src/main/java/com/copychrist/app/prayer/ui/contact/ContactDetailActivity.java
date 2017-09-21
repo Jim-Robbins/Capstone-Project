@@ -110,17 +110,17 @@ public class ContactDetailActivity extends BaseActivity
         showPrayerRequestDetailView(prayerRequest);
     }
 
-    @Override
-    public void onRemoveClicked(int position) {
-        PrayerRequest prayerRequest = prayerRequests.get(position);
-        showDeletePrayerRequestDialog(position);
-    }
-
-    @Override
-    public void onArchiveClicked(int position) {
-        PrayerRequest prayerRequest = prayerRequests.get(position);
-        Timber.d(prayerRequest.toString());
-    }
+//    @Override
+//    public void onRemoveClicked(int position) {
+//        PrayerRequest prayerRequest = prayerRequests.get(position);
+//        showDeletePrayerRequestDialog(position);
+//    }
+//
+//    @Override
+//    public void onArchiveClicked(int position) {
+//        PrayerRequest prayerRequest = prayerRequests.get(position);
+//        Timber.d(prayerRequest.toString());
+//    }
 
     @Override
     public void onRowLongClicked(int position) {

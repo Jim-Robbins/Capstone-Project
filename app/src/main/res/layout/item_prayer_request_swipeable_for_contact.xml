@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_swipeable_item_container"
@@ -7,37 +8,46 @@
     android:layout_height="@dimen/item_swipeable_row_height"
     android:background="@drawable/bg_list_row"
     android:clickable="true"
-    android:focusable="true"
-    app:dragEdge="right"
-    app:mode="same_level">
+    android:focusable="true">
+<!--<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:id="@+id/layout_swipeable_item_container"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/item_swipeable_row_height"-->
+    <!--android:background="@drawable/bg_list_row"-->
+    <!--android:clickable="true"-->
+    <!--android:focusable="true"-->
+    <!--app:dragEdge="right"-->
+    <!--app:mode="same_level">-->
 
-    <LinearLayout
-        android:id="@+id/layout_swipeable_menu"
-        android:layout_width="@dimen/item_swipe_dual_button"
-        android:layout_height="@dimen/item_swipeable_row_height">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/layout_swipeable_menu"-->
+        <!--android:layout_width="@dimen/item_swipe_dual_button"-->
+        <!--android:layout_height="@dimen/item_swipeable_row_height">-->
 
-        <RelativeLayout
-            android:id="@+id/swipe_btn_archive"
-            style="@style/Swipe_Btn_Archive_Container">
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/swipe_btn_archive"-->
+            <!--style="@style/Swipe_Btn_Archive_Container">-->
 
-            <ImageView style="@style/Swipe_Btn_Archive_Icon" />
+            <!--<ImageView style="@style/Swipe_Btn_Archive_Icon" />-->
 
-            <TextView
-                style="@style/Swipe_Btn_Text"
-                android:text="@string/btn_archive" />
-        </RelativeLayout>
+            <!--<TextView-->
+                <!--style="@style/Swipe_Btn_Text"-->
+                <!--android:text="@string/btn_archive" />-->
+        <!--</RelativeLayout>-->
 
-        <RelativeLayout
-            android:id="@+id/swipe_btn_remove"
-            style="@style/Swipe_Btn_Remove_Container">
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/swipe_btn_remove"-->
+            <!--style="@style/Swipe_Btn_Remove_Container">-->
 
-            <ImageView style="@style/Swipe_Btn_Remove_Icon" />
+            <!--<ImageView style="@style/Swipe_Btn_Remove_Icon" />-->
 
-            <TextView
-                style="@style/Swipe_Btn_Text"
-                android:text="@string/btn_remove" />
-        </RelativeLayout>
-    </LinearLayout>
+            <!--<TextView-->
+                <!--style="@style/Swipe_Btn_Text"-->
+                <!--android:text="@string/btn_remove" />-->
+        <!--</RelativeLayout>-->
+    <!--</LinearLayout>-->
 
     <RelativeLayout
         android:id="@+id/layout_item_container"
@@ -79,4 +89,5 @@
             android:layout_alignParentEnd="true"
             tools:text="Sept 17,2017" />
     </RelativeLayout>
-</com.chauthai.swipereveallayout.SwipeRevealLayout>
+<!--</com.chauthai.swipereveallayout.SwipeRevealLayout>-->
+</LinearLayout>

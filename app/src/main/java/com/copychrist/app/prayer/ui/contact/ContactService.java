@@ -23,12 +23,12 @@ import timber.log.Timber;
  */
 
 public class ContactService {
-    private DatabaseReference contactsRef;
-    private ValueEventListener contactDeleteSingleEventListener;
-    private ChildEventListener contactChildEventListener;
+    private final DatabaseReference contactsRef;
+    private final ValueEventListener contactDeleteSingleEventListener;
+    private final ChildEventListener contactChildEventListener;
 
-    private DatabaseReference prayerRequestsRef;
-    private ValueEventListener prayerRequestsValueEventListener;
+    private final DatabaseReference prayerRequestsRef;
+    private final ValueEventListener prayerRequestsValueEventListener;
 
     private ContactContract.Presenter presenter;
     private Contact selectedContact;
@@ -113,7 +113,6 @@ public class ContactService {
 
         Timber.d("getContact() called with: contactKey = [" + contact.getKey() + "]");
         this.showActiveRequests = showActiveRequests;
-        this.presenter = presenter;
         this.selectedContact = contact;
         contactsRef.child(contact.getKey()).addChildEventListener(contactChildEventListener);
 

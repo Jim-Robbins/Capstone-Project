@@ -1,7 +1,5 @@
 package com.copychrist.app.prayer.ui.prayerlist;
 
-import android.content.Context;
-
 import com.copychrist.app.prayer.ApplicationModule;
 import com.copychrist.app.prayer.model.PrayerList;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +26,7 @@ public class PrayerListModule {
     }
 
     @Provides
-    PrayerListContract.Presenter providePresenter(PrayerListService prayerListService, Context context) {
-        return new PrayerListPresenter(prayerListService, context, prayerList);
+    PrayerListContract.Presenter providePresenter(PrayerListService prayerListService) {
+        return new PrayerListPresenter(prayerListService, prayerList);
     }
 }

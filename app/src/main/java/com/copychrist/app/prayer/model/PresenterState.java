@@ -14,6 +14,8 @@ public class PresenterState {
         public static ContactGroup selectedContactGroup;
         public static List<ContactGroup> contactGroups;
         public static List<Contact> contacts;
+        public static List<PrayerRequest> prayerRequests;
+
         private ContactGroupState() {}
         public static void reset() {
             selectedContactGroup = null;
@@ -44,6 +46,8 @@ public class PresenterState {
         public static List<PrayerListRequest> currentListPrayerListRequests;
         public static List<PrayerListRequest> unselectedPrayerListRequests;
         public static List<PrayerList> prayerLists;
+        public static List<BiblePassage> bibleVerseResults;
+
         private PrayerListState() {}
         public static void reset() {
             selectedPrayerList = null;
