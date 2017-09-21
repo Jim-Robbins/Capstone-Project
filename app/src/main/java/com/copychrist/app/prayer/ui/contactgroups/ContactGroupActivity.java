@@ -3,6 +3,8 @@ package com.copychrist.app.prayer.ui.contactgroups;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.Tab;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -10,6 +12,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
@@ -42,6 +46,8 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     private static final String TAG = "ContactGroupActivity";
 
     @BindView(R.id.recycler_view) protected RecyclerView recyclerView;
+    @BindView(R.id.empty_contacts) protected TextView txtEmpty;
+    @BindView(R.id.layout_constraint) protected ConstraintLayout layout;
     @BindView(R.id.tab_layout_groups) protected TabLayout tabLayoutGroups;
     @Inject protected ContactGroupContract.Presenter contactsPresenter;
 
@@ -151,12 +157,26 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     @Override
     public void showContacts(List<Contact> contacts, List<PrayerRequest> prayerRequests) {
+        if(contacts.isEmpty()) {
+            txtEmpty.setText(getString(R.string.empty_contacts));
+            txtEmpty.setVisibility(View.VISIBLE);
+            return;
+        } else {
+            txtEmpty.setVisibility(View.GONE);
+        }
         this.contacts = contacts;
         contactsSwipeableSelectableRVAdapter.setAdpaterData(contacts, prayerRequests);
     }
 
     @Override
     public void showContactGroupsTabs(List<ContactGroup> contactGroups, final ContactGroup selectedGroup) {
+        if(contactGroups.isEmpty()) {
+            txtEmpty.setText(getString(R.string.empty_contact_groups));
+            txtEmpty.setVisibility(View.VISIBLE);
+            return;
+        } else {
+            txtEmpty.setVisibility(View.GONE);
+        }
         tabLayoutGroups.clearOnTabSelectedListeners();
         tabLayoutGroups.removeAllTabs();
         for (ContactGroup contactGroup : contactGroups) {

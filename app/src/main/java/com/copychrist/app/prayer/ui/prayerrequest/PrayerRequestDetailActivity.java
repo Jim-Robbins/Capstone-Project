@@ -32,6 +32,9 @@ import com.copychrist.app.prayer.ui.ViewMode;
 import com.copychrist.app.prayer.ui.biblepassages.BiblePassageFinderDialogFragment;
 import com.copychrist.app.prayer.ui.biblepassages.ViewBiblePassagesDialogFragment;
 import com.copychrist.app.prayer.ui.components.DatePickerOnClickListener;
+import com.copychrist.app.prayer.ui.components.DeleteDialogFragment;
+import com.copychrist.app.prayer.ui.components.MessageDialogFragment;
+import com.copychrist.app.prayer.ui.contactgroups.ContactGroupActivity;
 import com.copychrist.app.prayer.util.Utils;
 
 import java.text.SimpleDateFormat;
@@ -48,7 +51,8 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         BiblePassageFinderSelectableAdapter.BiblePassageAdapterListener,
         BiblePassageSwipableAdapter.BiblePassageAdapterListener,
         BiblePassageFinderDialogFragment.BiblePassageFinderDialogListener,
-        ViewBiblePassagesDialogFragment.ViewBiblePassagesDialogListener {
+        ViewBiblePassagesDialogFragment.ViewBiblePassagesDialogListener,
+        MessageDialogFragment.MessageActionDialogListener {
 
     public static String EXTRA_LIST_KEY = "extra_list_key";
     public static String EXTRA_CONTACT = "extra_contact";
@@ -132,32 +136,7 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onNavUp();
-                return true;
-//            case R.id.action_schedule:
-//                addPrayerRequestPresenter.onPrayerRequestScheduleReminderClick();
-//                return true;
-            case R.id.action_archive:
-                logEvent("Archive Request", null, "menu button");
-                addPrayerRequestPresenter.onPrayerRequestArchive();
-                onNavUp();
-                return true;
-            case R.id.action_unarchive:
-                logEvent("Unarchive Request", null, "menu button");
-                addPrayerRequestPresenter.onPrayerRequestUnarchive();
-                onNavUp();
-                return true;
-            case R.id.action_delete:
-                logEvent("Delete Request", null, "menu button");
-                addPrayerRequestPresenter.onPrayerRequestDelete();
-                onNavUp();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return false;
     }
 
     private void initToolbar() {
@@ -228,6 +207,10 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
 
     @Override
     public void showContactSelector(List<Contact> contacts) {
+        if(contacts.isEmpty()) {
+            showNeedContactsDialog();
+        }
+
         layoutContactContainer.setVisibility(View.VISIBLE);
 
         final int layoutRes = R.layout.item_spinner;
@@ -369,5 +352,19 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
     public void onBiblePassageAddNew() {
         logEvent("Add Verses", null, "button");
         addPrayerRequestPresenter.onBiblePassageAddNew();
+    }
+
+    private void showNeedContactsDialog() {
+        MessageDialogFragment dialogFragment = MessageDialogFragment.newInstance(
+                getString(R.string.dialog_need_to_add_contacts_first_title),
+                getString(R.string.dialog_need_to_add_contacts_first)
+        );
+        dialogFragment.show(getSupportFragmentManager(), "MessageDialogFragment");
+    }
+
+    @Override
+    public void onDialogConfirmClicked() {
+        startActivity(ContactGroupActivity.getStartIntent(this, null));
+        finish();
     }
 }

@@ -52,9 +52,7 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
     }
 
     public static BiblePassageFinderDialogFragment newInstance() {
-        BiblePassageFinderDialogFragment frag = new BiblePassageFinderDialogFragment();
-
-        return frag;
+        return new BiblePassageFinderDialogFragment();
     }
 
     @Override
@@ -156,7 +154,7 @@ public class BiblePassageFinderDialogFragment extends AppCompatDialogFragment
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 Book book = bookList.get(pos);
                 Integer[] items = createChaptersArray(book.getNumberOfChapters());
-                ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(context, layoutRes, textViewRes, items);
+                ArrayAdapter<Integer> adapter = new ArrayAdapter<>(context, layoutRes, textViewRes, items);
                 chaptersSpinner.setAdapter(adapter);
                 chaptersSpinner.setSelection(savedChapterPos);
             }

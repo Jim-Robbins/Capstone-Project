@@ -18,7 +18,8 @@
         android:paddingBottom="@dimen/activity_horizontal_margin"
         android:visibility="gone">
 
-        <ImageView style="@style/Prayer_Request_Contact_Icon" />
+        <ImageView style="@style/Prayer_Request_Contact_Icon"
+            android:contentDescription="@string/select_contact"/>
 
         <Spinner
             android:id="@+id/spinner_contacts"
@@ -35,7 +36,8 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/activity_horizontal_margin">
 
-        <ImageView style="@style/Prayer_Request_Request_Icon" />
+        <ImageView style="@style/Prayer_Request_Request_Icon"
+            android:contentDescription="@string/prayer_request_detail"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,7 +52,7 @@
                     android:id="@+id/edit_request_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Title" />
+                    android:hint="@string/request_title_hint" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -62,7 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="top|start"
-                    android:hint="Request Details"
+                    android:hint="@string/request_details_hint"
                     android:lines="2"
                     android:maxLength="300"
                     android:scrollbars="vertical" />
@@ -78,6 +80,7 @@
 
         <ImageView
             android:id="@+id/btn_calendar"
+            android:contentDescription="@string/btn_date_picker"
             style="@style/Prayer_Request_Calendar_Icon" />
 
         <android.support.design.widget.TextInputLayout
@@ -88,7 +91,7 @@
                 android:id="@+id/edit_end_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="End Date" />
+                android:hint="@string/request_end_date_hint" />
         </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>
@@ -101,6 +104,7 @@
 
         <ImageView
             android:id="@+id/btn_bible_passage_finder"
+            android:contentDescription="@string/dialog_bible_passage_add"
             style="@style/Prayer_Request_Passages_Icon" />
 
         <FrameLayout
@@ -111,7 +115,7 @@
                 style="@style/Required_Field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(Click the Icon to add verses)" />
+                android:text="@string/click_the_icon_to_add_verses" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"

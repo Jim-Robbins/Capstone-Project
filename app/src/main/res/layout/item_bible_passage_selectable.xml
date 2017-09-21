@@ -48,11 +48,13 @@
 
             <ImageView
                 style="@style/Item_Selected"
+                android:contentDescription="@string/select_bible_verse"
                 android:layout_width="@dimen/item_icon_width_height"
                 android:layout_height="@dimen/item_icon_width_height" />
 
             <ImageView
                 style="@style/Item_Select_Icon"
+                android:contentDescription="@string/select_bible_verse"
                 android:layout_width="@dimen/item_icon_inner_width_height"
                 android:layout_height="@dimen/item_icon_inner_width_height" />
         </RelativeLayout>
@@ -63,6 +65,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:contentDescription="@string/select_bible_verse"
                 style="@style/Item_UnSelected"
                 android:layout_width="@dimen/item_icon_width_height"
                 android:layout_height="@dimen/item_icon_width_height"/>

@@ -72,9 +72,7 @@ public class BiblePassageSwipableAdapter extends RecyclerView.Adapter<BiblePassa
         // get the verse
         final BiblePassage biblePassage = biblePassages.get(position);
         viewBinderHelper.bind(holder.swipeLayout, biblePassage.getKey());
-        if(biblePassage != null) {
-            holder.bind(biblePassage);
-        }
+        holder.bind(biblePassage);
 
         // apply click events
         applyClickEvents(holder, position);

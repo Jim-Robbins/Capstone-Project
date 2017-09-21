@@ -60,11 +60,13 @@
 
             <ImageView
                 style="@style/Item_Selected"
+                android:contentDescription="@string/profile_icon_acc"
                 android:layout_width="@dimen/item_icon_width_height"
                 android:layout_height="@dimen/item_icon_width_height" />
 
             <ImageView
                 style="@style/Item_Select_Icon"
+                android:contentDescription="@string/profile_icon_acc"
                 android:layout_width="@dimen/item_icon_inner_width_height"
                 android:layout_height="@dimen/item_icon_inner_width_height" />
         </RelativeLayout>
@@ -76,6 +78,7 @@
 
             <ImageView
                 style="@style/Item_UnSelected"
+                android:contentDescription="@string/item_unselected_acc"
                 android:layout_width="@dimen/item_icon_width_height"
                 android:layout_height="@dimen/item_icon_width_height"/>
 

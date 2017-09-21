@@ -20,7 +20,7 @@
     <string name="btn_delete">Delete</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_save">Save</string>
-    <string name="btn_ok">ok</string>
+    <string name="btn_ok">OK</string>
     <string name="btn_confirm">confirm</string>
 
     <string name="date_format">MMM dd, yyyy</string>
@@ -49,7 +49,7 @@
     <string name="dialog_prayer_list_title_delete">Delete Prayer Request</string>
     <string name="dialog_prayer_list_name_hint">Prayer List Name *</string>
 
-    <string name="progress_loading">Loading...</string>
+    <string name="progress_loading">Loading&#8230;</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -104,7 +104,7 @@
     <string name="item_selected_acc">Item Selected</string>
     <string name="item_unselected_acc">Item Not Selected</string>
     <string name="btn_edit">Edit</string>
-    <string name="item_more_requests">More Requests...</string>
+    <string name="item_more_requests">More Requests&#8230;</string>
     <string name="praying_with_dedication_logo_acc">Praying With Dedication Logo</string>
     <string name="btn_prayer_list_acc">Prayer Lists</string>
     <string name="btn_contact_groups">Contact Groups</string>
@@ -122,4 +122,16 @@
     <string name="request_end_date_hint">End Date</string>
     <string name="request_title_hint">Title</string>
     <string name="request_details_hint">Request Details</string>
+    <string name="select_contact">Select Contact</string>
+    <string name="prayer_request_detail">Add Prayer Request Detail</string>
+    <string name="btn_find_acc">Search for Bible Verse</string>
+    <string name="select_bible_verse">Select bible passage to add</string>
+    <string name="select_prayer_request">Select prayer request</string>
+    <string name="dialog_need_to_add_contacts_first">Before you can start adding prayer requests, you need to setup some contacts to associate them with.  Press OK and we\'ll take you there.</string>
+    <string name="dialog_need_to_add_contacts_first_title">Welcome! But before you begin...</string>
+    <string name="empty_contact_groups">Welcome! It looks like are just getting started, or your are starting over.\nTo begin, add a new contact group by selecting the \'Add New Group\' button in the main menu.</string>
+    <string name="empty_contacts">This Contact Group needs some contacts. Add them by clicking the floating action button at the bottom.</string>
+    <string name="empty_prayer_lists">To get started, add a new prayer list by selecting the \'Add Prayer List\' button in the main menu.</string>
+    <string name="empty_prayer_requests">This Prayer List needs some prayer requests. Add them by clicking the floating action button at the bottom.</string>
+    <string name="not_yet">You can\'t do that yet. Follow the help on the main screen.</string>
 </resources>

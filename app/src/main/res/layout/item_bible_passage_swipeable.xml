@@ -21,6 +21,7 @@
             style="@style/Swipe_Btn_Remove_Container">
 
             <ImageView
+                android:contentDescription="@string/btn_remove"
                 style="@style/Swipe_Btn_Remove_Icon" />
 
             <TextView

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.copychrist.app.prayer.util.Utils;
+import com.google.firebase.database.Exclude;
 
 import timber.log.Timber;
 

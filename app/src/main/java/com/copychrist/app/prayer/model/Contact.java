@@ -70,9 +70,7 @@ public class Contact implements Parcelable {
      */
     @NonNull
     public Long getDateCreated() {
-        if(dateCreated == null) {
-            dateCreated = Utils.getCurrentTime();
-        }
+        dateCreated = Utils.getCurrentTime();
         return dateCreated;
     }
 

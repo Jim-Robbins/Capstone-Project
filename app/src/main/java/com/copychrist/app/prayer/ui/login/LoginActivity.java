@@ -36,8 +36,7 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.text_password) protected EditText textPassword;
 
     public static Intent getStartIntent(final Context context) {
-        Intent intent = new Intent(context, LoginActivity.class);
-        return intent;
+        return new Intent(context, LoginActivity.class);
     }
 
     @Override

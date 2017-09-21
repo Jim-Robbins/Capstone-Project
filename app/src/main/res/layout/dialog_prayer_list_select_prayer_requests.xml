@@ -12,16 +12,19 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/item_add_top_bottom_padding"
         android:paddingStart="@dimen/item_start_end_padding"
+        android:paddingEnd="@dimen/item_start_end_padding"
         android:paddingTop="@dimen/item_add_top_bottom_padding">
 
         <ImageView
             style="@style/Item_Add_Circle"
             android:id="@+id/img_icon_circle"
+            android:contentDescription="@string/dialog_prayer_list_add_request"
             android:layout_width="@dimen/item_icon_width_height"
             android:layout_height="@dimen/item_icon_width_height" />
 
         <ImageView
             style="@style/Item_Add_Icon"
+            android:contentDescription="@string/dialog_prayer_list_add_request"
             android:layout_width="@dimen/item_icon_width_height"
             android:layout_height="@dimen/item_icon_width_height" />
 

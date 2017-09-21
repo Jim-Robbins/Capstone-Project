@@ -63,7 +63,7 @@ public class DbtService {
             @Override
             public void success(List<Book> books) {
                 if (books.isEmpty()) return;
-                bookList = new ArrayList(books);
+                bookList = books;
                 dtbServiceListener.onServiceReady(bookList);
             }
 
@@ -103,7 +103,7 @@ public class DbtService {
 
             @Override
             public void failure(Exception e) {
-                String error = "Failed to find verse:" + e.getMessage().toString();
+                String error = "Failed to find verse:" + e.getMessage();
                 onError(error);
             }
         };

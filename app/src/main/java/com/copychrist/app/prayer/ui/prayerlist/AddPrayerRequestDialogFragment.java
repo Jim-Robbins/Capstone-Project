@@ -77,7 +77,6 @@ public class AddPrayerRequestDialogFragment extends AppCompatDialogFragment impl
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         if(savedInstanceState != null) {
             selectedItemsToRestore = savedInstanceState.getString(SELECTED_ITEMS);
-            selectedItemsToRestore = selectedItemsToRestore.substring(1, selectedItemsToRestore.length()-1).replaceAll(" ","");
             prayerListRequests = PresenterState.PrayerListState.unselectedPrayerListRequests;
         }
 

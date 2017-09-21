@@ -60,11 +60,13 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:contentDescription="@string/select_prayer_request"
                 style="@style/Item_Selected"
                 android:layout_width="@dimen/item_icon_width_height"
                 android:layout_height="@dimen/item_icon_width_height" />
 
             <ImageView
+                android:contentDescription="@string/select_prayer_request"
                 style="@style/Item_Select_Icon"
                 android:layout_width="@dimen/item_icon_inner_width_height"
                 android:layout_height="@dimen/item_icon_inner_width_height" />
@@ -77,6 +79,7 @@
 
             <ImageView
                 style="@style/Item_UnSelected"
+                android:contentDescription="@string/item_unselected_acc"
                 android:layout_width="@dimen/item_icon_width_height"
                 android:layout_height="@dimen/item_icon_width_height"/>
 

@@ -21,7 +21,7 @@
                 android:layout_width="@dimen/widget_icon"
                 android:layout_height="@dimen/widget_icon"
                 android:layout_margin="@dimen/widget_margin"
-                android:layout_centerVertical="true"
+                android:contentDescription="@string/app_name"
                 android:scaleType="centerInside"
                 android:src="@mipmap/ic_launcher" />
 

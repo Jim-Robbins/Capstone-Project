@@ -12,17 +12,20 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/item_add_top_bottom_padding"
         android:paddingStart="@dimen/item_start_end_padding"
+        android:paddingEnd="@dimen/item_start_end_padding"
         android:paddingTop="@dimen/item_add_top_bottom_padding">
 
         <ImageView
             style="@style/Item_Add_Circle"
             android:id="@+id/img_icon_circle"
             android:layout_width="@dimen/item_icon_width_height"
-            android:layout_height="@dimen/item_icon_width_height" />
+            android:layout_height="@dimen/item_icon_width_height"
+            android:contentDescription="@string/dialog_bible_passage_add"/>
 
         <ImageView
             style="@style/Item_Add_Icon"
             android:layout_width="@dimen/item_icon_width_height"
+            android:contentDescription="@string/dialog_bible_passage_add"
             android:layout_height="@dimen/item_icon_width_height" />
 
         <TextView

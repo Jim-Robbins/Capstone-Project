@@ -34,7 +34,6 @@
                     android:id="@+id/txt_contact_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingEnd="@dimen/small_space"
                     android:layout_toEndOf="@+id/profile_icon"
                     tools:text="Jill"
                     />

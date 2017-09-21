@@ -17,7 +17,9 @@ import java.util.List;
 public class PrayerRequest implements Parcelable {
     public static final String DB_NAME = "prayerRequests";
 
-    @NonNull private String key;
+    @Exclude
+    @NonNull
+    private String key;
 
     @NonNull private String contactKey;
     public static final String CHILD_CONTACT_KEY = "contactKey";
@@ -34,7 +36,7 @@ public class PrayerRequest implements Parcelable {
     @Nullable private Long endDate;
     public static final String CHILD_END_DATE = "endDate";
 
-    @Nullable private HashMap<String, Boolean> biblePassages = new HashMap<String, Boolean>();
+    @Nullable private HashMap<String, Boolean> biblePassages = new HashMap<>();
     public static final String CHILD_PASSAGES = "biblePassages";
 
     @Nullable private Long lastPrayedFor;
@@ -46,7 +48,7 @@ public class PrayerRequest implements Parcelable {
     @NonNull private Long dateCreated;
     public static final String CHILD_DATE_CREATED = "dateCreated";
 
-    @Nullable private HashMap<String, Boolean> prayerLists = new HashMap<String, Boolean>();
+    @Nullable private HashMap<String, Boolean> prayerLists = new HashMap<>();
     public static final String CHILD_PRAYER_LISTS = "prayerLists";
 
     public PrayerRequest() {
@@ -119,8 +121,7 @@ public class PrayerRequest implements Parcelable {
     @Exclude
     public List<String> getBiblePassagesAsList() {
         HashMap<String, Boolean> passageMap = biblePassages;
-        List<String> keySet = new ArrayList<>(passageMap.keySet());
-        return keySet;
+        return new ArrayList<>(passageMap.keySet());
     }
 
     @Nullable

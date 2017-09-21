@@ -6,7 +6,7 @@
     android:paddingEnd="@dimen/dialog_horizontal_margin"
     android:paddingStart="@dimen/dialog_horizontal_margin">
 
-    <Text
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/txt_delete_warning" />

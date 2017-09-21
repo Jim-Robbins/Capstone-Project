@@ -8,6 +8,20 @@
     tools:context="com.copychrist.app.prayer.ui.prayerlist.PrayerListActivity"
     tools:showIn="@layout/activity_prayer_list">
 
+    <TextView
+        android:id="@+id/empty_prayer_list"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_default="spread"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="@string/empty_prayer_lists"
+        tools:layout_editor_absoluteX="0dp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

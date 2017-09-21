@@ -18,6 +18,13 @@ public class MessageDialogFragment extends AppCompatDialogFragment {
     private static String MESSAGE = "message";
 
     /**
+     * Public interface to listen for Confirm button clicked
+     */
+    public interface MessageActionDialogListener {
+        void onDialogConfirmClicked();
+    }
+
+    /**
      * New Instance creates the dialog fragment, and allows us to pass some values in.
      * @param title
      * @param message
@@ -49,6 +56,7 @@ public class MessageDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                ((MessageActionDialogListener) getActivity()).onDialogConfirmClicked();
                 if (dialog != null) {
                     dialog.dismiss();
                 }

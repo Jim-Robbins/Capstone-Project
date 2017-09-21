@@ -6,12 +6,13 @@
     android:paddingEnd="@dimen/dialog_horizontal_margin"
     android:paddingStart="@dimen/dialog_horizontal_margin">
 
-    <ImageView
-        style="@style/Contact_Profile_Icon"
-        android:id="@+id/profile_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:paddingEnd="8dp" />
+    <!--<ImageView-->
+        <!--style="@style/Contact_Profile_Icon"-->
+        <!--android:id="@+id/profile_icon"-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:paddingStart="8dp" -->
+        <!--android:paddingEnd="8dp" />-->
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"

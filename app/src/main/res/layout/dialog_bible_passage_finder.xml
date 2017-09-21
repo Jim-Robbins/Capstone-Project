@@ -40,6 +40,7 @@
         <ImageButton
             android:id="@+id/btn_find"
             style="@style/Dialog_Search_Btn"
+            android:contentDescription="@string/btn_find_acc"
             android:layout_width="@dimen/dialog_search_btn_width_height"
             android:layout_height="@dimen/dialog_search_btn_width_height" />
     </LinearLayout>

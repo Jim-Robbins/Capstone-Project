@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.copychrist.app.prayer.R;
@@ -39,13 +41,15 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
         DeleteDialogFragment.DeleteActionDialogListener,
         AddPrayerRequestDialogFragment.AddPrayerRequestDialogListener,
         AddEditPrayerListDialogFragment.AddEditPrayerListDialogListener,
-        CardViewPrayerRequestDialogFragment.ViewPrayerRequestDialogListener {
+        CardViewPrayerRequestDialogFragment.ViewPrayerRequestDialogListener,
+        MessageDialogFragment.MessageActionDialogListener {
 
     private static final String TAG = "PrayerListActivity";
     private static final String SELECTED_ITEMS = TAG+"_SELECTED_ITEMS";
 
     @BindView(R.id.recycler_view) protected RecyclerView recyclerView;
     @BindView(R.id.tab_layout_prayer_list) protected TabLayout tabLayoutPrayerList;
+    @BindView(R.id.empty_prayer_list) protected TextView txtEmpty;
     @Inject protected PrayerListContract.Presenter prayerListPresenter;
 
     private PrayerListRequestSelectableSwipeableAdapter prayerRequestsListAdapter;
@@ -57,6 +61,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     private boolean retoreView = false;
     private String selectedItemsToRestore;
     private CardViewPrayerRequestDialogFragment viewPrayerRequestDialog;
+    private boolean listsReady = false;
 
     public static Intent getStartIntent(final Context context, final PrayerList prayerList) {
         Intent intent = new Intent(context, PrayerListActivity.class);
@@ -97,9 +102,17 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
                 prayerListPresenter.onPrayerListAddClick();
                 return true;
             case R.id.action_edit_list:
+                if(!listsReady) {
+                    showDatabaseResultMessage(R.string.not_yet);
+                    return false;
+                }
                 prayerListPresenter.onPrayerListEditClick();
                 return true;
             case R.id.action_delete_list:
+                if(!listsReady) {
+                    showDatabaseResultMessage(R.string.not_yet);
+                    return false;
+                }
                 prayerListPresenter.onPrayerListDeleteClick();
                 return true;
             default:
@@ -157,6 +170,14 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     @Override
     public void showPrayerListRequests(List<PrayerListRequest> prayerListRequests) {
+        if(prayerListRequests.isEmpty()) {
+            txtEmpty.setText(getString(R.string.empty_prayer_requests));
+            txtEmpty.setVisibility(View.VISIBLE);
+            return;
+        } else {
+            txtEmpty.setVisibility(View.GONE);
+        }
+
         this.prayerListRequests = prayerListRequests;
         prayerRequestsListAdapter.setAdpaterData(prayerListRequests);
 
@@ -171,6 +192,16 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     @Override
     public void showPrayerListTabs(List<PrayerList> prayerLists, final PrayerList selectedGroup) {
+        if(prayerLists.isEmpty()) {
+            listsReady = false;
+            txtEmpty.setText(getString(R.string.empty_prayer_lists));
+            txtEmpty.setVisibility(View.VISIBLE);
+            return;
+        } else {
+            listsReady = true;
+            txtEmpty.setVisibility(View.GONE);
+        }
+
         tabLayoutPrayerList.clearOnTabSelectedListeners();
         tabLayoutPrayerList.removeAllTabs();
         for (PrayerList prayerList : prayerLists) {
@@ -272,6 +303,10 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     @Override
     public void showPrayerRequestAddDialog(PrayerList prayerListKey) {
+        if(!listsReady) {
+            showDatabaseResultMessage(R.string.not_yet);
+            return;
+        }
         AddPrayerRequestDialogFragment fragment = AddPrayerRequestDialogFragment.newAddInstance();
         fragment.setData(prayerListPresenter.getUnselectedPrayerListRequests());
         fragment.show(getSupportFragmentManager(), "AddContactDialogFragment");
@@ -370,5 +405,10 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
 
     private void toggleSelection(int position) {
         prayerRequestsListAdapter.toggleSelection(position);
+    }
+
+    @Override
+    public void onDialogConfirmClicked() {
+        Timber.d("Nothing to see here");
     }
 }

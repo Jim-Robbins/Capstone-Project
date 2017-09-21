@@ -16,7 +16,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:paddingLeft="@dimen/xxlarge_space"
+        android:paddingStart="@dimen/xxlarge_space"
+        android:paddingEnd="@dimen/large_space"
         android:contentDescription="@string/praying_with_dedication_logo_acc"
          />
 
@@ -28,7 +29,8 @@
         app:layout_constraintStart_toEndOf="@id/img_logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingLeft="@dimen/xxxlarge_space"
+        android:paddingStart="@dimen/xxxlarge_space"
+        android:paddingEnd="@dimen/large_space"
         >
 
         <RelativeLayout
@@ -41,6 +43,7 @@
                 android:layout_width="@dimen/home_icon_width_height_plus"
                 android:layout_height="@dimen/home_icon_width_height_plus"
                 android:src="@drawable/bg_circle"
+                android:contentDescription="@string/btn_prayer_list_acc"
                 android:tint="@color/indigo_500" />
 
             <ImageView
@@ -48,7 +51,7 @@
                 android:layout_height="@dimen/home_icon_width_height_plus"
                 android:padding="16dp"
                 android:contentDescription="@string/btn_prayer_list_acc"
-                android:src="@drawable/ic_storage_24dp"
+                app:srcCompat="@drawable/ic_storage_24dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true" />
         </RelativeLayout>
@@ -73,14 +76,15 @@
                 android:layout_width="@dimen/home_icon_width_height"
                 android:layout_height="@dimen/home_icon_width_height"
                 android:src="@drawable/bg_circle"
-                android:tint="@color/colorAccent" />
+                android:tint="@color/colorAccent"
+                android:contentDescription="@string/btn_prayer_requests"/>
 
             <ImageView
                 android:layout_width="@dimen/home_icon_width_height"
                 android:layout_height="@dimen/home_icon_width_height"
                 android:layout_centerInParent="true"
                 android:padding="16dp"
-                android:src="@drawable/ic_question_answer_24dp"
+                app:srcCompat="@drawable/ic_question_answer_24dp"
                 android:contentDescription="@string/btn_prayer_requests"/>
         </RelativeLayout>
 
@@ -105,13 +109,14 @@
                 android:layout_width="@dimen/home_icon_width_height"
                 android:layout_height="@dimen/home_icon_width_height"
                 android:src="@drawable/bg_circle"
+                android:contentDescription="@string/btn_contact_groups"
                 android:tint="@color/teal_400" />
 
             <ImageView
                 android:layout_width="@dimen/home_icon_width_height"
                 android:layout_height="@dimen/home_icon_width_height"
                 android:padding="16dp"
-                android:src="@drawable/ic_group_24dp"
+                app:srcCompat="@drawable/ic_group_24dp"
                 android:contentDescription="@string/btn_contact_groups"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true" />
@@ -140,8 +145,9 @@
             <ImageView
                 android:layout_width="26dp"
                 android:layout_height="26dp"
-                android:layout_marginLeft="85dp"
+                android:layout_marginStart="85dp"
                 android:layout_marginTop="10dp"
+                android:contentDescription="@string/login_label"
                 android:src="@drawable/bg_circle"
                 android:tint="@color/colorPrimary" />
 
@@ -149,7 +155,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/btn_log_out"
-                android:layout_marginLeft="@dimen/xlarge_space"
+                android:layout_marginStart="@dimen/xlarge_space"
                 android:layout_marginTop="10dp"
                 android:paddingTop="@dimen/small_space"
                 android:paddingBottom="@dimen/small_space"
@@ -164,17 +170,18 @@
             <ImageView
                 android:layout_width="@dimen/item_icon_width_height"
                 android:layout_height="@dimen/item_icon_width_height"
-                android:layout_marginRight="@dimen/xxlarge_space"
+                android:layout_marginEnd="@dimen/xxlarge_space"
+                android:contentDescription="@string/login_label"
                 android:src="@drawable/bg_circle"
                 android:tint="@color/colorPrimary" />
 
             <ImageView
                 android:layout_width="@dimen/item_icon_width_height"
                 android:layout_height="@dimen/item_icon_width_height"
-
+                android:contentDescription="@string/login_label"
                 android:padding="4dp"
-                android:layout_marginRight="@dimen/xxlarge_space"
-                android:src="@drawable/ic_settings_24dp" />
+                android:layout_marginEnd="@dimen/xxlarge_space"
+                app:srcCompat="@drawable/ic_settings_24dp" />
 
 
         </RelativeLayout>
