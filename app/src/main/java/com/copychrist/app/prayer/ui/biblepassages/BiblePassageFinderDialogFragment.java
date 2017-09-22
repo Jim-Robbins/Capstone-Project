@@ -20,6 +20,7 @@ import com.copychrist.app.prayer.BuildConfig;
 import com.copychrist.app.prayer.R;
 import com.copychrist.app.prayer.adapter.BibleBooksSpinnerArrayAdapter;
 import com.copychrist.app.prayer.model.BiblePassage;
+import com.copychrist.app.prayer.service.DbtService;
 import com.faithcomesbyhearing.dbt.Dbt;
 import com.faithcomesbyhearing.dbt.model.Book;
 

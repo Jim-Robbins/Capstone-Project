@@ -163,7 +163,7 @@ public class ContactDetailActivity extends BaseActivity
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if(restoreView)
             contactPresenter.resetView(this);
@@ -275,5 +275,10 @@ public class ContactDetailActivity extends BaseActivity
                     contact.getFirstName() + " " + contact.getLastName()
             );
             deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
+    }
+
+    @Override
+    protected void updateVerseUI(Intent intent) {
+
     }
 }

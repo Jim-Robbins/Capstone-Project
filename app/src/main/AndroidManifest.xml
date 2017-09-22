@@ -93,6 +93,10 @@
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
+        <!-- Verse of the day service -->
+        <service
+            android:name=".service.VerseOfTheDayIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>

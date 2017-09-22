@@ -1,9 +1,10 @@
-package com.copychrist.app.prayer.ui.biblepassages;
+package com.copychrist.app.prayer.service;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.copychrist.app.prayer.BuildConfig;
+import com.copychrist.app.prayer.util.Utils;
 import com.faithcomesbyhearing.dbt.Dbt;
 import com.faithcomesbyhearing.dbt.callback.BookCallback;
 import com.faithcomesbyhearing.dbt.callback.VerseCallback;
@@ -13,6 +14,7 @@ import com.faithcomesbyhearing.dbt.model.Verse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import timber.log.Timber;
 
@@ -46,12 +48,22 @@ public class DbtService {
         selectedLanguage = LANGUAGES.get(0);
         selectedVersion = BIBLE_VERSIONS.get(0);
         getAllBibleBooks();
+    }
 
-        /*  This will return all books, chapter and verse info
-            getVersionInfo http://dbt.io/library/verseinfo?key=dc951bf3411b2f2d5c91ab14f260cf15&dam_id=ENGKJVN2ET&v=2
-         */
+    public String getRandomVerseUrl() {
+        String verseUrl = "";
+        if(bookList != null) {
+            Book book = bookList.get(Utils.getRandomIndex(bookList.size()));
+            int chapter = Utils.getRandomIndex((int) book.getNumberOfChapters()) + 1;
+            String dId = getBookDamId(book);
 
-        // http://dbt.io/text/searchgroup?key=dc951bf3411b2f2d5c91ab14f260cf15&dam_id=ENGKJVN2ET&query=Seek+ye+first&v=2
+            verseUrl = "http://dbt.io/text/verse?key=" + BuildConfig.DBT_API_KEY +
+                "&dam_id=" + dId +
+                "&book_id=" + book.getBookId() +
+                "&chapter_id=" + chapter +
+                 "&v=2";
+        }
+        return verseUrl;
     }
 
     private String getBaseDamId() {

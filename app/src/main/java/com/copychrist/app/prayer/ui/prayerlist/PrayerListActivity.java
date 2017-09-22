@@ -160,7 +160,7 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if(retoreView)
             prayerListPresenter.resetView(this);
@@ -409,5 +409,10 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     @Override
     public void onDialogConfirmClicked() {
         Timber.d("Nothing to see here");
+    }
+
+    @Override
+    protected void updateVerseUI(Intent intent) {
+
     }
 }

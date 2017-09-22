@@ -3,6 +3,8 @@ package com.copychrist.app.prayer.util;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,12 +14,14 @@ import android.text.TextUtils;
 
 import com.copychrist.app.prayer.R;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import timber.log.Timber;
 
@@ -120,5 +124,10 @@ public class Utils {
         }
 
         return list;
+    }
+
+    public static int getRandomIndex(int max) {
+        Random r = new Random();
+        return r.nextInt(max-0) + 0;
     }
 }

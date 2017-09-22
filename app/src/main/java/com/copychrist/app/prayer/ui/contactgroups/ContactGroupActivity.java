@@ -155,7 +155,7 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if(restoreView)
             contactsPresenter.resetView(this);
@@ -336,5 +336,10 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     @Override
     public void showDatabaseResultMessage(int messageResId) {
         Toast.makeText(this, getBaseContext().getString(messageResId), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void updateVerseUI(Intent intent) {
+
     }
 }

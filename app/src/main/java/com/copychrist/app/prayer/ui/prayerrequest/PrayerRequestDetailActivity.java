@@ -405,4 +405,9 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         startActivity(ContactGroupActivity.getStartIntent(this, null));
         finish();
     }
+
+    @Override
+    protected void updateVerseUI(Intent intent) {
+
+    }
 }

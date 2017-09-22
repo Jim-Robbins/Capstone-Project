@@ -225,4 +225,9 @@ public class LoginActivity extends BaseActivity {
 
         databaseReference.child(User.DB_NAME).child(userId).setValue(user);
     }
+
+    @Override
+    protected void updateVerseUI(Intent intent) {
+
+    }
 }

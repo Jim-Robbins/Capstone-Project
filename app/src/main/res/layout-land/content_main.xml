@@ -8,6 +8,19 @@
     tools:context="com.copychrist.app.prayer.ui.home.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <TextView
+        android:id="@+id/txt_verse_of_the_day"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAppearance="@style/Item_Sub_Secondary"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingTop="@dimen/normal_space"
+        tools:layout_editor_absoluteX="8dp"
+        tools:text="Sample verse"/>
+
     <ImageView
         android:id="@+id/img_logo"
         android:layout_width="wrap_content"
@@ -19,7 +32,7 @@
         android:paddingStart="@dimen/xxlarge_space"
         android:paddingEnd="@dimen/large_space"
         android:contentDescription="@string/praying_with_dedication_logo_acc"
-         />
+        tools:layout_editor_absoluteX="0dp" />
 
     <RelativeLayout
         android:id="@+id/icon_container_prayer_lists"
@@ -31,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:paddingStart="@dimen/xxxlarge_space"
         android:paddingEnd="@dimen/large_space"
-        >
+        tools:layout_editor_absoluteX="222dp">
 
         <RelativeLayout
             android:id="@+id/icon_back_prayer_lists"
@@ -65,7 +78,8 @@
         android:orientation="vertical"
         app:layout_constraintStart_toEndOf="@+id/icon_container_prayer_lists"
         android:paddingTop="@dimen/large_space"
-        >
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="435dp">
 
         <RelativeLayout
             android:id="@+id/icon_back_prayer_requests"
@@ -98,7 +112,7 @@
         app:layout_constraintStart_toEndOf="@+id/icon_container_prayer_lists"
         app:layout_constraintBottom_toBottomOf="parent"
         android:paddingBottom="@dimen/large_space"
-        >
+        tools:layout_editor_absoluteX="435dp">
 
         <RelativeLayout
             android:id="@+id/icon_back_contact_groups"
@@ -133,7 +147,8 @@
         android:layout_margin="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteX="8dp">
 
         <RelativeLayout
             android:id="@+id/icon_back_logout"
