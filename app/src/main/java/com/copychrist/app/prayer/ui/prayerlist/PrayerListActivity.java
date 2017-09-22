@@ -241,7 +241,8 @@ public class PrayerListActivity extends BaseActivity implements PrayerListContra
     public void showPrayerListDialogAdd() {
         AddEditPrayerListDialogFragment addPrayerListDialogFragment =
                 AddEditPrayerListDialogFragment.newInstance(null, tabLayoutPrayerList.getTabCount());
-        addPrayerListDialogFragment.show(getSupportFragmentManager(), "AddPrayerListDialog");
+        addPrayerListDialogFragment.show(getSupportFragmentManager(),
+                "AddPrayerListDialog");
     }
 
     @Override

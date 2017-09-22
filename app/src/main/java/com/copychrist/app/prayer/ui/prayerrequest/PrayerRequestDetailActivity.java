@@ -258,6 +258,9 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
 
     @OnClick(R.id.action_save)
     public void onSaveClick() {
+        if (!validateForm()) {
+            return;
+        }
         if(selectedPrayerRequest == null) {
             selectedPrayerRequest = new PrayerRequest();
         }
@@ -284,6 +287,15 @@ public class PrayerRequestDetailActivity extends BaseActivity implements PrayerR
         addPrayerRequestPresenter.onPrayerRequestSaveClick(selectedPrayerRequest);
 
         onNavUp();
+    }
+
+    private boolean validateForm() {
+        boolean result = true;
+        if (TextUtils.isEmpty(editRequestTitle.getText().toString())) {
+            editRequestTitle.setError(getString(R.string.form_error));
+            result = false;
+        }
+        return result;
     }
 
     @OnClick(R.id.action_cancel)

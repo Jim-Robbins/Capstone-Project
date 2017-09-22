@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -75,14 +76,16 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (contact == null) {
-                    addContact();
-                } else  {
-                    editContact();
-                }
+                if (validateForm()) {
+                    if (contact == null) {
+                        addContact();
+                    } else {
+                        editContact();
+                    }
 
-                if (dialog != null) {
-                    dialog.dismiss();
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
                 }
             }
 
@@ -116,5 +119,14 @@ public class AddEditContactDialogFragment extends AppCompatDialogFragment {
         contact.setFirstName(txtFirstName.getText().toString());
         contact.setLastName(txtLastName.getText().toString());
         ((AddEditContactDialogListener) getActivity()).onContactSaveClick(contact);
+    }
+
+    private boolean validateForm() {
+        boolean result = true;
+        if (TextUtils.isEmpty(txtFirstName.getText().toString())) {
+            txtFirstName.setError(getString(R.string.form_error));
+            result = false;
+        }
+        return result;
     }
 }

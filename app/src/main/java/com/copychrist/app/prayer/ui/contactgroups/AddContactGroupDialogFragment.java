@@ -3,8 +3,10 @@ package com.copychrist.app.prayer.ui.contactgroups;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -54,9 +56,11 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                saveContactGroup();
-                if (dialog != null) {
-                    dialog.dismiss();
+                if (validateForm()) {
+                    saveContactGroup();
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
                 }
             }
 
@@ -84,5 +88,14 @@ public class AddContactGroupDialogFragment extends AppCompatDialogFragment {
         contactGroup.setName(textGroupName.getText().toString());
         contactGroup.setDescription(textGroupDesc.getText().toString());
         ((AddContactGroupDialogListener) getActivity()).onContactGroupSaveClick(contactGroup);
+    }
+
+    private boolean validateForm() {
+        boolean result = true;
+        if (TextUtils.isEmpty(textGroupName.getText().toString())) {
+            textGroupName.setError(getString(R.string.form_error));
+            result = false;
+        }
+        return result;
     }
 }

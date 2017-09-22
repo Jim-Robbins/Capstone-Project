@@ -129,10 +129,11 @@
     <string name="select_prayer_request">Select prayer request</string>
     <string name="dialog_need_to_add_contacts_first">Before you can start adding prayer requests, you need to setup some contacts to associate them with.  Press OK and we\'ll take you there.</string>
     <string name="dialog_need_to_add_contacts_first_title">Welcome! But before you begin...</string>
-    <string name="empty_contact_groups">Welcome! It looks like are just getting started, or your are starting over.\nTo begin, add a new contact group by selecting the \'Add New Group\' button in the main menu.</string>
+    <string name="empty_contact_groups">Welcome! It looks like you are just getting started, or starting over.\nTo begin, add a new contact group by selecting the \'Add New Group\' button in the main menu.</string>
     <string name="empty_contacts">This Contact Group needs some contacts. Add them by clicking the floating action button at the bottom.</string>
     <string name="empty_prayer_lists">To get started, add a new prayer list by selecting the \'Add Prayer List\' button in the main menu.</string>
     <string name="empty_prayer_requests">This Prayer List needs some prayer requests. Add them by clicking the floating action button at the bottom.</string>
     <string name="not_yet">You can\'t do that yet. Follow the help on the main screen.</string>
     <string name="email_sent">Email sent.</string>
+    <string name="form_error">Please fill in the required fields</string>
 </resources>

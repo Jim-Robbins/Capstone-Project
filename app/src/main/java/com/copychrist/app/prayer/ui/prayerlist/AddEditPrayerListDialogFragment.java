@@ -1,10 +1,12 @@
 package com.copychrist.app.prayer.ui.prayerlist;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -28,6 +30,7 @@ public class AddEditPrayerListDialogFragment extends AppCompatDialogFragment {
         AddEditPrayerListDialogFragment frag = new AddEditPrayerListDialogFragment();
         frag.prayerList = prayerList;
         frag.prayerListCounter = tabCount;
+
         return frag;
     }
 
@@ -51,9 +54,11 @@ public class AddEditPrayerListDialogFragment extends AppCompatDialogFragment {
         alertDialogBuilder.setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                savePrayerList();
-                if (dialog != null) {
-                    dialog.dismiss();
+                if (validateForm()) {
+                    savePrayerList();
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
                 }
             }
 
@@ -80,6 +85,15 @@ public class AddEditPrayerListDialogFragment extends AppCompatDialogFragment {
         }
         prayerList.setName(textPrayerListName.getText().toString());
         ((AddEditPrayerListDialogListener) getActivity()).onPrayerListSaveClick(prayerList);
+    }
+
+    private boolean validateForm() {
+        boolean result = true;
+        if (TextUtils.isEmpty(textPrayerListName.getText().toString())) {
+            textPrayerListName.setError(getString(R.string.form_error));
+            result = false;
+        }
+        return result;
     }
 }
 

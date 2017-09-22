@@ -60,6 +60,7 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     private String deleteType;
     private Contact contact;
     private boolean restoreView;
+    private boolean listsReady = false;
 
     public static Intent getStartIntent(final Context context, final ContactGroup contactGroup) {
         Intent intent = new Intent(context, ContactGroupActivity.class);
@@ -92,9 +93,15 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
                 contactsPresenter.onContactGroupAddClick();
                 return true;
             case R.id.action_edit_group:
+                if(!listsReady) {
+                    showDatabaseResultMessage(R.string.not_yet);
+                }
                 contactsPresenter.onContactGroupEditClick();
                 return true;
             case R.id.action_delete_group:
+                if(!listsReady) {
+                    showDatabaseResultMessage(R.string.not_yet);
+                }
                 if(tabLayoutGroups.getTabCount() > 1)
                     contactsPresenter.onContactGroupDeleteClick();
                 else
@@ -173,8 +180,10 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
         if(contactGroups.isEmpty()) {
             txtEmpty.setText(getString(R.string.empty_contact_groups));
             txtEmpty.setVisibility(View.VISIBLE);
+            listsReady = false;
         } else {
             txtEmpty.setVisibility(View.GONE);
+            listsReady = true;
         }
         tabLayoutGroups.clearOnTabSelectedListeners();
         tabLayoutGroups.removeAllTabs();
@@ -261,7 +270,11 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
 
     @OnClick(R.id.fab)
     public void onAddNewContactClick() {
-        contactsPresenter.onContactAddClick();
+        if(!listsReady) {
+            showDatabaseResultMessage(R.string.not_yet);
+        } else {
+            contactsPresenter.onContactAddClick();
+        }
     }
 
     @Override
@@ -290,20 +303,12 @@ public class ContactGroupActivity extends BaseActivity implements ContactGroupCo
     public void onContactRemoveClicked(int position) {
         this.deleteType = Contact.DB_NAME;
         this.contact = contacts.get(position);
-        if (tabLayoutGroups.getTabCount() > 1) {
-            DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
-                    getString(R.string.dialog_delete_contact_title),
-                    contact.getFirstName() + contact.getLastName()
-            );
-            deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
-        } else {
-            MessageDialogFragment dialogFragment = MessageDialogFragment.newInstance(
-                    getString(R.string.dialog_delete_contact_title),
-                    getString(R.string.dialog_delete_group_denied)
-            );
-            dialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
-        }
 
+        DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(
+                getString(R.string.dialog_delete_contact_title),
+                contact.getFirstName() + contact.getLastName()
+        );
+        deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
     }
 
     @Override
